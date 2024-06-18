@@ -277,8 +277,8 @@ h2 {
 .gallery-slider figure img {
 	position: relative;
 	display: block;
-	min-height: 100%;
-	max-width: 100%;
+	min-height: 150%;
+	max-width: 150%;
 }
 
 .gallery-slider figure figcaption {
