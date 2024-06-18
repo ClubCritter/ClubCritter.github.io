@@ -5,15 +5,18 @@ TemplateMo 560 Astro Motion
 https://templatemo.com/tm-560-astro-motion
 
 */
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+
 
 html, body, .page-container {
     height: 100%;
 }
 
 body {
-    font-family: 'Source Sans Pro', sans-serif;
+    font-family: "Fira Sans", sans-serif;
     font-size: 19px;
-    font-weight: 300;
+    font-weight: 400;
     color: white;
     line-height: 1.5;
 }
@@ -203,8 +206,12 @@ h2 {
     margin-left: auto;
 }
 
+.page-center {
+    margin-inline: auto;
+}
+
 .tm-bg-dark {
-    background-color: rgba(0,0,0,0.3);
+    background-color: rgba(12, 12, 12, 0.5);
 }
 
 .intro-left {
@@ -449,7 +456,7 @@ figure.effect-julia:hover p {
 
 /* Contact page */
 .tm-contact-left {
-    padding-right: 55px;
+    padding-block: 2rem;
 }
 
 .form-control {
@@ -589,6 +596,7 @@ figure.effect-julia:hover p {
         margin-right: 0;
         margin-bottom: 20px;
         max-width: none;
+        padding-inline: 1rem;
     }
 
     .intro-right {
