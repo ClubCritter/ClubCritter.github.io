@@ -215,7 +215,7 @@ h2 {
 .tm-bg-dark {
     background-color: rgba(12, 12, 12, 0.5);
     border-radius: 30px 0 30px 0;
-    box-shadow: inset 0 0 30px rgba(63, 133, 86, 0.5);
+    box-shadow: inset 0 0 30px #99FF66;
 }
 .tm-bg-dark-l{
     background-color: rgba(12, 12, 12, 0.5);
