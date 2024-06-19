@@ -2,9 +2,9 @@ import React from 'react'
 
 const Presale = () => {
   return (
-    <div data-page-no="4" className='presale-container'>
+    <div className='presale-container'>
             <div className="mx-auto page-width-2">
-              <div className="row gap-6">
+              <div className="row">
                 <div className="col-md-6 tm-contact-left tm-bg-dark-l">
                   <form action="#" method="POST" className="contact-form">
                     <div className="input-group tm-mb-30">
@@ -38,12 +38,12 @@ const Presale = () => {
                         <iframe width="100%" height="400" id="gmap-canvas"
                             src="https://maps.google.com/maps?q=Av.+L%C3%BAcio+Costa,+Rio+de+Janeiro+-+RJ,+Brazil&t=&z=13&ie=UTF8&iwloc=&output=embed"
                             ></iframe>
-                    </div>
-                </div>
-                </div>
-              </div>
-            </div>            
+                  </div>
+            </div>
           </div>
+        </div>
+      </div>            
+    </div>
   )
 }
 

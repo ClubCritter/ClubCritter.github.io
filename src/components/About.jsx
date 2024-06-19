@@ -2,7 +2,7 @@ import React from 'react'
 
 const About = () => {
   return (
-    <div data-page-no="3" className="px-3">
+    <div className="px-3">
             <div className="position-relative page-width-1 page-center tm-border-top tm-border-bottom">
               <div className="circle intro-circle-1"></div>
               <div className="circle intro-circle-2"></div>
