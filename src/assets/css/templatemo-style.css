@@ -210,6 +210,7 @@ h2 {
 
 .tm-bg-dark {
     background-color: rgba(12, 12, 12, 0.5);
+    border-radius: 30px 0 30px 0;
 }
 
 .intro-left {

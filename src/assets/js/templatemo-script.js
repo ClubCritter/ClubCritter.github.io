@@ -93,6 +93,3 @@ jQuery(function() {
       closeMenu();
     });
 });
-document.querySelector('.navbar-brand').addEventListener('click', function() {
-  document.querySelector('.nav-item.home a').click();
-});
