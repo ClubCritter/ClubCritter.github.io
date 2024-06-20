@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useCloseMenu, useHighlightMenu } from '../assets/js/template';
 
 const Navbar = () => {
-  const { menuOpen, closeMenu } = useCloseMenu();
+  const { menuOpen, toggleMenu, closeMenu } = useCloseMenu();
   const { selectedNavItem, highlightMenu } = useHighlightMenu();
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const Navbar = () => {
           <div className="cd-slider-nav">
             <nav className="navbar navbar-expand-lg" aria-current="page" id="tm-nav">
               <a className="navbar-brand tm-bg-dark-a px-4" href='/'>Club Critter</a>
-              <button className="navbar-toggler tm-bg-dark-a" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-supported-content" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <button className="navbar-toggler tm-bg-dark-a" type="button" onClick={toggleMenu} data-bs-toggle="collapse" data-bs-target="#navbar-supported-content" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon"></span>
               </button>
               <div className={`collapse navbar-collapse ${menuOpen ? 'show' : ''}`} id="navbar-supported-content">

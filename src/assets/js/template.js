@@ -4,9 +4,18 @@ import { useLocation } from 'react-router-dom';
 function useCloseMenu() {
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const closeMenu = () => {
+    setMenuOpen(false);
+  };
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
   useEffect(() => {
     const handleHtmlClick = (event) => {
-      setMenuOpen(false);
+      if (!event.target.closest('.navbar')) {
+        closeMenu();
+      }
     };
 
     document.addEventListener('click', handleHtmlClick);
@@ -14,14 +23,11 @@ function useCloseMenu() {
     return () => {
       document.removeEventListener('click', handleHtmlClick);
     };
-  }, []);
+  }, [closeMenu]);
 
-  const closeMenu = () => {
-    setMenuOpen(false);
-  };
-
-  return { menuOpen, closeMenu };
+  return { menuOpen, toggleMenu, closeMenu };
 }
+
 
 function useHighlightMenu() {
   const location = useLocation();
