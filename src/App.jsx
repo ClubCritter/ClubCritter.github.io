@@ -1,7 +1,7 @@
 import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import Favicon from "react-favicon";
-import favicon from '../public/favicon.ico'
+import favicon from '/favicon.ico'
 import bgVideo from './assets/video/gfp-astro-timelapse.mp4'
 import Home from './pages/Home'
 import './App.css'

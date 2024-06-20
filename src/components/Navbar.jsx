@@ -8,8 +8,8 @@ const Navbar = () => {
           <div className="col-xs-12">
             <div className="cd-slider-nav">
               <nav className="navbar navbar-expand-lg" aria-current="page" id="tm-nav">
-                <Link className="navbar-brand tm-bg-dark-a px-4" to='/'>Club Critter</Link>
-                  <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-supported-content" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <a className="navbar-brand tm-bg-dark-a px-4" href='/'>Club Critter</a>
+                  <button className="navbar-toggler tm-bg-dark-a" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-supported-content" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                   </button>
                   <div className="collapse navbar-collapse" id="navbar-supported-content">

@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import homeImg from '../assets/img/home-img-1.jpg'
 
 const Intro = () => {
   return (
@@ -14,7 +15,7 @@ const Intro = () => {
                  </div>
                 <div className="intro-right">
 		            <div style={{textAlign: 'center'}}>
-                      <img src="src/assets/img/home-img-1.jpg" alt="Image" className="img-fluid intro-img-1" />
+                      <img src={homeImg} alt="Image" className="img-fluid intro-img-1" />
 		            </div>
                 </div>
                 <div className="circle intro-circle-1"></div>
