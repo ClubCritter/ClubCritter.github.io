@@ -69,14 +69,6 @@ function openPage(no) {
     .fadeIn();
 }
 
-$(document).ready(function(){
-  $(window).on("load", function() {
-    setTimeout(function(){
-      $('body').addClass('loaded');
-      openPage(1);
-    }, 500);
-  });
-});
 
 jQuery(function() {
     $('.tm-page-link').on('click', function(){
