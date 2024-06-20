@@ -69,9 +69,13 @@ function openPage(no) {
     .fadeIn();
 }
 
-$(window).on('load', function() {
-  $('body').addClass('loaded');
-  openPage(1);
+$(document).ready(function(){
+  $(window).on("load", function() {
+    setTimeout(function(){
+      $('body').addClass('loaded');
+      openPage(1);
+    }, 500);
+  });
 });
 
 jQuery(function() {
