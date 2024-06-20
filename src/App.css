@@ -410,8 +410,8 @@ h2 {
   margin-bottom: 80px;
 }
 .tokenomics-grid-container{
-    max-width: 910px;
-    min-height: 300px;
+    max-width: 1180px;
+    min-height: 450px;
     display: grid;
     place-items: center;
     grid-template-columns: repeat(4, 1fr);
