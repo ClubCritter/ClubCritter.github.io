@@ -8,7 +8,7 @@ function BodyClassSetter() {
   useEffect(() => {
     setTimeout(() => {
       document.body.classList.add('loaded');
-    }, 500);
+    }, 700);
   }, []);
 
   return null; // Return null, as this component doesn't render anything

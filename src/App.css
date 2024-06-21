@@ -26,7 +26,19 @@ a {
     text-decoration: none;
     transition: all 0.3s ease;
 }
-
+.content-pad a{
+    color: #9F6 !important;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+.content-pad a:hover{
+    color: #3CF !important;
+}
+.content-pad ul{
+    display: flex;
+    justify-content: space-between;
+    padding: 0
+}
 a:hover {
 	color: #3CF;
 }
@@ -204,7 +216,7 @@ h2 {
 }
 
 .page-width-2 {
-    max-width: 912px;
+    min-width: 912px;
 }
 .page-width-3 {
     max-width: 1398px !important;
@@ -242,6 +254,10 @@ h2 {
     background-color: rgba(12, 12, 12, 0.5) !important;
     border-radius: 30px;
 }
+.tm-bg-dark-n{
+    background-color: rgba(12, 12, 12, 0.8) !important;
+    border-radius: 2px;
+}
 .intro-left {
     margin-right: 20px;
     padding: 30px 40px;
@@ -251,7 +267,37 @@ h2 {
     min-height: 70vh;
     display: grid;
     place-items: center;
+    position: relative;
 }
+.wallet-modal-container{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: grid;
+    place-items: center;
+    z-index: 10000;
+}
+.wallet-modal {
+    background-color: #fcfcfc;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding-block: 1rem;
+    display: grid;
+    place-items: center;
+    grid-auto-rows: 1fr;
+}
+.provider-button{
+    width: 100%;
+    height: 100%;
+}
+.provider-button:hover {
+    background:  #c6fcabaf !important;
+  }
 .intro-img-1 {
     margin-bottom: 0px;
 }
@@ -533,12 +579,31 @@ figure.effect-julia:hover p {
 .tm-contact-left {
     padding-block: 2rem !important;
     padding-inline: 1rem !important;
+    display: grid;
+    place-items: center;
+    gap: 2rem;
 }
 .tm-contact-right{
    padding-block: 2rem !important;
    padding-inline: 1rem !important;
 }
-
+.countdown-container{
+    display: grid;
+    place-items: center;
+    padding: 0.35rem;
+    border: 2px solid rgba(212 ,212,212,1);
+}
+.countdown-container p{
+    font-size: 1.5rem;
+    margin: 0;
+}
+.countdown{
+    padding-inline: 3rem;
+    padding-block: 1rem;
+    border: 2px solid rgba(212 ,212,212,1);
+    height: 3rem;
+    width: 20rem;
+}
 .form-control {
     font-size: 1.2rem !important; 
     padding: 15px 0 !important;
@@ -645,7 +710,9 @@ figure.effect-julia:hover p {
         margin-left: auto;
         margin-right: auto;
     }
-
+    .page-width-2 {
+        min-width: 0;
+    }
     .cd-hero-slider {
         padding: 10px 0;
     }
@@ -658,6 +725,13 @@ figure.effect-julia:hover p {
 
     .intro-right {
         width: 35%;
+    }
+    .content-pad ul{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 2rem
     }
 }
 

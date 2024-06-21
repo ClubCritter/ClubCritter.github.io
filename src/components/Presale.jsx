@@ -1,27 +1,29 @@
-import React from 'react'
+import React, { useState } from 'react'
+import WalletModal from '../wallet/providers/WalletModal';
 
 const Presale = () => {
+const [showModal, setShowModal] = useState(false);
+
+const handleConnectWallet = () => {
+  setShowModal(true);
+}
   return (
-    <div className='presale-container'>
+     <>
+       <div className='presale-container'>
             <div className="mx-auto page-width-2">
               <div className="row">
-                <div className="col-md-6 tm-contact-left tm-bg-dark-l">
-                  <form action="#" method="POST" className="contact-form">
-                    <div className="input-group tm-mb-30">
-                        <input name="name" type="text" className="form-control rounded-0 border-top-0 border-end-0 border-start-0" placeholder="Name" />
-                    </div>
-                    <div className="input-group tm-mb-30">
-                        <input name="email" type="text" className="form-control rounded-0 border-top-0 border-end-0 border-start-0" placeholder="Email" />
-                    </div>
-                    <div className="input-group tm-mb-30">
-                        <textarea rows="5" name="message" className="textarea form-control rounded-0 border-top-0 border-end-0 border-start-0" placeholder="Message"></textarea>
-                    </div>
-                    <div className="input-group justify-content-end">
-                        <input type="submit" className="btn btn-primary tm-btn-pad-2" value="Send" />
-                    </div>
-                  </form>
+                <div className="col-lg-6 tm-contact-left tm-bg-dark-l">
+                  <button className='btn btn-primary tm-intro-btn tm-page-link'
+                          onClick={handleConnectWallet}
+                          >
+                    Connect Wallet
+                  </button>
+                  <div className='countdown-container'>
+                    <p>Countdown</p>
+                    <div className="countdown"></div>
+                  </div>
                 </div>
-                <div className="col-md-6 tm-contact-right tm-bg-dark-r py-5">    
+                <div className="col-lg-6 tm-contact-right tm-bg-dark-r py-5">    
                   <h2 className="mb-4">Presale</h2>              
                   <p className="mb-4">
                     Coming Soon
@@ -43,7 +45,12 @@ const Presale = () => {
           </div>
         </div>
       </div>            
-    </div>
+     </div>
+     {showModal ? (
+      <WalletModal />
+     ) : null }
+    </>
+   
   )
 }
 
