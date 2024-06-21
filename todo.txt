@@ -1,0 +1,13 @@
+Kadena Guy, [18/06/24 10:47 AM]
+if you view on mobile phone, when you tap over the images on tokenomics they dont fit {done}
+
+Kadena Guy, [18/06/24 10:48 AM]
+probably the images in the gallery / tokenomics to fit alot nice
+nicer {done}
+
+Kadena Guy, [18/06/24 10:48 AM]
+also all the text boxes raise the opacity or make the box a bit less see through so the text can be seen more  {done}
+
+Kadena Guy, [18/06/24 10:49 AM]
+and centre the text box on the about
+not to the left {Done}
