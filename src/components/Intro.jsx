@@ -10,8 +10,8 @@ const Intro = () => {
                  <div className="intro-left tm-bg-dark">
                    <h2 className="mb-4">Welcome to Club Critter</h2>
                    <p className="mb-4">The first fully KYC + Audited memecoin built with KadenAi initiatives. </p>
-                   <h2>Yo, check it out! </h2>
-                   <p>The wait is finally over! We're dropping the hottest meme token on the Kadena blockchain, and you know it's gonna be fire.  That's right, the KadenAi team has been putting in the work, and now it's time to celebrate with the first-ever KTG (Kadena Token Generator) meme token. </p>
+                   <h2>Join our Discord! </h2>
+                   <p>We're not your average meme army. We're a friendly club that coexists peacefully with the entire Kadena ecosystem. We might not have a utility token, but we're passionate about helping others grow. In fact, Papa Otter himself has vouched for Club Critter members' ability to assist developers in expanding the Kadena ecosystem (with $CRITTER rewards as a bonus, of course!). </p>
                  </div>
                 <div className="intro-right">
 		            <div style={{textAlign: 'center'}}>

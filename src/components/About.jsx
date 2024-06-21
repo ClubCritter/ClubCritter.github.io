@@ -10,13 +10,16 @@ const About = () => {
               <div className="circle intro-circle-4"></div>
               <div className="tm-bg-dark content-pad">
                 <h2 className="mb-4">About Club Critter</h2>
-                  Club Critter is 
-                <p>Those other meme groups? More like drill sergeant training. We're a chill club with open arms for everyone!</p>
-                <p>Our leader, Andy Otter, is your AI art and NFT sensei. Get ready to dominate WEB3 together!</p>
-                <h2>Peace of Mind and Security</h2>
-                <p>Need peace of mind? Top devs and the Kadena crew audited us and gave us a big thumbs up. Transparency and security? We got you covered.</p>
-                <h2>Join the Fun!</h2>
-                <p>Ditch the drama, join the fun! Hop on our Discord server, it's gonna be a blast!</p>
+                <h3>Simple and Transparent!</h3>
+                  <p>We're all about clarity and trust. That's why we're the first to launch a fully transparent KYC'd and audited token. Our roadmap is straightforward:</p>
+                    <ul>
+                      <li>Website Creation</li>
+                      <li>Token Launch</li>
+                      <li>Discord Launch</li>
+                      <li>Community Building</li>
+                    </ul>
+                  <p>Join us on Discord (link at the bottom) where Head Critter and Mama Critter will be hosting $CRITTER giveaways! We value your input, so let's work together to expand both the community and the Kadena ecosystem. Remember, the stronger we become, the more benefits everyone enjoys!</p>
+                  <p>Leading the charge is Papa Critter, who is fully KYC'd and chats directly witha a couple of guys from Kadena and independant developers. He's passionate about keeping things fun, exciting, and constantly growing, and he's always here to listen to your ideas! :)</p>
               </div>              
             </div>
           </div>
