@@ -1,11 +1,17 @@
 import React, { useState } from 'react'
 import WalletModal from '../wallet/providers/WalletModal';
+import useWalletStore from '../wallet/walletStore';
 
 const Presale = () => {
+const { connectionState , disconnect, connect } = useWalletStore()
 const [showModal, setShowModal] = useState(false);
 
+const account = connectionState?.account?.account;
 const handleConnectWallet = () => {
-  setShowModal(true);
+  connect();
+}
+const handleDisconnectWallet = () => {
+  disconnect();
 }
   return (
      <>
@@ -13,11 +19,27 @@ const handleConnectWallet = () => {
             <div className="mx-auto page-width-2">
               <div className="row">
                 <div className="col-lg-6 tm-contact-left tm-bg-dark-l">
-                  <button className='btn btn-primary tm-intro-btn tm-page-link'
-                          onClick={handleConnectWallet}
-                          >
-                    Connect Wallet
-                  </button>
+                  { !account ? (
+                    <button className='btn btn-primary tm-intro-btn tm-page-link'
+                    onClick={handleConnectWallet}
+                    >
+                         Connect Wallet
+                    </button>
+                    
+                  ) :  (
+                  <div>
+                      <h3>Hello,</h3>
+                      <p>{account}</p>
+                      <button className='btn btn-primary tm-intro-btn tm-page-link mb-4'
+                         onClick={handleDisconnectWallet}
+                         >
+                              Disconnect
+                      </button>
+                      <p>Whitelist countdown Shall start soon</p>
+                  </div>
+                  ) 
+                  
+                  }
                   <div className='countdown-container'>
                     <p>Countdown</p>
                     <div className="countdown"></div>
