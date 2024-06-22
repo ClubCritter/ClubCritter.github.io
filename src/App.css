@@ -19,6 +19,8 @@ body {
     font-weight: 400 !important;
     color: #fcfcfc !important;
     line-height: 1.5 !important;
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
 }
 
 a {

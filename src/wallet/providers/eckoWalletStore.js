@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import config from '../wallet/chainconfig';
+import config from '../chainconfig';
 
 const initialState = window?.kadena?.request({
     method: 'kda_checkStatus',
@@ -31,7 +31,7 @@ const useWalletStore = create((set) => ({
     } catch (error) {
       console.error('Error disconnecting from Ecko Wallet:', error);
     }
-  },
+  }
 }));
 
 export default useWalletStore;

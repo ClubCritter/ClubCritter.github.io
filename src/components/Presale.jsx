@@ -1,18 +1,29 @@
 import React, { useState } from 'react'
 import WalletModal from '../wallet/providers/WalletModal';
-import useWalletStore from '../wallet/walletStore';
+import useWalletStore from '../wallet/providers/eckoWalletStore';
+import useSpireKeyStore from '../wallet/providers/spireKey';
 
 const Presale = () => {
-const { connectionState , disconnect, connect } = useWalletStore()
+const { connectionState , disconnect } = useWalletStore()
+const { spireKeyConnected, spireKeyAccount, disconnectSpireKey } = useSpireKeyStore()
 const [showModal, setShowModal] = useState(false);
 
-const account = connectionState?.account?.account;
+const getAccount = () => {
+  let account = null;
+  spireKeyConnected ? 
+      account = spireKeyAccount :
+      connectionState?.account ? 
+      account = connectionState.account.account : account = null
+      return account;
+}
+const account = getAccount();
 const handleConnectWallet = () => {
-  connect();
+  setShowModal(true);
 }
 const handleDisconnectWallet = () => {
   disconnect();
 }
+console.log(spireKeyAccount)
   return (
      <>
        <div className='presale-container'>
@@ -69,8 +80,9 @@ const handleDisconnectWallet = () => {
       </div>            
      </div>
      {showModal ? (
-      <WalletModal />
+      <WalletModal setShowModal={setShowModal}/>
      ) : null }
+     {console.log(account)}
     </>
    
   )
