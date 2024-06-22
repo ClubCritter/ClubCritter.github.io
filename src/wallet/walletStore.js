@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import config from '../wallet/chainconfig';
 
-const initialState = window.kadena.request({
+const initialState = window?.kadena?.request({
     method: 'kda_checkStatus',
     networkId: config.networkId
 });
