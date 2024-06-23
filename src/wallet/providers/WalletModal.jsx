@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import config from '../chainconfig';
-import useWalletStore from './eckoWalletStore';
+import useWalletStore from './walletStore';
 import useSpireKeyStore from './spireKey';
+import { useWalletConnect } from "../providers/walletConnect/walletConnectStore";
 
 const WalletModal = ({ setShowModal }) => {
   const { connectSpireKey } = useSpireKeyStore()
-  const { connect } = useWalletStore()
+  const { connectProvider } = useWalletStore()
   const [isMounted, setIsMounted] = useState(false);
+  const { handleConnect } = useWalletConnect();
 
   useEffect(() => {
     setIsMounted(true);
@@ -31,7 +32,7 @@ const WalletModal = ({ setShowModal }) => {
   };
   const handleEckoWalletClick = async() => {
     try {
-      await connect();
+      await connectProvider();
       setShowModal(false);
     }catch(err){
         console.log(err)
@@ -45,12 +46,21 @@ const WalletModal = ({ setShowModal }) => {
       console.log(err)
     }
   }
+  const handleWalletConnect = async() => {
+    try{
+      handleConnect();
+      setShowModal(false)
+     } catch (err){
+    console.log(err)
+  }
+  };
 
   return (
     <div className='wallet-modal-container tm-bg-dark-n'>
         <div className='wallet-modal'>
             <button onClick={handleEckoWalletClick} className='btn btn-primary provider-button'> Ecko Wallet </button>
-            <button onClick={handleSpireKeyClick} className='btn btn-primary provider-button'> SpireKey </button>
+            <button onClick={handleSpireKeyClick} className='btn btn-primary provider-button' disabled> SpireKey </button>
+            <button onClick={handleWalletConnect} className='btn btn-primary provider-button'> Wallet Connect </button>
         </div>
     </div>
   )

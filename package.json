@@ -10,6 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@kadena/client": "^1.11.0",
+    "@walletconnect/modal": "^2.6.2",
+    "@walletconnect/sign-client": "^2.12.2",
+    "@walletconnect/utils": "^2.12.2",
+    "@web3modal/standalone": "^2.4.3",
     "bootstrap": "^5.3.3",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.3",

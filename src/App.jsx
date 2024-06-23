@@ -5,6 +5,7 @@ import favicon from '/favicon.ico'
 import bgVideo from './assets/video/gfp-astro-timelapse.mp4'
 import Home from './pages/Home'
 import './App.css'
+import { ClientContextProvider } from './wallet/providers/walletConnect/ClientContextProvider';
 
 function App() {
   return(
@@ -14,9 +15,12 @@ function App() {
          src={bgVideo} 
          type="video/mp4" />
       <div className='page-container'>
-      <BrowserRouter>
-             <Home />
-      </BrowserRouter>
+        <ClientContextProvider>
+                <BrowserRouter>
+                               <Home />
+                </BrowserRouter>
+        </ClientContextProvider>
+      
       </div>
       <div id="loader-wrapper">            
          <div id="loader"></div>

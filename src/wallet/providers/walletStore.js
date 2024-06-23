@@ -9,7 +9,7 @@ const initialState = window?.kadena?.request({
 const useWalletStore = create((set) => ({
   connectionState: initialState,
   setConnectionState: (data) => set({ connectionState: data }),
-  connect: async () => {
+  connectProvider: async () => {
     try {
       const accountResult = await window.kadena.request({
         method: "kda_connect",
@@ -21,7 +21,7 @@ const useWalletStore = create((set) => ({
       console.error('Error connecting to Ecko Wallet:', error);
     }
   },
-  disconnect: async () => {
+  disconnectProvider: async () => {
     try {
       await window.kadena.request({
         method: "kda_disconnect",
