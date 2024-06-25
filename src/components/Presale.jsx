@@ -54,7 +54,9 @@ const handleDisconnectWallet = () => {
                   }
                   <div className='countdown-container'>
                     <p>Countdown</p>
-                    <div className="countdown"></div>
+                    <div className="countdown">
+                      yet to start
+                    </div>
                   </div>
                 </div>
                 <div className="col-lg-6 tm-contact-right tm-bg-dark-r py-5">    
@@ -68,14 +70,6 @@ const handleDisconnectWallet = () => {
                   <div className="tm-mb-45">
                     I mean it!!
                   </div>
-                  {/* <!-- Map --> */}
-                  <div className="map-outer">
-                    <div className="gmap-canvas">
-                        <iframe width="100%" height="400" id="gmap-canvas"
-                            src="https://maps.google.com/maps?q=Av.+L%C3%BAcio+Costa,+Rio+de+Janeiro+-+RJ,+Brazil&t=&z=13&ie=UTF8&iwloc=&output=embed"
-                            ></iframe>
-                  </div>
-            </div>
           </div>
         </div>
       </div>            
