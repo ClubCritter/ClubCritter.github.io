@@ -5,10 +5,22 @@ import img3 from '../assets/img/gallery-img-03.png'
 import img4 from '../assets/img/gallery-img-04.png'
 
 const Tokenomics = () => {
-  return (
+    const tokens = 100000000000;
+    const burned = 0;
+    const newToken = tokens - burned;
+
+    const addComma = (num) => {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+    
+    return (
     <div data-page-no="2" className='tokenomics-container'>
             <div className="mx-auto position-relative gallery-container">
-              <div className="mx-auto tm-border-top tm-border-bottom tokenomics-grid-container tm-bg-dark">
+              <div className='grid place-items-center tm-bg-dark tm-border-top tm-border-bottom'>
+                 <h2 className='text-center mb-4'>Total supply: {addComma(newToken)} Tokens</h2>
+                 <h3 className='text-center mb-2'>Initial total Supply: {addComma(tokens)}</h3>
+                 <h3 className='text-center'>Burned so far: {addComma(burned)}</h3>
+                 <div className="mx-auto tokenomics-grid-container">
                 <figure className="effect-julia item">
                     <img src={img1} alt="Image" />
                     <figcaption>
@@ -41,6 +53,7 @@ const Tokenomics = () => {
                         </div>
                     </figcaption>
                 </figure>
+              </div>
               </div>
             </div>
     </div>
