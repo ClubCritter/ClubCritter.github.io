@@ -32,6 +32,14 @@ a {
     text-decoration: none;
     transition: all 0.3s ease;
 }
+.footer a {
+    color: #9F6 !important;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+.footer a:hover {
+    color: #3CF !important;
+}
 
 .content-pad a {
     color: #9F6 !important;
@@ -177,6 +185,10 @@ h2 {
 .tm-border-bottom {
     border-bottom: 1px solid #fcfcfc;
     padding-bottom: 48px;
+}
+.line{
+    border-bottom: 1px solid #fcfcfc;
+    padding-top: 12px;
 }
 
 .tm-border-top {
@@ -850,6 +862,9 @@ figure.effect-julia:hover p {
 
     .tokenomics-grid-container {
         grid-template-columns: repeat(2, 1fr);
+    }
+    .tokenomics-container{
+        height: auto;
     }
 }
 

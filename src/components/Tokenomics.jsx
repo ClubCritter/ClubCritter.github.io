@@ -20,6 +20,7 @@ const Tokenomics = () => {
                  <h2 className='text-center mb-4'>Total supply: {addComma(newToken)} Tokens</h2>
                  <h3 className='text-center mb-2'>Initial total Supply: {addComma(tokens)}</h3>
                  <h3 className='text-center'>Burned so far: {addComma(burned)}</h3>
+                 <div className='line'></div>
                  <div className="mx-auto tokenomics-grid-container">
                 <figure className="effect-julia item">
                     <img src={img1} alt="Image" />
