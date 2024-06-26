@@ -740,6 +740,15 @@ figure.effect-julia:hover p {
 
 }
 
+@media(max-width: 1290px){
+    .tokenomics-container{
+        height: auto;
+    }
+    .page-container{
+        height: auto;
+    }
+}
+
 @media (max-width: 1200px) {
     .navbar .navbar-nav .nav-item .nav-link {
         padding: 15px 45px;
@@ -862,9 +871,6 @@ figure.effect-julia:hover p {
 
     .tokenomics-grid-container {
         grid-template-columns: repeat(2, 1fr);
-    }
-    .tokenomics-container{
-        height: auto;
     }
 }
 
