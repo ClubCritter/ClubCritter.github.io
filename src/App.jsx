@@ -42,7 +42,7 @@ function App() {
     if (allAssetsLoaded) {
       setTimeout(() => {
         document.body.classList.add('loaded');
-      }, 700);
+      }, 100);
     }
   }, [allAssetsLoaded]);
 
