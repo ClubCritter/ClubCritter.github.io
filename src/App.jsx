@@ -25,14 +25,18 @@ function App() {
     });
 
     if (videoRef.current) {
-      videoRef.current.addEventListener('loadeddata', () => {
+      videoRef.current.addEventListener('canplaythrough', () => {
         loadedAssets++;
         if (loadedAssets === totalAssets) {
           setAllAssetsLoaded(true);
         }
       });
+
+      videoRef.current.addEventListener('error', (error) => {
+        console.error('Video load error:', error);
+      });
     }
-  }, []);
+  }, [bgVideo]);
 
   useEffect(() => {
     if (allAssetsLoaded) {
