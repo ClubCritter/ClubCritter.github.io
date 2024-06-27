@@ -26,7 +26,7 @@ const Tokenomics = () => {
                     <img src={img1} alt="Image" />
                     <figcaption>
                         <div>
-                            <p>10% Team</p>
+                            <p>15% Team</p>
                         </div>
                     </figcaption>
                 </figure>
@@ -34,7 +34,7 @@ const Tokenomics = () => {
                     <img src={img2} alt="Image" />
                     <figcaption>
                         <div>
-                            <p>20% Treasury</p>
+                            <p>10% Treasury</p>
                         </div>
                     </figcaption>
                 </figure>
@@ -50,7 +50,7 @@ const Tokenomics = () => {
                     <img src={img4} alt="Image" />
                     <figcaption>
                         <div>
-                            <p>40% Locked Liquidity</p>
+                            <p>45% Locked Liquidity</p>
                         </div>
                     </figcaption>
                 </figure>
