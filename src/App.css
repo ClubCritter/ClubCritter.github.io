@@ -733,6 +733,46 @@ figure.effect-julia:hover p {
     padding-left: 2rem !important;
 }
 
+.ktg-test-wrap{
+    display: grid;
+    position: relative;
+    padding: 2rem;
+}
+.ktg-test-wrap .close-button{
+    position: absolute;
+    border-radius: 20px;
+    background: #fcfcfc;
+    top: -30px;
+    right: 50%;
+    height: 4rem;
+    border: 0;
+}
+.close-button:hover, 
+.close-button:focus{
+    color: #f07c47;
+    background-color: #fcfcfc;
+    border: 1px solid #f07c47;
+}
+.check-balance{
+    display: grid;
+    padding-inline: 3rem;
+    width: 100%;
+    justify-items: center;
+}
+.check-balance-wrap{
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    align-items: center;
+    margin-block: 2rem;
+}
+.check-balance button{
+    background: #fcfcfc;
+    color: #121212;
+}
+.check-balance-input{
+    display: grid;
+}
 @media (min-width: 992px) {
     .navbar-expand-lg .navbar-collapse {
         justify-content: flex-end;
