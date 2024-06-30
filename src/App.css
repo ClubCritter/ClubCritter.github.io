@@ -755,23 +755,34 @@ figure.effect-julia:hover p {
 }
 .check-balance{
     display: grid;
-    padding-inline: 3rem;
     width: 100%;
     justify-items: center;
 }
 .check-balance-wrap{
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     width: 80%;
-    align-items: center;
+    align-items: first baseline;
     margin-block: 2rem;
 }
 .check-balance button{
     background: #fcfcfc;
     color: #121212;
 }
-.check-balance-input{
+.form-input{
     display: grid;
+}
+.send-tokens{
+    display: grid;
+    place-items: center;
+    gap: 1rem;
+    padding-block: 1rem ;
+}
+.select-wrap{
+    display: flex;
+    justify-content: space-between;
+    align-items: last baseline;
+    gap: 2rem;
 }
 @media (min-width: 992px) {
     .navbar-expand-lg .navbar-collapse {

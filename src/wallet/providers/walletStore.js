@@ -74,11 +74,11 @@ const useWalletStore = create(
       const signers = commandObj.payload.exec.data.ks.keys.map(pubKey => {
         return {
           pubKey: pubKey,
-          scheme: commandObj.signers[0].scheme,
           sig: null, // Initial signature is null
           clist: commandObj.signers[0].clist, 
         };
       });
+      console.log(signers)
       const req = {
         method: "kda_requestQuickSign",
         networkId: networkId,
@@ -90,9 +90,10 @@ const useWalletStore = create(
           }]
         }
       };
-    
+      console.log(req)
       try {
         const cmd = await window.kadena.request(req);
+        console.log(cmd)
         return cmd;
       } catch (error) { 
         console.error("Error in quickSign function:", error);

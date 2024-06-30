@@ -19,8 +19,6 @@ const KtgTest = ({handleKtgTest}) => {
     name: 'KDA',
     contract: 'coin'
   })
-  const [ac, setAc] = useState('');
-  const [amt, setAmt] = useState(0);
   const [reqKey, setReqKey] = useState('');
   const [result, setResult] = useState('');
   const [receivers, setReceivers] = useState([]);
@@ -53,7 +51,7 @@ const KtgTest = ({handleKtgTest}) => {
       case 'checkBalance':
         return <CheckBalance wallet={wallet} token={token} setToken={setToken} chainId={chainId} setChainId={setChainId} getBalance={getBalance}/>;
       case 'sendTokens':
-        return <SendTokens />;
+        return <SendTokens wallet={wallet} token={token} setToken={setToken} chainId={chainId} setChainId={setChainId} getBalance={getBalance} sendCoin={sendCoin}/>;
       case 'sendAirdrop':
         return <SendAirdrop />;
       default:
@@ -62,10 +60,10 @@ const KtgTest = ({handleKtgTest}) => {
   };
 
 
-  const getBalance = useCallback(async (token) => {
+  const getBalance = useCallback(async (token, chain) => {
     try {
       const code = `(${token}.get-balance "${wallet.account}")`;
-      const balance = await fetchBalance(code, chainId);
+      const balance = await fetchBalance(code, chain);
       setWallet({
         ...wallet,
         balance: balance,
@@ -75,20 +73,14 @@ const KtgTest = ({handleKtgTest}) => {
     }
   }, [wallet]);
 
-  const sendCoin = useCallback(async (ac, amt) => {
+  const sendCoin = useCallback(async (token, chain, ac, amt) => {
     try {
-      const code = `(coin.transfer "${wallet.account}" "${ac}" ${amt})`;
-      const result = await transferCoin(code, wallet.chain, quickSign, pubKey, wallet.account, ac, Number(amt));
+      const code = `(${token}.transfer "${wallet.account}" "${ac}" ${amt})`;
+      const result = await transferCoin(token, code, chain, quickSign, pubKey, wallet.account, ac, Number(amt));
       console.log(result);
       const key = result.transactionDescriptor.requestKey;
       const status = result.preflightResult.result.status;
-      getBalance();
-      setReqKey(key);
-      setResult(status);
-      toast.success("Transfer Success");
-      console.log("result :", key);
-      setAc('');
-      setAmt(0);
+      return { key, status }
     } catch (err) {
       console.error('Error transferring coin:', err);
     }
@@ -134,7 +126,7 @@ const KtgTest = ({handleKtgTest}) => {
 
     setReceivers(receivers);
     sendAirdrop(receivers, Number(amt));
-  }, [ac, amt, sendAirdrop]);
+  }, [ sendAirdrop]);
 
 
   return (

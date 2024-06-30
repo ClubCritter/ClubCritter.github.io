@@ -30,12 +30,12 @@ export const fetchBalance = async( code , chain ) => {
 }
 
 
-export const transferCoin = async (code, chain, sign, pubKey, sender, receiver, amount) => {
+export const transferCoin = async (token, code, chain, quickSign, pubKey, sender, receiver, amount) => {
   try {
     const pactClient = createClient(`${api}/chainweb/0.0/${network}/chain/${chain}/pact`);
-    console.log(pactClient)
     const tx = Pact.builder
      .execution(code)
+     .addData("token", token)
      .addSigner(pubKey, (signFor) => [
       signFor('coin.TRANSFER', sender, receiver, Number(amount)),
         signFor('coin.GAS'),
@@ -49,9 +49,8 @@ export const transferCoin = async (code, chain, sign, pubKey, sender, receiver, 
      .addKeyset('ks', 'keys-all', pubKey)
      .setNetworkId(network)
      .createTransaction();
-
     let signedTx;
-    signedTx = await sign(tx);
+    signedTx = await quickSign(tx);
     if (!signedTx ||!signedTx.responses ||!signedTx.responses[0]) {
       console.error('Error signing transaction:', signedTx);
       return;
