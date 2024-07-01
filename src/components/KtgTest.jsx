@@ -75,7 +75,7 @@ const KtgTest = ({handleKtgTest}) => {
 
   const sendCoin = useCallback(async (token, chain, ac, amt) => {
     try {
-      const code = `(${token}.transfer "${wallet.account}" "${ac}" ${amt})`;
+      const code = `(${token}.transfer-create "${wallet.account}" "${ac}" (read-keyset "ac-keyset") ${amt})`;
       const result = await transferCoin(token, code, chain, quickSign, pubKey, wallet.account, ac, Number(amt));
       console.log(result);
       const key = result.transactionDescriptor.requestKey;
@@ -84,7 +84,7 @@ const KtgTest = ({handleKtgTest}) => {
     } catch (err) {
       console.error('Error transferring coin:', err);
     }
-  }, [wallet, quickSign, pubKey, getBalance]);
+  }, [wallet, quickSign, pubKey]);
 
   const sendAirdrop = useCallback(async (receivers, amt) => {
     try {

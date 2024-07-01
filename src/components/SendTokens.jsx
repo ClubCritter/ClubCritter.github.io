@@ -30,19 +30,19 @@ const SendTokens = ({wallet , token, setToken, chainId, setChainId, getBalance, 
             <label>Select Chain</label>
             <SelectChain setChainId = {setChainId} />
          </div>
-         <div>{wallet.balance ? wallet.balance : "0" }{token.name}</div>
       </div>
+      <div>{wallet.balance ? wallet.balance : "0" }{token.name}</div>
       
       <div className='form-input'>
          <label>Receiver Address</label>
-         <input type="text" onChange = {(e) => setAc(e.target.value)} />
+         <input type="text" value={ac} onChange = {(e) => setAc(e.target.value)} />
       </div>
       <div className='form-input'>
          <label>Amount</label>
-         <input type="text" onChange = {(e) => setAmt(e.target.value)} />
+         <input type="text" value={amt} onChange = {(e) => setAmt(e.target.value)} />
       </div>
       </div>
-      <button className='btn btn-secondary' onClick={() => sendCoin(token, chainId, ac, amt)}>Send</button>
+      <button className='btn btn-secondary' onClick={handleSendToken}>Send</button>
       {console.log(ac)}
     </div>
   )

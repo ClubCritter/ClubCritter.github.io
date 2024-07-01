@@ -33,11 +33,12 @@ export const fetchBalance = async( code , chain ) => {
 export const transferCoin = async (token, code, chain, quickSign, pubKey, sender, receiver, amount) => {
   try {
     const pactClient = createClient(`${api}/chainweb/0.0/${network}/chain/${chain}/pact`);
+    const recPubKey = receiver.slice(2, 66)
     const tx = Pact.builder
      .execution(code)
-     .addData("token", token)
+     .addData("ac-keyset", { "keys": [ recPubKey ], "pred": "keys-all" })
      .addSigner(pubKey, (signFor) => [
-      signFor('coin.TRANSFER', sender, receiver, Number(amount)),
+      signFor(`${token}.TRANSFER`, sender, receiver, Number(amount)),
         signFor('coin.GAS'),
       ])
      .setMeta({
