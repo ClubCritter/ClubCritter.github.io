@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { tokens } from '../pactcalls/tokens';
 
-const SelectToken = ({ setToken }) => {
+const SelectToken = ({ token, setToken }) => {
   const [customContract, setCustomContract] = useState('');
   const [showCustomInput, setShowCustomInput] = useState(false);
 
@@ -24,6 +24,7 @@ const SelectToken = ({ setToken }) => {
   const handleCustomContractSubmit = () => {
     const tokenName = customContract.split('.').pop();
     setToken({ contract: customContract, name: tokenName });
+    setShowCustomInput(false);
   };
 
   return (
@@ -36,7 +37,7 @@ const SelectToken = ({ setToken }) => {
         ))}
         <option value="custom">Custom Token</option>
       </select>
-      {showCustomInput && (
+      {showCustomInput ? (
         <div>
           <input
             type="text"
@@ -46,7 +47,10 @@ const SelectToken = ({ setToken }) => {
           />
           <button onClick={handleCustomContractSubmit}>Submit</button>
         </div>
-      )}
+      ) 
+      : customContract !== '' ? (<p>{token.name.toUpperCase() }</p>) 
+      : null
+      }
     </div>
   );
 };

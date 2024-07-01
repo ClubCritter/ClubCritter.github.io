@@ -14,7 +14,7 @@ const CheckBalance = ({wallet , token, setToken, chainId, setChainId, getBalance
             <div className='check-balance-wrap'> 
                  <div className='form-input'>
                     <label>Select Token</label>
-                    <SelectToken setToken={setToken} />
+                    <SelectToken setToken={setToken} token={token}/>
                 </div>
                 <div className='form-input'>
                    <label>Chain</label>

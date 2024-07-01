@@ -1,0 +1,61 @@
+.Toastify .Toastify__progress-bar {
+    background: linear-gradient(
+        to right,
+        /* Red to Orange */
+        #FF3737,
+        #FF69B4,
+        #FFA07A,
+        /* Orange to Yellow */
+        #FFC107,
+        #F7DC6F,
+        #FFFF00,
+        /* Yellow to Green */
+        #C6EFCE,
+        #8BC34A,
+        #34C759,
+        /* Green to Blue */
+        #2ECC71,
+        #1ABC9C,
+        #16A085,
+        /* Blue to Purple */
+        #2980B9,
+        #6C5CE7,
+        #8E44AD,
+        /* Purple to Pink */
+        #9B59B6,
+        #E2553F,
+        #FF69B4
+      );
+  }
+
+.Toastify__toast--success {
+    background: rgba(12, 12, 12, 0.8);
+    color: #fcfcfc;
+    border-color :linear-gradient(
+        to right,
+        /* Red to Orange */
+        #FF3737,
+        #FF69B4,
+        #FFA07A,
+        /* Orange to Yellow */
+        #FFC107,
+        #F7DC6F,
+        #FFFF00,
+        /* Yellow to Green */
+        #C6EFCE,
+        #8BC34A,
+        #34C759,
+        /* Green to Blue */
+        #2ECC71,
+        #1ABC9C,
+        #16A085,
+        /* Blue to Purple */
+        #2980B9,
+        #6C5CE7,
+        #8E44AD,
+        /* Purple to Pink */
+        #9B59B6,
+        #E2553F,
+        #FF69B4
+      );;
+  }

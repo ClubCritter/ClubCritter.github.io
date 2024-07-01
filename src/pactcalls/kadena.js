@@ -76,32 +76,39 @@ export const transferCoin = async (token, code, chain, quickSign, pubKey, sender
   }
 };
 
-export const airdropCoins = async (code, chain, quickSign, pubKey, sender, receivers, amount) => {
+export const airdropCoins = async (token, code, chain, quickSign, pubKey, sender, receivers, amount) => {
   try {
     const pactClient = createClient(`${api}/chainweb/0.0/${network}/chain/${chain}/pact`);
     const env = {
       "sender": sender,
       "receivers": receivers,
-      "amount": amount
+      "amount": Number(amount)
     }
-    const tx = Pact.builder
+    console.log(env)
+    let tx = Pact.builder
      .execution(code)
      .addData("sender", env.sender)
      .addData("receivers", env.receivers)
      .addData("amount", env.amount)
      .addSigner(pubKey, (signFor) => [
-        signFor('coin.TRANSFER', env.sender, 'u:ns.success:DldRwCblQ7Loqy6wYJnaodHl30d3j3eH-qtFzfEv46g', env.receivers.length * env.amount),
+        signFor(`${token}.TRANSFER`, env.sender, 'u:ns.success:DldRwCblQ7Loqy6wYJnaodHl30d3j3eH-qtFzfEv46g', env.receivers.length * env.amount),
         signFor('coin.GAS'),
       ])
      .setMeta({
         chainId: String(chain),
-        gasLimit: 2000,
+        gasLimit: 10000,
         gasPrice: 0.0000001,
         sender: env.sender
       })
      .addKeyset('ks', 'keys-all', pubKey)
      .setNetworkId(network)
-     .createTransaction();
+
+     for (let i = 0; i < env.receivers.length; i++) {
+      const receiverPubKey = env.receivers[i].slice(2, 66);
+      tx = tx.addKeyset(env.receivers[i], 'keys-all', receiverPubKey);
+    }
+    tx = tx.createTransaction();
+
     let signedTx;
     signedTx = await quickSign(tx);
     console.log(signedTx)

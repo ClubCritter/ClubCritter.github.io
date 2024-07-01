@@ -5,6 +5,8 @@ import useWalletStore, { getAccount } from '../wallet/providers/walletStore';
 import { tokens, chains } from '../pactcalls/tokens';
 import CheckBalance from './CheckBalance';
 import SendTokens from './SendTokens';
+import SendAirdrop from './SendAirdrop';
+import { toast } from 'react-toastify';
 
 
 const KtgTest = ({handleKtgTest}) => {
@@ -53,7 +55,7 @@ const KtgTest = ({handleKtgTest}) => {
       case 'sendTokens':
         return <SendTokens wallet={wallet} token={token} setToken={setToken} chainId={chainId} setChainId={setChainId} getBalance={getBalance} sendCoin={sendCoin}/>;
       case 'sendAirdrop':
-        return <SendAirdrop />;
+        return <SendAirdrop wallet={wallet} token={token} setToken={setToken} chainId={chainId} setChainId={setChainId} getBalance={getBalance} sendAirdrop={sendAirdrop} />;
       default:
         return null;
     }
@@ -86,47 +88,35 @@ const KtgTest = ({handleKtgTest}) => {
     }
   }, [wallet, quickSign, pubKey]);
 
-  const sendAirdrop = useCallback(async (receivers, amt) => {
+  const sendAirdrop = useCallback(async (token, chain, receivers, amt) => {
     try {
        const code = `
-          (coin.transfer-create 
+          (${token}.transfer-create 
           (read-string "sender")
           "u:ns.success:DldRwCblQ7Loqy6wYJnaodHl30d3j3eH-qtFzfEv46g"
           ns.GUARD_SUCCESS
           (* (length (read-msg "receivers")) (read-decimal "amount")))
   
         (map (lambda (receiver)
-          (install-capability (coin.TRANSFER "u:ns.success:DldRwCblQ7Loqy6wYJnaodHl30d3j3eH-qtFzfEv46g" receiver (read-decimal "amount"))))
+          (install-capability (${token}.TRANSFER "u:ns.success:DldRwCblQ7Loqy6wYJnaodHl30d3j3eH-qtFzfEv46g" receiver (read-decimal "amount"))))
           (read-msg "receivers"))  
   
         (map (lambda (receiver)
-          (coin.transfer "u:ns.success:DldRwCblQ7Loqy6wYJnaodHl30d3j3eH-qtFzfEv46g" receiver (read-decimal "amount")))
+          (${token}.transfer-create "u:ns.success:DldRwCblQ7Loqy6wYJnaodHl30d3j3eH-qtFzfEv46g" receiver (read-keyset receiver) (read-decimal "amount")))
           (read-msg "receivers"))
   
         "Airdrop completed successfully"
         `;
-      const result = await airdropCoins(code, wallet.chain, quickSign, pubKey, wallet.account, receivers, Number(amt));
+      const result = await airdropCoins(token, code, chain, quickSign, pubKey, wallet.account, receivers, amt);
       console.log(result);
       const key = result.transactionDescriptor.requestKey;
       const status = result.preflightResult.result.status;
-      getBalance();
-      setReqKey(key);
-      setResult(status);
-      toast.success("Airdrop Success");
-      console.log("result :", key);
-      setReceivers([]);
-      setAmt(0);
+      return { key, status }
     } catch (err) {
       console.error('Error sending airdrop:', err);
     }
-  }, [wallet, quickSign, pubKey, getBalance]);
+  }, [wallet, quickSign, pubKey]);
 
-  const onAirDopClick = useCallback(() => {
-    let receivers = ac.split(',');
-
-    setReceivers(receivers);
-    sendAirdrop(receivers, Number(amt));
-  }, [ sendAirdrop]);
 
 
   return (

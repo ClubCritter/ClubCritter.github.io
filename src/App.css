@@ -771,6 +771,7 @@ figure.effect-julia:hover p {
 }
 .form-input{
     display: grid;
+    place-items: top;
 }
 .send-tokens{
     display: grid;
@@ -784,6 +785,11 @@ figure.effect-julia:hover p {
     align-items: last baseline;
     gap: 2rem;
 }
+.receiver-textbox {
+    min-height: 5rem;
+    height: auto;
+}
+
 @media (min-width: 992px) {
     .navbar-expand-lg .navbar-collapse {
         justify-content: flex-end;
