@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { tokens } from '../pactcalls/tokens';
+import useTokenStore from '../store/tokenStore';
 
-const SelectToken = ({ token, setToken }) => {
-  const [customContract, setCustomContract] = useState('');
+const SelectToken = () => {
+  const { token, setToken, customContract, setCustomContract } = useTokenStore()
   const [showCustomInput, setShowCustomInput] = useState(false);
 
   const handleSelectChange = (e) => {
@@ -12,6 +13,7 @@ const SelectToken = ({ token, setToken }) => {
       setToken({
         contract: e.target.value,
         name: e.target.options[e.target.selectedIndex].text,
+        isCustom: false
       });
       setShowCustomInput(false);
     }
@@ -23,22 +25,30 @@ const SelectToken = ({ token, setToken }) => {
 
   const handleCustomContractSubmit = () => {
     const tokenName = customContract.split('.').pop();
-    setToken({ contract: customContract, name: tokenName });
+    setToken({ 
+      contract: customContract, 
+      name: tokenName,
+      isCustom: true
+    });
     setShowCustomInput(false);
   };
 
   return (
     <div>
-      <select onChange={handleSelectChange}>
+      <select value={token.isCustom? customContract : token.contract} onChange={handleSelectChange}>
         {tokens.map((token, i) => (
           <option key={i} value={token.contract}>
             {token.name}
           </option>
         ))}
-        <option value="custom">Custom Token</option>
+        {token.isCustom? (
+          <option value={customContract}>{token.name}</option>
+        ) : (
+          <option value="custom">Custom Token</option>
+        )}
       </select>
       {showCustomInput ? (
-        <div>
+        <div className='custom-token-input'>
           <input
             type="text"
             value={customContract}
@@ -48,7 +58,7 @@ const SelectToken = ({ token, setToken }) => {
           <button onClick={handleCustomContractSubmit}>Submit</button>
         </div>
       ) 
-      : customContract !== '' ? (<p>{token.name.toUpperCase() }</p>) 
+      : token.isCustom ? (<p>{token.name.toUpperCase() }</p>) 
       : null
       }
     </div>

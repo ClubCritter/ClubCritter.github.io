@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react'
 import SelectToken from './SelectToken'
 import SelectChain from './SelectChain'
 import { toast } from 'react-toastify'
+import useTokenStore from '../store/tokenStore'
 
-const SendTokens = ({wallet , token, setToken, chainId, setChainId, getBalance, sendCoin}) => {
+const SendTokens = ({wallet , getBalance, sendCoin}) => {
+   const {token, chainId} = useTokenStore()
    const [ac, setAc] = useState('');
    const [amt, setAmt] = useState(0);
    const [reqKey, setReqKey] = useState('')
@@ -37,11 +39,11 @@ const SendTokens = ({wallet , token, setToken, chainId, setChainId, getBalance, 
       <div className='select-wrap'>
          <div className='form-input'>
             <label>Select Token</label>
-             <SelectToken setToken={setToken} token={token}/>
+             <SelectToken/>
          </div>
          <div className='form-input'>
             <label>Select Chain</label>
-            <SelectChain setChainId = {setChainId} />
+            <SelectChain />
          </div>
       </div>
       <div>{wallet.balance ? wallet.balance : "0" }{token.name}</div>

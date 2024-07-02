@@ -132,8 +132,8 @@ const useWalletStore = create(
     }
     }),
     {
-      name: 'wallet-storage', // name of the storage
-      getStorage: () => localStorage, // use localStorage
+      name: 'wallet-storage',
+      getStorage: () => sessionStorage,
     }
   )
 );

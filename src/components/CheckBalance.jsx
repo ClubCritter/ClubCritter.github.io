@@ -2,9 +2,10 @@ import React, { useEffect } from 'react'
 import { chains } from '../pactcalls/tokens';
 import SelectToken from './SelectToken';
 import SelectChain from './SelectChain';
+import useTokenStore from '../store/tokenStore';
 
-const CheckBalance = ({wallet , token, setToken, chainId, setChainId, getBalance}) => {
-
+const CheckBalance = ({wallet , getBalance}) => {
+  const {token, chainId} = useTokenStore()
   useEffect(() => {
     getBalance(token.contract, chainId)
   }, [token, chainId])
@@ -14,11 +15,11 @@ const CheckBalance = ({wallet , token, setToken, chainId, setChainId, getBalance
             <div className='check-balance-wrap'> 
                  <div className='form-input'>
                     <label>Select Token</label>
-                    <SelectToken setToken={setToken} token={token}/>
+                    <SelectToken />
                 </div>
                 <div className='form-input'>
                    <label>Chain</label>
-                   <SelectChain setChainId={setChainId} />
+                   <SelectChain />
                 </div>
             </div>
             <h2>{wallet.balance ? wallet.balance : "0"} {token.name}</h2>

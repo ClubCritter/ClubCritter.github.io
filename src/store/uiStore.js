@@ -12,8 +12,8 @@ const useUiStore = create(persist(
         setShowKtgTest: () => set({ showKtgTest: !get().showKtgTest }),
     }),
       {
-        name: 'ui-storage', // name of the storage
-        getStorage: () => localStorage, // use localStorage
+        name: 'ui-storage',
+        getStorage: () => sessionStorage,
       }
 ))
 

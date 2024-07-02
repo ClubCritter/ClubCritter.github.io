@@ -738,13 +738,17 @@ figure.effect-julia:hover p {
     position: relative;
     padding: 2rem;
 }
+.ktg-test-wrap .btn-primary{
+    background: rgba(255, 255, 255, 0.8) !important;
+}
 .ktg-test-wrap .close-button{
     position: absolute;
     border-radius: 20px;
     background: #fcfcfc;
     top: -30px;
-    right: 50%;
-    height: 4rem;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 3rem;
     border: 0;
 }
 .close-button:hover, 
@@ -782,14 +786,36 @@ figure.effect-julia:hover p {
 .select-wrap{
     display: flex;
     justify-content: space-between;
-    align-items: last baseline;
+    align-items: first baseline;
     gap: 2rem;
 }
 .receiver-textbox {
     min-height: 5rem;
     height: auto;
 }
-
+.ktg-test-wrap select,
+.ktg-test-wrap input,
+.ktg-test-wrap textarea {
+    background: transparent;
+    height: 3rem;
+    width: 100%;
+    border: 1px solid #f07c47;
+    color: #fcfcfc;
+}
+.ktg-test-wrap select:focus{
+    outline: none;
+    background: rgba(12, 12, 12, 0.8);
+}
+.ktg-test-wrap .btn-secondary {
+    background: #f07c47;
+    color: #fcfcfc;
+    border-radius: 5px 0 10px 10px !important;
+    padding-block: 0.5rem !important;
+}
+.custom-token-input {
+   display: grid;
+   gap: 0.3rem;
+} 
 @media (min-width: 992px) {
     .navbar-expand-lg .navbar-collapse {
         justify-content: flex-end;

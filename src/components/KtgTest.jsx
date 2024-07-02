@@ -7,23 +7,17 @@ import CheckBalance from './CheckBalance';
 import SendTokens from './SendTokens';
 import SendAirdrop from './SendAirdrop';
 import { toast } from 'react-toastify';
+import useTokenStore from '../store/tokenStore';
 
 
 const KtgTest = ({handleKtgTest}) => {
   const { quickSign } = useWalletStore()
-  const [chainId, setChainId] = useState('0')
+  const { chainId } = useTokenStore()
   const [wallet, setWallet] = useState({
     account: getAccount(),
     balance: '',
     chain: chainId,
   });
-  const [token, setToken] = useState({
-    name: 'KDA',
-    contract: 'coin'
-  })
-  const [reqKey, setReqKey] = useState('');
-  const [result, setResult] = useState('');
-  const [receivers, setReceivers] = useState([]);
   const [showOption, setShowOption] = useState(null);
   
   
@@ -42,6 +36,10 @@ const KtgTest = ({handleKtgTest}) => {
       optionName: 'Send Airdrop',
       action: 'sendAirdrop',
     },
+    {
+      optionName: 'Multi Transfer',
+      action: 'sendMultiTransfer'
+    }
   ];
 
   const handleOptionClick = (action) => {
@@ -51,11 +49,13 @@ const KtgTest = ({handleKtgTest}) => {
   const renderOption = () => {
     switch (showOption) {
       case 'checkBalance':
-        return <CheckBalance wallet={wallet} token={token} setToken={setToken} chainId={chainId} setChainId={setChainId} getBalance={getBalance}/>;
+        return <CheckBalance wallet={wallet} getBalance={getBalance}/>;
       case 'sendTokens':
-        return <SendTokens wallet={wallet} token={token} setToken={setToken} chainId={chainId} setChainId={setChainId} getBalance={getBalance} sendCoin={sendCoin}/>;
+        return <SendTokens wallet={wallet} getBalance={getBalance} sendCoin={sendCoin}/>;
       case 'sendAirdrop':
-        return <SendAirdrop wallet={wallet} token={token} setToken={setToken} chainId={chainId} setChainId={setChainId} getBalance={getBalance} sendAirdrop={sendAirdrop} />;
+        return <SendAirdrop wallet={wallet} getBalance={getBalance} sendAirdrop={sendAirdrop} />;
+      case 'sendMultiTransfer':
+        return <SendAirdrop wallet={wallet} getBalance={getBalance} sendAirdrop={sendAirdrop} />;
       default:
         return null;
     }
