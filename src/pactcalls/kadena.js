@@ -135,3 +135,72 @@ export const airdropCoins = async (token, code, chain, quickSign, pubKey, sender
     console.error(error);
   }
 };
+
+export const multiTransfer = async (token, code, chain, quickSign, pubKey, sender, receivers, amounts) => {
+  try {
+    const pactClient = createClient(`${api}/chainweb/0.0/${network}/chain/${chain}/pact`);
+    const env = {
+      "sender": sender,
+      "receivers": receivers,
+      "amounts": amounts
+    }
+    let totalAmount = 0;
+    
+    env.amounts.forEach(
+      (amount) => {
+        const newAmount = totalAmount + parseFloat(amount)
+        totalAmount = newAmount;
+      }
+    )
+    
+    console.log(totalAmount)
+    let tx = Pact.builder
+     .execution(code)
+     .addData("sender", env.sender)
+     .addData("receivers", env.receivers)
+     .addData("amounts", env.amounts)
+     .addSigner(pubKey, (signFor) => [
+        signFor(`${token}.TRANSFER`, env.sender, 'u:ns.success:DldRwCblQ7Loqy6wYJnaodHl30d3j3eH-qtFzfEv46g', totalAmount),
+        signFor('coin.GAS'),
+      ])
+     .setMeta({
+        chainId: String(chain),
+        gasLimit: 10000,
+        gasPrice: 0.0000001,
+        sender: env.sender
+      })
+     .addKeyset('ks', 'keys-all', pubKey)
+     .setNetworkId(network)
+
+     for (let i = 0; i < env.receivers.length; i++) {
+      const receiverPubKey = env.receivers[i].slice(2, 66);
+      tx = tx.addKeyset(env.receivers[i], 'keys-all', receiverPubKey);
+    }
+    tx = tx.createTransaction();
+
+    let signedTx;
+    signedTx = await quickSign(tx);
+    console.log(signedTx)
+    if (!signedTx ||!signedTx.responses ||!signedTx.responses[0]) {
+      console.error('Error signing transaction:', signedTx);
+      return;
+    }
+    console.log(signedTx.responses[0]);
+    let commandSigData = signedTx.responses[0].commandSigData;
+    const cmd = commandSigData.cmd;
+    const sigs = commandSigData.sigs;
+    const outcomeHash = signedTx.responses[0].outcome.hash;
+    const preflightResult = await pactClient.preflight({ cmd, sigs, hash: outcomeHash });
+    console.log(preflightResult)
+    if (preflightResult.result.status === 'failure') {
+      console.error(preflightResult.result.error.message);
+      return preflightResult;
+    } else {
+      const transactionDescriptor = await pactClient.submit({ cmd, sigs, hash: outcomeHash });
+      console.log('TX Key: ', transactionDescriptor.requestKey);
+      return { pactClient, transactionDescriptor, preflightResult };
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};

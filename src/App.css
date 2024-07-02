@@ -32,6 +32,9 @@ a {
     text-decoration: none;
     transition: all 0.3s ease;
 }
+ol, ul {
+    padding: 1rem 0 !important;
+}
 .footer a {
     color: #9F6 !important;
     text-decoration: none;
@@ -816,6 +819,45 @@ figure.effect-julia:hover p {
    display: grid;
    gap: 0.3rem;
 } 
+.multi-input-wrap{
+    display: grid;
+    width: 100%;
+    max-width: 850px;
+    gap: 1rem;
+    grid-template-rows: 1;
+    grid-template-columns: repeat(6, 1fr);
+    align-items: last baseline;
+}
+.multi-input-wrap .address {
+    grid-column: span 4;
+    position: relative;
+}
+.multi-input-wrap .address input {
+    padding-right: 2.35rem;
+}
+.paste-btn{
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0;
+    background: transparent;
+    border: 0; 
+}
+.multi-input-wrap .amount {
+    grid-column: span 1;
+}
+.multi-input-wrap .btn-primary{
+    grid-column: span 1;
+    padding-block: 0.65rem !important;
+    border-radius: 5px 30px 30px 5px !important;
+}
+.paste-btn img{
+    height: 1.78rem;
+    width: 1.78rem
+}
+.input-wrap{
+    width: 100%;
+    max-width: 550px !important;
+}
 @media (min-width: 992px) {
     .navbar-expand-lg .navbar-collapse {
         justify-content: flex-end;
@@ -914,6 +956,22 @@ figure.effect-julia:hover p {
     .tm-footer {
         gap: 2rem;
         text-align: center;
+    }
+    .multi-input-wrap {
+        grid-template-rows: 2;
+        gap: 0;
+        grid-template-columns: repeat(6, 1fr);
+    }
+    .multi-input-wrap .address{
+        grid-column: span 5;
+    }
+    .multi-input-wrap .amount{
+        grid-column: span 1;
+    }
+    .multi-input-wrap .btn-primary {
+        grid-column: 3 / span 2 !important;
+        border-radius: 0px 0px 30px 30px !important;
+        padding-block: 0.25rem !important;
     }
 }
 

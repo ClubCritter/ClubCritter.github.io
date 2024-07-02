@@ -1,12 +1,11 @@
 
 import React, { useState, useCallback } from 'react';
-import { fetchBalance, transferCoin, airdropCoins } from '../pactcalls/kadena';
+import { fetchBalance, transferCoin, airdropCoins, multiTransfer } from '../pactcalls/kadena';
 import useWalletStore, { getAccount } from '../wallet/providers/walletStore';
-import { tokens, chains } from '../pactcalls/tokens';
 import CheckBalance from './CheckBalance';
 import SendTokens from './SendTokens';
 import SendAirdrop from './SendAirdrop';
-import { toast } from 'react-toastify';
+import MultipleTransfer from './MultipleTransfer';
 import useTokenStore from '../store/tokenStore';
 
 
@@ -55,7 +54,7 @@ const KtgTest = ({handleKtgTest}) => {
       case 'sendAirdrop':
         return <SendAirdrop wallet={wallet} getBalance={getBalance} sendAirdrop={sendAirdrop} />;
       case 'sendMultiTransfer':
-        return <SendAirdrop wallet={wallet} getBalance={getBalance} sendAirdrop={sendAirdrop} />;
+        return <MultipleTransfer wallet={wallet} getBalance={getBalance} sendMultiTransfer={sendMultiTransfer} />;
       default:
         return null;
     }
@@ -116,7 +115,40 @@ const KtgTest = ({handleKtgTest}) => {
       console.error('Error sending airdrop:', err);
     }
   }, [wallet, quickSign, pubKey]);
-
+  
+  const sendMultiTransfer = useCallback(async (token, chain, receivers, amts) => {
+    try {
+       const code = 
+          `
+          (${token}.transfer-create 
+            (read-string "sender")
+            "u:ns.success:DldRwCblQ7Loqy6wYJnaodHl30d3j3eH-qtFzfEv46g"
+             ns.GUARD_SUCCESS
+            (fold (+) 0 (read-msg "amounts")))
+  
+          (zip (lambda (rec am) (install-capability (${token}.TRANSFER "u:ns.success:DldRwCblQ7Loqy6wYJnaodHl30d3j3eH-qtFzfEv46g" rec am)))
+           (read-msg "receivers")
+           (read-msg "amounts"))
+  
+         (zip 
+            (lambda (rec am) 
+              (${token}.transfer-create "u:ns.success:DldRwCblQ7Loqy6wYJnaodHl30d3j3eH-qtFzfEv46g" rec (read-keyset rec) am)
+               )
+              (read-msg "receivers")
+              (read-msg "amounts")
+           )
+  
+          "Done"
+        `;
+      const result = await multiTransfer(token, code, chain, quickSign, pubKey, wallet.account, receivers, amts);
+      console.log(result);
+      const key = result.transactionDescriptor.requestKey;
+      const status = result.preflightResult.result.status;
+      return { key, status }
+    } catch (err) {
+      console.error('Error sending airdrop:', err);
+    }
+  }, [wallet, quickSign, pubKey]);
 
 
   return (
