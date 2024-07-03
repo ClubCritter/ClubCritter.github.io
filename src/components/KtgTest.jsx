@@ -7,7 +7,7 @@ import SendTokens from './SendTokens';
 import SendAirdrop from './SendAirdrop';
 import MultipleTransfer from './MultipleTransfer';
 import useTokenStore from '../store/tokenStore';
-
+import MintNft from './MintNft';
 
 const KtgTest = ({handleKtgTest}) => {
   const { quickSign } = useWalletStore()
@@ -38,6 +38,10 @@ const KtgTest = ({handleKtgTest}) => {
     {
       optionName: 'Multi Transfer',
       action: 'sendMultiTransfer'
+    },
+    {
+      optionName: 'Mint NFT',
+      action: 'mintNft'
     }
   ];
 
@@ -55,7 +59,9 @@ const KtgTest = ({handleKtgTest}) => {
         return <SendAirdrop wallet={wallet} getBalance={getBalance} sendAirdrop={sendAirdrop} />;
       case 'sendMultiTransfer':
         return <MultipleTransfer wallet={wallet} getBalance={getBalance} sendMultiTransfer={sendMultiTransfer} />;
-      default:
+      case 'mintNft':
+        return <MintNft wallet={wallet} mintNft={mintNft} />
+        default:
         return null;
     }
   };
@@ -141,6 +147,23 @@ const KtgTest = ({handleKtgTest}) => {
           "Done"
         `;
       const result = await multiTransfer(token, code, chain, quickSign, pubKey, wallet.account, receivers, amts);
+      console.log(result);
+      const key = result.transactionDescriptor.requestKey;
+      const status = result.preflightResult.result.status;
+      return { key, status }
+    } catch (err) {
+      console.error('Error sending airdrop:', err);
+    }
+  }, [wallet, quickSign, pubKey]);
+
+  const mintNft = useCallback(async (tokenId, totalSupply, chain, receiver, uri, mintToAc) => {
+    try {
+       const code = 
+          `
+          (use marmalade-v2.ledger) (use marmalade-v2.util-v1) (create-token (read-msg 'tokenId) 0 (read-msg 'uri) (create-policies DEFAULT) (read-keyset 'ks)) (mint ${tokenId} 
+          (read-msg 'mintToAc) (read-keyset 'mintTo) ${totalSupply})(format "You have Successfully minted {}" [(read-msg 'tokenId)])
+        `;
+      const result = await multiTransfer(wallet.account, receiver, uri, mintToAc, tokenId, code, chain, quickSign, pubKey);
       console.log(result);
       const key = result.transactionDescriptor.requestKey;
       const status = result.preflightResult.result.status;

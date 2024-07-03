@@ -858,6 +858,11 @@ figure.effect-julia:hover p {
     width: 100%;
     max-width: 550px !important;
 }
+.mint-nft{
+    display: flex;
+    flex-direction: column;
+    justify-content: center
+}
 @media (min-width: 992px) {
     .navbar-expand-lg .navbar-collapse {
         justify-content: flex-end;

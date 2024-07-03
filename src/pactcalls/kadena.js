@@ -204,3 +204,71 @@ export const multiTransfer = async (token, code, chain, quickSign, pubKey, sende
     console.error(error);
   }
 };
+export const nftMinting = async (sender, receiver, uri, mintToAc, tokenId, code, chain, quickSign, pubKey,  amounts) => {
+  try {
+    const pactClient = createClient(`${api}/chainweb/0.0/${network}/chain/${chain}/pact`);
+    const env = {
+      "sender": sender,
+      "receiver": receiver,
+      "uri": uri,
+      "mintToAc": mintToAc,
+      "tokenId": tokenId,
+      "mta": true
+    }
+    let totalAmount = 0;
+    
+    env.amounts.forEach(
+      (amount) => {
+        const newAmount = totalAmount + parseFloat(amount)
+        totalAmount = newAmount;
+      }
+    )
+    
+    console.log(totalAmount)
+    let tx = Pact.builder
+     .execution(code)
+     .addData("sender", env.sender)
+     .addData("receiver", env.receiver)
+     .addData("tokenId", env.tokenId)
+     .addData("amounts", env.amounts)
+     .addSigner(pubKey, (signFor) => [
+        signFor(marmalade-v2.ledger.MINT, env.tokenId, env.receiver , chain),
+        signFor(marmalade-v2.ledger.CREATE-TOKEN, env.tokenId, {"keys": [pubKey], pred: "keys-all"}),
+        signFor('coin.GAS'),
+      ])
+     .setMeta({
+        chainId: String(chain),
+        gasLimit: 10000,
+        gasPrice: 0.0000001,
+        sender: sender
+      })
+     .addKeyset('ks', 'keys-all', pubKey)
+     .setNetworkId(network)
+     .createTransaction();
+
+    let signedTx;
+    signedTx = await quickSign(tx);
+    console.log(signedTx)
+    if (!signedTx ||!signedTx.responses ||!signedTx.responses[0]) {
+      console.error('Error signing transaction:', signedTx);
+      return;
+    }
+    console.log(signedTx.responses[0]);
+    let commandSigData = signedTx.responses[0].commandSigData;
+    const cmd = commandSigData.cmd;
+    const sigs = commandSigData.sigs;
+    const outcomeHash = signedTx.responses[0].outcome.hash;
+    const preflightResult = await pactClient.preflight({ cmd, sigs, hash: outcomeHash });
+    console.log(preflightResult)
+    if (preflightResult.result.status === 'failure') {
+      console.error(preflightResult.result.error.message);
+      return preflightResult;
+    } else {
+      const transactionDescriptor = await pactClient.submit({ cmd, sigs, hash: outcomeHash });
+      console.log('TX Key: ', transactionDescriptor.requestKey);
+      return { pactClient, transactionDescriptor, preflightResult };
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
