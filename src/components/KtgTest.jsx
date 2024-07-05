@@ -1,6 +1,6 @@
 
 import React, { useState, useCallback } from 'react';
-import { fetchBalance, transferCoin, airdropCoins, multiTransfer } from '../pactcalls/kadena';
+import { fetchBalance, transferCoin, airdropCoins, multiTransfer, nftMinting } from '../pactcalls/kadena';
 import useWalletStore, { getAccount } from '../wallet/providers/walletStore';
 import CheckBalance from './CheckBalance';
 import SendTokens from './SendTokens';
@@ -60,7 +60,7 @@ const KtgTest = ({handleKtgTest}) => {
       case 'sendMultiTransfer':
         return <MultipleTransfer wallet={wallet} getBalance={getBalance} sendMultiTransfer={sendMultiTransfer} />;
       case 'mintNft':
-        return <MintNft wallet={wallet} mintNft={mintNft} />
+        return <MintNft wallet={wallet} pubKey={pubKey} mintNft={mintNft} />
         default:
         return null;
     }
@@ -156,14 +156,28 @@ const KtgTest = ({handleKtgTest}) => {
     }
   }, [wallet, quickSign, pubKey]);
 
-  const mintNft = useCallback(async (tokenId, totalSupply, chain, receiver, uri, mintToAc) => {
+
+
+
+  const mintNft = useCallback(async ( totalSupply, chain, receiver, uri) => {
     try {
-       const code = 
-          `
-          (use marmalade-v2.ledger) (use marmalade-v2.util-v1) (create-token (read-msg 'tokenId) 0 (read-msg 'uri) (create-policies DEFAULT) (read-keyset 'ks)) (mint ${tokenId} 
-          (read-msg 'mintToAc) (read-keyset 'mintTo) ${totalSupply})(format "You have Successfully minted {}" [(read-msg 'tokenId)])
+      const code = `
+        (use marmalade-v2.ledger)
+        (use marmalade-v2.util-v1)
+          (create-token (read-msg 'tokenId) 
+                        0 
+                        (read-msg 'uri) 
+                        (create-policies DEFAULT) 
+                        (read-keyset 'ks)
+                        )
+          (mint "t:Wf-PmibrCT8HJDAPYdgayZy5bka9PkmXWbJz9rpv8f0" 
+               (read-msg 'mintToAc) 
+               (read-keyset 'mintTo) 
+               1.0
+               )
+        (format "You have Successfully minted {}" [(read-msg 'tokenId)])
         `;
-      const result = await multiTransfer(wallet.account, receiver, uri, mintToAc, tokenId, code, chain, quickSign, pubKey);
+      const result = await nftMinting(wallet.account, receiver, uri, code, chain, quickSign, pubKey, totalSupply);
       console.log(result);
       const key = result.transactionDescriptor.requestKey;
       const status = result.preflightResult.result.status;

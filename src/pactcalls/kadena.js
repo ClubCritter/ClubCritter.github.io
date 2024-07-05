@@ -1,6 +1,6 @@
 import { Pact, createClient } from '@kadena/client';
+import { createTokenId } from '@kadena/client-utils/marmalade'
 import config from '../wallet/chainconfig';
-
 
 const network = config.networkId;
 const api = config.apiUrl;
@@ -204,36 +204,46 @@ export const multiTransfer = async (token, code, chain, quickSign, pubKey, sende
     console.error(error);
   }
 };
-export const nftMinting = async (sender, receiver, uri, mintToAc, tokenId, code, chain, quickSign, pubKey,  amounts) => {
+export const nftMinting = async (sender, receiver, uri, code, chain, quickSign, pubKey, precision) => {
   try {
     const pactClient = createClient(`${api}/chainweb/0.0/${network}/chain/${chain}/pact`);
+    
+  // const tokenId = await createTokenId({
+  //     uri: String(uri),
+  //     precision: { int: precision },
+  //     policies: [`marmalade-v2.non-fungible-policy-v1`, `marmalade-v2.guard-policy-v1`],
+  //     creator: {
+  //       keyset: {
+  //         keys: [String(pubKey)],
+  //         pred: 'keys-all'
+  //       }
+  //     },
+  //     chainId: chain,
+  //     networkId: network,
+  //     host: api
+  //   });
+
     const env = {
       "sender": sender,
-      "receiver": receiver,
+      "mintToAc": receiver,
       "uri": uri,
-      "mintToAc": mintToAc,
-      "tokenId": tokenId,
+      "precision": parseFloat(precision),
+      "tokenId": "t:Wf-PmibrCT8HJDAPYdgayZy5bka9PkmXWbJz9rpv8f0",
       "mta": true
     }
-    let totalAmount = 0;
-    
-    env.amounts.forEach(
-      (amount) => {
-        const newAmount = totalAmount + parseFloat(amount)
-        totalAmount = newAmount;
-      }
-    )
-    
-    console.log(totalAmount)
+
     let tx = Pact.builder
      .execution(code)
      .addData("sender", env.sender)
-     .addData("receiver", env.receiver)
+     .addData("mintToAc", env.mintToAc)
+     .addData("precision", env.precision)
+     .addData("uri", env.uri)
+     .addData("pubKey", pubKey)
      .addData("tokenId", env.tokenId)
-     .addData("amounts", env.amounts)
+     .addData("chain", chain)
      .addSigner(pubKey, (signFor) => [
-        signFor(marmalade-v2.ledger.MINT, env.tokenId, env.receiver , chain),
-        signFor(marmalade-v2.ledger.CREATE-TOKEN, env.tokenId, {"keys": [pubKey], pred: "keys-all"}),
+        signFor('marmalade-v2.ledger.MINT', env.tokenId, sender , Number(chain)),
+        signFor('marmalade-v2.ledger.CREATE-TOKEN', env.tokenId, {"keys": [pubKey], pred: "keys-all"}),
         signFor('coin.GAS'),
       ])
      .setMeta({
@@ -243,6 +253,8 @@ export const nftMinting = async (sender, receiver, uri, mintToAc, tokenId, code,
         sender: sender
       })
      .addKeyset('ks', 'keys-all', pubKey)
+     .addKeyset('mintTo', 'keys-all', env.mintToAc.slice(2, 66))
+    //  .addKeyset('tks', 'keys-all', env.mintToAc.slice(2, 66))
      .setNetworkId(network)
      .createTransaction();
 
