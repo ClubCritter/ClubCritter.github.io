@@ -159,7 +159,7 @@ const KtgTest = ({handleKtgTest}) => {
 
 
 
-  const mintNft = useCallback(async ( totalSupply, chain, receiver, uri) => {
+  const mintNft = useCallback(async ( chain, receiver, uri, tokenId) => {
     try {
       const code = `
         (use marmalade-v2.ledger)
@@ -170,14 +170,15 @@ const KtgTest = ({handleKtgTest}) => {
                         (create-policies DEFAULT) 
                         (read-keyset 'ks)
                         )
-          (mint "t:Wf-PmibrCT8HJDAPYdgayZy5bka9PkmXWbJz9rpv8f0" 
+          (mint (read-msg 'tokenId) 
                (read-msg 'mintToAc) 
                (read-keyset 'mintTo) 
                1.0
                )
         (format "You have Successfully minted {}" [(read-msg 'tokenId)])
         `;
-      const result = await nftMinting(wallet.account, receiver, uri, code, chain, quickSign, pubKey, totalSupply);
+        console.log(tokenId)
+      const result = await nftMinting(wallet.account, receiver, uri, code, chain, quickSign, pubKey, tokenId);
       console.log(result);
       const key = result.transactionDescriptor.requestKey;
       const status = result.preflightResult.result.status;

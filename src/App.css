@@ -861,7 +861,33 @@ figure.effect-julia:hover p {
 .mint-nft{
     display: flex;
     flex-direction: column;
-    justify-content: center
+    justify-content: center;
+}
+.mint-nft .container {
+    display: flex;
+    flex-direction: column;
+    max-width: 550px;
+}
+.form-input .address{
+    position: relative;
+}
+.nft-receiver{
+    position: relative;
+}
+.nft-receiver input{
+    padding-right: 2rem;
+}
+.nft-receiver button{
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0;
+    background: transparent;
+    box-shadow: none;
+    border: none;
+}
+.nft-receiver button img {
+    height: 1.78rem;
+    width: 1.78rem;
 }
 @media (min-width: 992px) {
     .navbar-expand-lg .navbar-collapse {

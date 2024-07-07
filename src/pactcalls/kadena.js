@@ -1,11 +1,32 @@
 import { Pact, createClient } from '@kadena/client';
-import { createTokenId } from '@kadena/client-utils/marmalade'
 import config from '../wallet/chainconfig';
 
 const network = config.networkId;
 const api = config.apiUrl;
 
-
+export const pactCalls = async(code, chain, pubKey) => {
+  const pactClient = createClient(`${api}/chainweb/0.0/${network}/chain/${chain}/pact`)
+  
+  const tx = Pact.builder
+               .execution(code)
+               .setMeta({
+                  chainId: String(chain),
+                  gasLimit: 1000,
+                  gasPrice: 0.0000001,
+               })
+               .setNetworkId(network)
+               .addKeyset('ks', 'keys-all', pubKey)
+               .createTransaction()
+   
+      try{
+           const res = await pactClient.dirtyRead(tx)
+           console.log(JSON.stringify(res))
+            return res.result.data;
+        } catch {
+            console.error('Error in pact Call:', error)
+            return null;
+            }
+}
 export const fetchBalance = async( code , chain ) => {
     const pactClient = createClient(`${api}/chainweb/0.0/${network}/chain/${chain}/pact`)
     
@@ -204,34 +225,23 @@ export const multiTransfer = async (token, code, chain, quickSign, pubKey, sende
     console.error(error);
   }
 };
-export const nftMinting = async (sender, receiver, uri, code, chain, quickSign, pubKey, precision) => {
+export const nftMinting = async (sender, receiver, uri, code, chain, quickSign, pubKey, tokenId) => {
   try {
     const pactClient = createClient(`${api}/chainweb/0.0/${network}/chain/${chain}/pact`);
     
-  // const tokenId = await createTokenId({
-  //     uri: String(uri),
-  //     precision: { int: precision },
-  //     policies: [`marmalade-v2.non-fungible-policy-v1`, `marmalade-v2.guard-policy-v1`],
-  //     creator: {
-  //       keyset: {
-  //         keys: [String(pubKey)],
-  //         pred: 'keys-all'
-  //       }
-  //     },
-  //     chainId: chain,
-  //     networkId: network,
-  //     host: api
-  //   });
 
     const env = {
       "sender": sender,
       "mintToAc": receiver,
       "uri": uri,
-      "precision": parseFloat(precision),
-      "tokenId": "t:Wf-PmibrCT8HJDAPYdgayZy5bka9PkmXWbJz9rpv8f0",
+      "precision": 0,
+      "tokenId": tokenId,
       "mta": true
     }
-
+   const k = {"keys": [pubKey],
+               pred: "keys-all"};
+   console.log(env.tokenId)
+   console.log(tokenId)
     let tx = Pact.builder
      .execution(code)
      .addData("sender", env.sender)
@@ -242,8 +252,8 @@ export const nftMinting = async (sender, receiver, uri, code, chain, quickSign, 
      .addData("tokenId", env.tokenId)
      .addData("chain", chain)
      .addSigner(pubKey, (signFor) => [
-        signFor('marmalade-v2.ledger.MINT', env.tokenId, sender , Number(chain)),
-        signFor('marmalade-v2.ledger.CREATE-TOKEN', env.tokenId, {"keys": [pubKey], pred: "keys-all"}),
+        signFor('marmalade-v2.ledger.MINT', env.tokenId, env.mintToAc , 1.0),
+        signFor('marmalade-v2.ledger.CREATE-TOKEN', env.tokenId, k),
         signFor('coin.GAS'),
       ])
      .setMeta({
@@ -254,7 +264,6 @@ export const nftMinting = async (sender, receiver, uri, code, chain, quickSign, 
       })
      .addKeyset('ks', 'keys-all', pubKey)
      .addKeyset('mintTo', 'keys-all', env.mintToAc.slice(2, 66))
-    //  .addKeyset('tks', 'keys-all', env.mintToAc.slice(2, 66))
      .setNetworkId(network)
      .createTransaction();
 
