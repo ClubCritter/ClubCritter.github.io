@@ -44,7 +44,7 @@ const BurnTokens = ({wallet , getBalance, burnTokens }) => {
         console.log(err)
        }
     }
-        
+  const explorerLink = `https://explorer.chainweb.com/testnet/tx/${reqKey}`    
   return (
     <div className='send-tokens multi-transfer'>
       <div className='input-wrap'>
@@ -72,7 +72,10 @@ const BurnTokens = ({wallet , getBalance, burnTokens }) => {
       </div>
       </div>
     <button className='btn btn-secondary' onClick={handleSend}>Burn Tokens</button>
-     {reqKey && <h3>{reqKey}</h3>}
+     {reqKey && <div>
+                 <h5>Request Key : {reqKey}</h5>
+                 <h5>Check on <a href={explorerLink} target='_blank'>Chainweb Explorer</a></h5>
+                 </div>}
     </div>
   )
 }
