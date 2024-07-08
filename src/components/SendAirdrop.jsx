@@ -59,7 +59,7 @@ const SendAirdrop = ({wallet , getBalance, sendAirdrop}) => {
             <SelectChain />
          </div>
       </div>
-      <div>{wallet.balance ? wallet.balance : "0" }{token.name}</div>
+      <div>{wallet.balance.decimal ? Number(wallet.balance.decimal).toFixed(8) : wallet.balance ? wallet.balance : "0"} {token.name}</div>
       
       <div className='form-input'>
          <label>Receiver Addresses(comma seperated)</label>

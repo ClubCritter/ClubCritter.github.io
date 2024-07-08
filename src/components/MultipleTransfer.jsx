@@ -94,7 +94,7 @@ const MultipleTransfer = ({wallet , getBalance, sendMultiTransfer }) => {
             <SelectChain />
          </div>
       </div>
-      <div>{wallet.balance ? wallet.balance : "0" }{token.name}</div>
+      <div>{wallet.balance.decimal ? Number(wallet.balance.decimal).toFixed(8) : wallet.balance ? wallet.balance : "0"} {token.name}</div>
       <div className='multi-input-wrap'>
         <div className='form-input address'>
            <label>Receiver Address</label>

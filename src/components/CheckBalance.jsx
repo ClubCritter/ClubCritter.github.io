@@ -22,7 +22,7 @@ const CheckBalance = ({wallet , getBalance}) => {
                    <SelectChain />
                 </div>
             </div>
-            <h2>{wallet.balance ? wallet.balance : "0"} {token.name}</h2>
+            <h2>{wallet.balance?.decimal ? Number(wallet.balance?.decimal).toFixed(8) : wallet.balance ? wallet.balance : "0"} {token.name}</h2>
             <p>Chain {chainId}</p>
           </div>
   )

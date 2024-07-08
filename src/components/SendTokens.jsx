@@ -46,7 +46,7 @@ const SendTokens = ({wallet , getBalance, sendCoin}) => {
             <SelectChain />
          </div>
       </div>
-      <div>{wallet.balance ? wallet.balance : "0" }{token.name}</div>
+      <div>{wallet.balance.decimal ? Number(wallet.balance.decimal).toFixed(8) : wallet.balance ? wallet.balance : "0"} {token.name}</div>
       <div className='form-input'>
          <label>Receiver Address</label>
          <input type="text" value={ac} onChange = {(e) => setAc(e.target.value)} />

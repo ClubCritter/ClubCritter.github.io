@@ -68,6 +68,7 @@ const KtgTest = ({handleKtgTest}) => {
 
 
   const getBalance = useCallback(async (token, chain) => {
+    console.log(wallet.account)
     try {
       const code = `(${token}.get-balance "${wallet.account}")`;
       const balance = await fetchBalance(code, chain);
