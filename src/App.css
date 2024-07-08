@@ -889,6 +889,9 @@ figure.effect-julia:hover p {
     height: 1.78rem;
     width: 1.78rem;
 }
+.link-a{
+    text-decoration: none;
+}
 @media (min-width: 992px) {
     .navbar-expand-lg .navbar-collapse {
         justify-content: flex-end;

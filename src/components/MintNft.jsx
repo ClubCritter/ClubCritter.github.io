@@ -154,7 +154,7 @@ const MintNft = ({ mintNft}) => {
                  <div className='mt-3'>
                    <h4>req key</h4>
                    <p style={{wordBreak: "break-all"}}>{reqKey}</p>
-                   <h6>Check this tranasaction on <a href={explorerLink} target='_blank' style= 'none'>Chainweb Explorer</a></h6>
+                   <h6>Check this tranasaction on <a href={explorerLink} target='_blank' className='link-a'>Chainweb Explorer</a></h6>
                  </div>
                }
         <button className='btn  btn-secondary mt-4'
