@@ -8,6 +8,7 @@ import SendAirdrop from './SendAirdrop';
 import MultipleTransfer from './MultipleTransfer';
 import useTokenStore from '../store/tokenStore';
 import MintNft from './MintNft';
+import BurnTokens from './BurnTokens';
 
 const KtgTest = ({handleKtgTest}) => {
   const { quickSign } = useWalletStore()
@@ -42,6 +43,10 @@ const KtgTest = ({handleKtgTest}) => {
     {
       optionName: 'Mint NFT',
       action: 'mintNft'
+    },
+    {
+      optionName: 'Burn Tokens',
+      action: 'burnTokens'
     }
   ];
 
@@ -60,7 +65,9 @@ const KtgTest = ({handleKtgTest}) => {
       case 'sendMultiTransfer':
         return <MultipleTransfer wallet={wallet} getBalance={getBalance} sendMultiTransfer={sendMultiTransfer} />;
       case 'mintNft':
-        return <MintNft wallet={wallet} pubKey={pubKey} mintNft={mintNft} />
+        return <MintNft wallet={wallet} pubKey={pubKey} mintNft={mintNft} />;
+      case 'burnTokens':
+        return <BurnTokens wallet={wallet} getBalance={getBalance} burnTokens={sendMultiTransfer} />
         default:
         return null;
     }

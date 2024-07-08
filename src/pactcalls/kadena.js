@@ -129,7 +129,6 @@ export const airdropCoins = async (token, code, chain, quickSign, pubKey, sender
       tx = tx.addKeyset(env.receivers[i], 'keys-all', receiverPubKey);
     }
     tx = tx.createTransaction();
-
     let signedTx;
     signedTx = await quickSign(tx);
     console.log(signedTx)
@@ -159,6 +158,7 @@ export const airdropCoins = async (token, code, chain, quickSign, pubKey, sender
 
 export const multiTransfer = async (token, code, chain, quickSign, pubKey, sender, receivers, amounts) => {
   try {
+    console.log(receivers)
     const pactClient = createClient(`${api}/chainweb/0.0/${network}/chain/${chain}/pact`);
     const env = {
       "sender": sender,
@@ -198,7 +198,6 @@ export const multiTransfer = async (token, code, chain, quickSign, pubKey, sende
       tx = tx.addKeyset(env.receivers[i], 'keys-all', receiverPubKey);
     }
     tx = tx.createTransaction();
-
     let signedTx;
     signedTx = await quickSign(tx);
     console.log(signedTx)

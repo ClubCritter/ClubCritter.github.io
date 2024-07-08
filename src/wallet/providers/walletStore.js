@@ -133,7 +133,7 @@ const useWalletStore = create(
     }),
     {
       name: 'wallet-storage',
-      getStorage: () => sessionStorage,
+      getStorage: () => sessionStorage
     }
   )
 );
@@ -142,7 +142,7 @@ export const getAccount = () => {
   const { connectionState } = useWalletStore.getState();
   let account = null;
   if(connectionState?.account?.account){
-    account = connectionState.account.account;
+    account = connectionState?.account?.account;
   } else if (connectionState?.account){
     account = connectionState.account;
   }

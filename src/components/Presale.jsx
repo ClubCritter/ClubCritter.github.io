@@ -9,7 +9,7 @@ const { disconnectProvider } = useWalletStore()
 const { showKtgTest, setShowKtgTest } = useUiStore()
 const [showModal, setShowModal] = useState(false);
 
-const account = getAccount()
+const account = getAccount();
 const handleConnectWallet = () => {
   setShowModal(true);
 }
@@ -38,7 +38,7 @@ const handleDisconnectWallet = () => {
                      ) :  (
                      <div className='account-name'>
                          <h3>Hello,</h3>
-                         <p>{account}</p>
+                         <p> {account} </p>
                          <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
                             onClick={handleDisconnectWallet}
                             >
