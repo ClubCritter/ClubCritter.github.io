@@ -67,7 +67,7 @@ const KtgTest = ({handleKtgTest}) => {
       case 'mintNft':
         return <MintNft wallet={wallet} pubKey={pubKey} mintNft={mintNft} />;
       case 'burnTokens':
-        return <BurnTokens wallet={wallet} getBalance={getBalance} burnTokens={sendMultiTransfer} />
+        return <BurnTokens wallet={wallet} getBalance={getBalance} burnTokens={burnTokens} quickSign = {quickSign} />
         default:
         return null;
     }
@@ -187,6 +187,40 @@ const KtgTest = ({handleKtgTest}) => {
         `;
         console.log(tokenId)
       const result = await nftMinting(wallet.account, receiver, uri, code, chain, quickSign, pubKey, tokenId);
+      console.log(result);
+      const key = result.transactionDescriptor.requestKey;
+      const status = result.preflightResult.result.status;
+      return { key, status }
+    } catch (err) {
+      console.error('Error sending airdrop:', err);
+    }
+  }, [wallet, quickSign, pubKey]);
+
+  const burnTokens = useCallback(async (token, chain, receivers, amts) => {
+    try {
+       const code = 
+          `
+          (${token}.transfer-create 
+            (read-string "sender")
+            "u:ns.success:DldRwCblQ7Loqy6wYJnaodHl30d3j3eH-qtFzfEv46g"
+             ns.GUARD_SUCCESS
+            (fold (+) 0 (read-msg "amounts")))
+  
+          (zip (lambda (rec am) (install-capability (${token}.TRANSFER "u:ns.success:DldRwCblQ7Loqy6wYJnaodHl30d3j3eH-qtFzfEv46g" rec am)))
+           (read-msg "receivers")
+           (read-msg "amounts"))
+  
+         (zip 
+            (lambda (rec am) 
+              (${token}.transfer "u:ns.success:DldRwCblQ7Loqy6wYJnaodHl30d3j3eH-qtFzfEv46g" rec am)
+               )
+              (read-msg "receivers")
+              (read-msg "amounts")
+           )
+  
+          "Done"
+        `;
+      const result = await multiTransfer(token, code, chain, quickSign, pubKey, wallet.account, receivers, amts);
       console.log(result);
       const key = result.transactionDescriptor.requestKey;
       const status = result.preflightResult.result.status;
