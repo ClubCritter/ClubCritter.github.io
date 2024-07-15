@@ -11,10 +11,10 @@ const Presale = () => {
   const { showKtgTest, setShowKtgTest } = useUiStore();
   const [showModal, setShowModal] = useState(false);
   const [countdown, setCountdown] = useState({
-    phase0start: { days: 0, hours: 0, minutes: 0, seconds: 0 },
-    phase0end: { days: 0, hours: 0, minutes: 0, seconds: 0 }
+    days: 0, hours: 0, minutes: 0, seconds: 0
   });
   const [phase0startTime, setPhase0StartTime] = useState(null);
+  const [phase0endTime, setPhase0EndTime] = useState(null);
 
   const account = getAccount();
   const chain = config.chainId;
@@ -32,10 +32,16 @@ const Presale = () => {
   }
 
   const getPhase0StartTime = async () => {
-    const code = `(use n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales) PHASE-0-START`
-    const res = await pactCalls(code, chain, account.slice(2, 66))
+    const code = `(use n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales) PHASE-0-START`;
+    const res = await pactCalls(code, chain, account.slice(2, 66));
     setPhase0StartTime(new Date(res.result.data.time));
-  }
+  };
+
+  const getPhase0EndTime = async () => {
+    const code = `(use n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales) END-OF-PRESALES`;
+    const res = await pactCalls(code, chain, account.slice(2, 66));
+    setPhase0EndTime(new Date(res.result.data.time));
+  };
 
   const calculateCountdown = (endTime) => {
     const now = new Date().getTime();
@@ -49,20 +55,27 @@ const Presale = () => {
 
   useEffect(() => {
     getPhase0StartTime();
+    getPhase0EndTime();
   }, []);
 
   useEffect(() => {
-    if (phase0startTime) {
+    if (phase0startTime && phase0endTime) {
       const intervalId = setInterval(() => {
-        setCountdown({
-          ...countdown,
-          phase0start: calculateCountdown(phase0startTime.getTime()),
-        });
+        const now = new Date().getTime();
+        if (now < phase0startTime.getTime()) {
+          setCountdown(calculateCountdown(phase0startTime.getTime()));
+        } else if (now >= phase0startTime.getTime() && now < phase0endTime.getTime()) {
+          setCountdown(calculateCountdown(phase0endTime.getTime()));
+        }
       }, 1000);
 
       return () => clearInterval(intervalId);
     }
-  }, [phase0startTime]);
+  }, [phase0startTime, phase0endTime]);
+
+  const now = new Date().getTime();
+  const iswhitelist = now < phase0startTime?.getTime();
+  const isPhase0 = now >= phase0startTime?.getTime() && now < phase0endTime?.getTime();
 
   return (
     <>
@@ -92,10 +105,21 @@ const Presale = () => {
                   </div>
                 )}
                 <div className='countdown-container'>
-                  <p>Whitelist Starts in</p>
+                {iswhitelist ? (
+                    <p>Whitelist Starts in</p>
+                  ) : isPhase0 ? (
+                    <p>Presale Ends in</p>
+                  ) : (
+                    <p>Presale Ended</p>
+                  )}
                   <div className="countdown">
-                    <p>{countdown.phase0start.days}d : {countdown.phase0start.hours}h : {countdown.phase0start.minutes}m : {countdown.phase0start.seconds}s </p>
+                    <p>{countdown.days}d : {countdown.hours}h : {countdown.minutes}m : {countdown.seconds}s </p>
                   </div>
+                  {isPhase0 && (
+                    <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'>
+                      Whitelist Account
+                    </button>
+                  )}
                 </div>
               </div>
               {/* <div className="col-lg-6 tm-contact-right tm-bg-dark-r py-5">
