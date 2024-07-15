@@ -10,11 +10,12 @@ const Presale = () => {
   const { disconnectProvider } = useWalletStore();
   const { showKtgTest, setShowKtgTest } = useUiStore();
   const [showModal, setShowModal] = useState(false);
-  const [countdown, setCountdown] = useState({
-    days: 0, hours: 0, minutes: 0, seconds: 0
-  });
+  const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [phase0startTime, setPhase0StartTime] = useState(null);
-  const [phase0endTime, setPhase0EndTime] = useState(null);
+  const [phase1startTime, setPhase1StartTime] = useState(null);
+  const [salesEndTime, setSalesEndTime] = useState(null);
+  const [isWhitelisted, setIsWhitelisted] =useState(Boolean)
+
 
   const account = getAccount();
   const chain = config.chainId;
@@ -32,16 +33,36 @@ const Presale = () => {
   }
 
   const getPhase0StartTime = async () => {
-    const code = `(use n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales) PHASE-0-START`;
-    const res = await pactCalls(code, chain, account.slice(2, 66));
+    const code = `(use n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales) PHASE-0-START`
+    const res = await pactCalls(code, chain, account.slice(2, 66))
     setPhase0StartTime(new Date(res.result.data.time));
-  };
+  }
+  const getPhase1StartTime = async () => {
+    const code = `(use n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales) PHASE-1-START`
+    const res = await pactCalls(code, chain, account.slice(2, 66))
+    setPhase1StartTime(new Date(res.result.data.time));
+  }
+  const getSaleEndTime = async () => {
+    const code = `(use n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales) END-OF-PRESALES`
+    const res = await pactCalls(code, chain, account.slice(2, 66))
+    setSalesEndTime(new Date(res.result.data.time));
+  }
+  const getisWhitelisted = async() => {
+    const code = `(n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales.has-reservation "${account}")`
+    const res = await pactCalls(code, chain, account.slice(2, 66))
+    if (res.result.status === "success") {
+        setIsWhitelisted(true)
+    } else {
+       setIsWhitelisted(false)
+    }
+  }
 
-  const getPhase0EndTime = async () => {
-    const code = `(use n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales) END-OF-PRESALES`;
-    const res = await pactCalls(code, chain, account.slice(2, 66));
-    setPhase0EndTime(new Date(res.result.data.time));
-  };
+  const addWl = async () => {
+    const code = `(use n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales)
+                 (reserve-batch "${account}")`
+    const res = await pactCalls(code, chain, account.slice(2, 66))
+    console.log(res)
+  }
 
   const calculateCountdown = (endTime) => {
     const now = new Date().getTime();
@@ -55,27 +76,36 @@ const Presale = () => {
 
   useEffect(() => {
     getPhase0StartTime();
-    getPhase0EndTime();
+    getPhase1StartTime();
+    getSaleEndTime();
+    getisWhitelisted()
   }, []);
+  
+  const now = new Date()
+  const isPreWl = now < phase0startTime ;
+  const isPhase0 = now >= phase0startTime && now < phase1startTime;
+  const isPhase1 = now >= phase1startTime && now < salesEndTime;
 
   useEffect(() => {
-    if (phase0startTime && phase0endTime) {
-      const intervalId = setInterval(() => {
-        const now = new Date().getTime();
-        if (now < phase0startTime.getTime()) {
-          setCountdown(calculateCountdown(phase0startTime.getTime()));
-        } else if (now >= phase0startTime.getTime() && now < phase0endTime.getTime()) {
-          setCountdown(calculateCountdown(phase0endTime.getTime()));
-        }
+    let intervalId;
+    const now = new Date().getTime();
+
+    if (phase0startTime && now < phase0startTime.getTime()) {
+      intervalId = setInterval(() => {
+        setCountdown(calculateCountdown(phase0startTime.getTime()));
       }, 1000);
-
-      return () => clearInterval(intervalId);
+    } else if (phase1startTime && now >= phase0startTime.getTime() && now < phase1startTime.getTime()) {
+      intervalId = setInterval(() => {
+        setCountdown(calculateCountdown(phase1startTime.getTime()));
+      }, 1000);
+    } else if (salesEndTime && now >= phase1startTime.getTime() && now < salesEndTime.getTime()) {
+      intervalId = setInterval(() => {
+        setCountdown(calculateCountdown(salesEndTime.getTime()));
+      }, 1000);
     }
-  }, [phase0startTime, phase0endTime]);
 
-  const now = new Date().getTime();
-  const iswhitelist = now < phase0startTime?.getTime();
-  const isPhase0 = now >= phase0startTime?.getTime() && now < phase0endTime?.getTime();
+    return () => clearInterval(intervalId);
+  }, [phase0startTime, phase1startTime, salesEndTime]);
 
   return (
     <>
@@ -104,22 +134,28 @@ const Presale = () => {
                     </button>
                   </div>
                 )}
+                {
+                  isPhase0 ? (
+                     <>
+                       {!isWhitelisted ? <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
+                                                 onClick={addWl}>Apply For WL</button>
+                                      : <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'>Buy Presale Tokens</button>
+                      }
+                    </>
+                  ) : null
+                }
                 <div className='countdown-container'>
-                {iswhitelist ? (
-                    <p>Whitelist Starts in</p>
-                  ) : isPhase0 ? (
-                    <p>Presale Ends in</p>
-                  ) : (
-                    <p>Presale Ended</p>
-                  )}
+                  <p>{
+                  isPreWl ?
+                  "Whitelist Starts in" :
+                  isPhase0 ?
+                   "Public Sale Starts In" :
+                   isPhase1 ?
+                   "Public Sale Ends in"
+                  : "Sale Ended"}</p>
                   <div className="countdown">
                     <p>{countdown.days}d : {countdown.hours}h : {countdown.minutes}m : {countdown.seconds}s </p>
                   </div>
-                  {isPhase0 && (
-                    <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'>
-                      Whitelist Account
-                    </button>
-                  )}
                 </div>
               </div>
               {/* <div className="col-lg-6 tm-contact-right tm-bg-dark-r py-5">
