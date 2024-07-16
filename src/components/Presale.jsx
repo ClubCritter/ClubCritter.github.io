@@ -17,9 +17,8 @@ const Presale = () => {
   const [isWhitelisted, setIsWhitelised] = useState(Boolean);
   const [presaleTokenAmount, setPresaleTokenAmount] = useState(Number)
 
-  const account = getAccount();
   const chain = config.chainId;
-
+  const account = getAccount()
   const handleConnectWallet = () => {
     setShowModal(true);
   }
@@ -33,37 +32,43 @@ const Presale = () => {
   }
 
   const getPhase0StartTime = async () => {
+    const account = await getAccount();
     const code = `(use n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales) PHASE-0-START`
     const res = await pactCalls(code, chain, account.slice(2, 66));
     setPhase0StartTime(new Date(res.result.data.time));
   }
 
   const getPhase1StartTime = async () => {
+    const account = await getAccount();
     const code = `(use n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales) PHASE-1-START`
-    const res = await pactCalls(code, chain, account.slice(2, 66));
+    const res = await pactCalls(code, chain, account?.slice(2, 66));
     setPhase1StartTime(new Date(res.result.data.time));
   }
 
   const getSaleEndTime = async () => {
+    const account = await getAccount();
     const code = `(use n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales) END-OF-PRESALES`
-    const res = await pactCalls(code, chain, account.slice(2, 66));
+    const res = await pactCalls(code, chain, account?.slice(2, 66));
     setSalesEndTime(new Date(res.result.data.time));
   }
   const getWlStatus = async () => {
+    const account = await getAccount();
     const code = `(n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales.has-reservation "${account}")`
-    const res = await pactCalls(code, chain, account.slice(2, 66));
+    const res = await pactCalls(code, chain, account?.slice(2, 66));
     setIsWhitelised(res.result.data)
   }
   const applyWl = async () => {
+    const account = await getAccount();
     const code = `(use n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales)
                   (reserve-batch "${account}")`
-    const res = await pactCallsSig(code, chain, account.slice(2, 66), quickSign)
+    const res = await pactCallsSig(code, chain, account?.slice(2, 66), quickSign)
     console.log(res)
   }
   const getPresaleTokenAmount = async(kdaAmount) => {
+      const account = await getAccount();
       const code = `(use n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales)
       (reserve-batch "${account}")`
-      const res = await pactCallsSig(code, chain, account.slice(2, 66), quickSign)
+      const res = await pactCallsSig(code, chain, account?.slice(2, 66), quickSign)
       console.log(res)
   }
 
@@ -93,7 +98,7 @@ const Presale = () => {
     const now = new Date().getTime();
 
     if (phase0startTime && now < phase0startTime?.getTime()) {
-      intervalId = setInterval(() => {
+      intervalId = setInterval(async() => {
         setCountdown(calculateCountdown(phase0startTime?.getTime()));
       }, 1000);
     } else if (phase1startTime && now >= phase0startTime?.getTime() && now < phase1startTime?.getTime()) {
