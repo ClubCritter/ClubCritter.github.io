@@ -3,17 +3,19 @@ import WalletModal from '../wallet/providers/WalletModal';
 import useWalletStore, { getAccount } from '../wallet/providers/walletStore';
 import KtgTest from './KtgTest';
 import useUiStore from '../store/uiStore';
-import { pactCalls } from '../pactcalls/kadena';
+import { pactCalls, pactCallsSig } from '../pactcalls/kadena';
 import config from '../wallet/chainconfig';
 
 const Presale = () => {
-  const { disconnectProvider } = useWalletStore();
+  const { disconnectProvider, quickSign } = useWalletStore();
   const { showKtgTest, setShowKtgTest } = useUiStore();
   const [showModal, setShowModal] = useState(false);
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [phase0startTime, setPhase0StartTime] = useState(null);
   const [phase1startTime, setPhase1StartTime] = useState(null);
   const [salesEndTime, setSalesEndTime] = useState(null);
+  const [isWhitelisted, setIsWhitelised] = useState(Boolean);
+  const [presaleTokenAmount, setPresaleTokenAmount] = useState(Number)
 
   const account = getAccount();
   const chain = config.chainId;
@@ -47,6 +49,23 @@ const Presale = () => {
     const res = await pactCalls(code, chain, account.slice(2, 66));
     setSalesEndTime(new Date(res.result.data.time));
   }
+  const getWlStatus = async () => {
+    const code = `(n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales.has-reservation "${account}")`
+    const res = await pactCalls(code, chain, account.slice(2, 66));
+    setIsWhitelised(res.result.data)
+  }
+  const applyWl = async () => {
+    const code = `(use n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales)
+                  (reserve-batch "${account}")`
+    const res = await pactCallsSig(code, chain, account.slice(2, 66), quickSign)
+    console.log(res)
+  }
+  const getPresaleTokenAmount = async(kdaAmount) => {
+      const code = `(use n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales)
+      (reserve-batch "${account}")`
+      const res = await pactCallsSig(code, chain, account.slice(2, 66), quickSign)
+      console.log(res)
+  }
 
   const calculateCountdown = (endTime) => {
     const now = new Date().getTime();
@@ -58,25 +77,30 @@ const Presale = () => {
     return { days, hours, minutes, seconds };
   };
 
+  const handleApplyWl = () => {
+    applyWl();
+  }
+
   useEffect(() => {
     getPhase0StartTime();
     getPhase1StartTime();
     getSaleEndTime();
+    getWlStatus();
   }, []);
 
   useEffect(() => {
     let intervalId;
     const now = new Date().getTime();
 
-    if (phase0startTime && now < phase0startTime.getTime()) {
+    if (phase0startTime && now < phase0startTime?.getTime()) {
       intervalId = setInterval(() => {
         setCountdown(calculateCountdown(phase0startTime.getTime()));
       }, 1000);
-    } else if (phase1startTime && now >= phase0startTime.getTime() && now < phase1startTime.getTime()) {
+    } else if (phase1startTime && now >= phase0startTime?.getTime() && now < phase1startTime?.getTime()) {
       intervalId = setInterval(() => {
         setCountdown(calculateCountdown(phase1startTime.getTime()));
       }, 1000);
-    } else if (salesEndTime && now >= phase1startTime.getTime() && now < salesEndTime.getTime()) {
+    } else if (salesEndTime && now >= phase1startTime?.getTime() && now < salesEndTime?.getTime()) {
       intervalId = setInterval(() => {
         setCountdown(calculateCountdown(salesEndTime.getTime()));
       }, 1000);
@@ -120,9 +144,24 @@ const Presale = () => {
                 {
                   isPhase0 ? (
                     <>
-                      <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'>Apply For WL</button>
+                     {isWhitelisted ?
+                      (<>
+                       <h3>Buy Presale Tokens</h3>
+                        <label>KDA Amount</label>
+                        <input type = "text" />
+                        <p>You Get :{presaleTokenAmount}</p>
+                        <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'>
+                          Buy
+                        </button>
+                      </>) : (<button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-6'
+                        onClick={handleApplyWl}>Apply For WL</button>)
+                     }
+                      
                     </>
-                  ) : null
+                  ) : isPhase1 ?
+                    (<>
+                    <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-6'>Buy Tokens</button>
+                    </>) : null
                 }
                 <div className='countdown-container'>
                   <p>{

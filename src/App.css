@@ -796,9 +796,9 @@ figure.effect-julia:hover p {
     min-height: 5rem;
     height: auto;
 }
-.ktg-test-wrap select,
-.ktg-test-wrap input,
-.ktg-test-wrap textarea {
+select,
+input,
+textarea {
     background: transparent;
     height: 3rem;
     width: 100%;
