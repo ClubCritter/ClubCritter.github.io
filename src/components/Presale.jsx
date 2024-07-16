@@ -6,6 +6,10 @@ import useUiStore from '../store/uiStore';
 import { pactCalls, pactCallsSig } from '../pactcalls/kadena';
 import config from '../wallet/chainconfig';
 
+const NS = "n_7117098ca324c7b53025fc2cf2822db21730fdb0";
+const MODULE_NAME = "kabirisbeautiful-sales"
+
+
 const Presale = () => {
   const { disconnectProvider, quickSign } = useWalletStore();
   const { showKtgTest, setShowKtgTest } = useUiStore();
@@ -32,41 +36,44 @@ const Presale = () => {
   }
 
   const getPhase0StartTime = async () => {
-    const account = await getAccount();
-    const code = `(use n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales) PHASE-0-START`
-    const res = await pactCalls(code, chain, account.slice(2, 66));
+    try {const account = await getAccount();
+    const code =`(use ${NS}.${MODULE_NAME}) PHASE-0-START`
+    const res = await pactCalls(code, chain, account?.slice(2, 66));
     setPhase0StartTime(new Date(res.result.data.time));
+    } catch(err) {
+      console.log(err)
+    }
   }
 
   const getPhase1StartTime = async () => {
     const account = await getAccount();
-    const code = `(use n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales) PHASE-1-START`
+    const code = `(use ${NS}.${MODULE_NAME}) PHASE-1-START`
     const res = await pactCalls(code, chain, account?.slice(2, 66));
     setPhase1StartTime(new Date(res.result.data.time));
   }
 
   const getSaleEndTime = async () => {
     const account = await getAccount();
-    const code = `(use n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales) END-OF-PRESALES`
+    const code = `(use ${NS}.${MODULE_NAME}) END-OF-PRESALES`
     const res = await pactCalls(code, chain, account?.slice(2, 66));
     setSalesEndTime(new Date(res.result.data.time));
   }
   const getWlStatus = async () => {
     const account = await getAccount();
-    const code = `(n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales.has-reservation "${account}")`
+    const code = `(${NS}.${MODULE_NAME}.has-reservation "${account}")`
     const res = await pactCalls(code, chain, account?.slice(2, 66));
     setIsWhitelised(res.result.data)
   }
   const applyWl = async () => {
     const account = await getAccount();
-    const code = `(use n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales)
+    const code = `(use ${NS}.${MODULE_NAME})
                   (reserve-batch "${account}")`
     const res = await pactCallsSig(code, chain, account?.slice(2, 66), quickSign)
     console.log(res)
   }
   const getPresaleTokenAmount = async(kdaAmount) => {
       const account = await getAccount();
-      const code = `(use n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales)
+      const code = `(use ${NS}.${MODULE_NAME})
       (reserve-batch "${account}")`
       const res = await pactCallsSig(code, chain, account?.slice(2, 66), quickSign)
       console.log(res)
@@ -92,7 +99,7 @@ const Presale = () => {
     getSaleEndTime();
     getWlStatus();
   }, [account]);
-
+  console.log(phase0startTime, phase1startTime, salesEndTime)
   useEffect(() => {
     let intervalId;
     const now = new Date().getTime();
