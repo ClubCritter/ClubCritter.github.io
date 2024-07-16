@@ -144,27 +144,33 @@ const Presale = () => {
                     >
                       Disconnect
                     </button>
-                  </div>
-                )}
-                {
-                  isPhase0 ? (
-                    <>
-                     {isWhitelisted ?
-                      (<>
-                       <h3>Buy Presale Tokens</h3>
-                        <label>KDA Amount</label>
-                        <input type = "text" />
-                        <p>You Get :{presaleTokenAmount}</p>
-                      </>) : (<button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-6'
-                        onClick={handleApplyWl}>Apply For WL</button>)
-                     }
+                    {
+                     isPhase0 ? (
+                     <>
+                      {isWhitelisted ?
+                       (
+                       <>
+                        <h3>Buy Presale Tokens</h3>
+                         <label>KDA Amount</label>
+                         <input type = "text" />
+                         <p>You Get :{presaleTokenAmount}</p>
+                       </>
+                       ) : 
+                         (
+                         <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
+                           onClick={handleApplyWl}>Apply For WL</button>)
+                        }
                       
                     </>
-                  ) : isPhase1 ?
-                    (<>
-                    <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-6'>Buy Tokens</button>
-                    </>) : null
-                }
+                    ) : isPhase1 ?
+                    (
+                    <>
+                       <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'>Buy Tokens</button>
+                    </>
+                    ) : null
+                  }
+                  </div>
+                )}
                 <div className='countdown-container'>
                   <p>{
                     isPreWl ?
