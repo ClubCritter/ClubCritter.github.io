@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import WalletModal from '../wallet/providers/WalletModal';
 import useWalletStore, { getAccount } from '../wallet/providers/walletStore';
 import KtgTest from './KtgTest';
@@ -14,8 +14,6 @@ const Presale = () => {
   const [phase0startTime, setPhase0StartTime] = useState(null);
   const [phase1startTime, setPhase1StartTime] = useState(null);
   const [salesEndTime, setSalesEndTime] = useState(null);
-  const [isWhitelisted, setIsWhitelisted] =useState(Boolean)
-
 
   const account = getAccount();
   const chain = config.chainId;
@@ -34,34 +32,20 @@ const Presale = () => {
 
   const getPhase0StartTime = async () => {
     const code = `(use n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales) PHASE-0-START`
-    const res = await pactCalls(code, chain, account.slice(2, 66))
+    const res = await pactCalls(code, chain, account.slice(2, 66));
     setPhase0StartTime(new Date(res.result.data.time));
   }
+
   const getPhase1StartTime = async () => {
     const code = `(use n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales) PHASE-1-START`
-    const res = await pactCalls(code, chain, account.slice(2, 66))
+    const res = await pactCalls(code, chain, account.slice(2, 66));
     setPhase1StartTime(new Date(res.result.data.time));
   }
+
   const getSaleEndTime = async () => {
     const code = `(use n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales) END-OF-PRESALES`
-    const res = await pactCalls(code, chain, account.slice(2, 66))
+    const res = await pactCalls(code, chain, account.slice(2, 66));
     setSalesEndTime(new Date(res.result.data.time));
-  }
-  const getisWhitelisted = async() => {
-    const code = `(n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales.has-reservation "${account}")`
-    const res = await pactCalls(code, chain, account.slice(2, 66))
-    if (res.result.status === "success") {
-        setIsWhitelisted(true)
-    } else {
-       setIsWhitelisted(false)
-    }
-  }
-
-  const addWl = async () => {
-    const code = `(use n_f841e63968ab2acf9be57858cd1f64336e2a9310.goat-sales)
-                 (reserve-batch "${account}")`
-    const res = await pactCalls(code, chain, account.slice(2, 66))
-    console.log(res)
   }
 
   const calculateCountdown = (endTime) => {
@@ -78,13 +62,7 @@ const Presale = () => {
     getPhase0StartTime();
     getPhase1StartTime();
     getSaleEndTime();
-    getisWhitelisted()
   }, []);
-  
-  const now = new Date()
-  const isPreWl = now < phase0startTime ;
-  const isPhase0 = now >= phase0startTime && now < phase1startTime;
-  const isPhase1 = now >= phase1startTime && now < salesEndTime;
 
   useEffect(() => {
     let intervalId;
@@ -106,6 +84,11 @@ const Presale = () => {
 
     return () => clearInterval(intervalId);
   }, [phase0startTime, phase1startTime, salesEndTime]);
+
+  const now = new Date();
+  const isPreWl = now < phase0startTime;
+  const isPhase0 = now >= phase0startTime && now < phase1startTime;
+  const isPhase1 = now >= phase1startTime && now < salesEndTime;
 
   return (
     <>
@@ -136,23 +119,20 @@ const Presale = () => {
                 )}
                 {
                   isPhase0 ? (
-                     <>
-                       {!isWhitelisted ? <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
-                                                 onClick={addWl}>Apply For WL</button>
-                                      : <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'>Buy Presale Tokens</button>
-                      }
+                    <>
+                      <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'>Apply For WL</button>
                     </>
                   ) : null
                 }
                 <div className='countdown-container'>
                   <p>{
-                  isPreWl ?
-                  "Whitelist Starts in" :
-                  isPhase0 ?
-                   "Public Sale Starts In" :
-                   isPhase1 ?
-                   "Public Sale Ends in"
-                  : "Sale Ended"}</p>
+                    isPreWl ?
+                      "Whitelist Starts in" :
+                      isPhase0 ?
+                        "Public Sale Starts In" :
+                        isPhase1 ?
+                          "Public Sale Ends in"
+                          : "Sale Ended"}</p>
                   <div className="countdown">
                     <p>{countdown.days}d : {countdown.hours}h : {countdown.minutes}m : {countdown.seconds}s </p>
                   </div>
@@ -178,7 +158,7 @@ const Presale = () => {
         <WalletModal setShowModal={setShowModal} />
       ) : null}
     </>
-  )
+  );
 }
 
 export default Presale;
