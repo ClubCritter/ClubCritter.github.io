@@ -86,7 +86,7 @@ const Presale = () => {
     getPhase1StartTime();
     getSaleEndTime();
     getWlStatus();
-  }, []);
+  }, [account]);
 
   useEffect(() => {
     let intervalId;
@@ -94,7 +94,7 @@ const Presale = () => {
 
     if (phase0startTime && now < phase0startTime?.getTime()) {
       intervalId = setInterval(() => {
-        setCountdown(calculateCountdown(phase0startTime.getTime()));
+        setCountdown(calculateCountdown(phase0startTime?.getTime()));
       }, 1000);
     } else if (phase1startTime && now >= phase0startTime?.getTime() && now < phase1startTime?.getTime()) {
       intervalId = setInterval(() => {
@@ -150,9 +150,6 @@ const Presale = () => {
                         <label>KDA Amount</label>
                         <input type = "text" />
                         <p>You Get :{presaleTokenAmount}</p>
-                        <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'>
-                          Buy
-                        </button>
                       </>) : (<button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-6'
                         onClick={handleApplyWl}>Apply For WL</button>)
                      }
