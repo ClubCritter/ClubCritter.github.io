@@ -311,15 +311,16 @@ h2 {
 }
 
 .wallet-modal-container {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
-    height: 100%;
+    height: 100vh;
     width: 100%;
     display: grid;
     place-items: center;
     z-index: 10000;
-}
+    overflow-y: auto;
+  }
 
 .wallet-modal {
     background-color: #fcfcfc;
