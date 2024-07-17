@@ -5,6 +5,7 @@ import KtgTest from './KtgTest';
 import useUiStore from '../store/uiStore';
 import { pactCalls, pactCallsSig } from '../pactcalls/kadena';
 import config from '../wallet/chainconfig';
+import { toast } from 'react-toastify';
 
 const NS = "n_7117098ca324c7b53025fc2cf2822db21730fdb0";
 const MODULE_NAME = "kabirisbeautiful-sales"
@@ -19,7 +20,7 @@ const Presale = () => {
   const [phase1startTime, setPhase1StartTime] = useState(null);
   const [salesEndTime, setSalesEndTime] = useState(null);
   const [isWhitelisted, setIsWhitelised] = useState(Boolean);
-  const [presaleTokenAmount, setPresaleTokenAmount] = useState(Number)
+  const [tokenPrice, setTokenPrice] = useState(null)
 
   const chain = config.chainId;
   const account = getAccount()
@@ -62,20 +63,20 @@ const Presale = () => {
     const account = await getAccount();
     const code = `(${NS}.${MODULE_NAME}.has-reservation "${account}")`
     const res = await pactCalls(code, chain, account?.slice(2, 66));
+    console.log(res)
     setIsWhitelised(res.result.data)
   }
-  const applyWl = async () => {
-    const account = await getAccount();
-    const code = `(use ${NS}.${MODULE_NAME})
-                  (reserve-batch "${account}")`
-    const res = await pactCallsSig(code, chain, account?.slice(2, 66), quickSign)
-    console.log(res)
-  }
-  const getPresaleTokenAmount = async(kdaAmount) => {
+  // const applyWl = async () => {
+  //   const account = await getAccount();
+  //   const code = `(use ${NS}.${MODULE_NAME})
+  //                 (reserve-batch "${account}")`
+  //   const res = await pactCallsSig(code, chain, account?.slice(2, 66), quickSign)
+  //   console.log(res)
+  // }
+  const getTokenPrice = async() => {
       const account = await getAccount();
-      const code = `(use ${NS}.${MODULE_NAME})
-      (reserve-batch "${account}")`
-      const res = await pactCallsSig(code, chain, account?.slice(2, 66), quickSign)
+      const code = `(${NS}.${MODULE_NAME}.get-price)`
+      const res = await pactCalls(code, chain, account?.slice(2, 66))
       console.log(res)
   }
 
@@ -90,7 +91,7 @@ const Presale = () => {
   };
 
   const handleApplyWl = () => {
-    applyWl();
+    window.open('https://docs.google.com/forms/d/e/1FAIpQLSdhJ5reBS0woan_4xMQAid1xcUF5yrhwNENJIHzOSQvOJnW-w/viewform', '_blank');
   }
 
   useEffect(() => {
@@ -98,8 +99,8 @@ const Presale = () => {
     getPhase1StartTime();
     getSaleEndTime();
     getWlStatus();
+    getTokenPrice()
   }, [account]);
-  console.log(phase0startTime, phase1startTime, salesEndTime)
   useEffect(() => {
     let intervalId;
     const now = new Date().getTime();
@@ -160,7 +161,7 @@ const Presale = () => {
                         <h3>Buy Presale Tokens</h3>
                          <label>KDA Amount</label>
                          <input type = "text" />
-                         <p>You Get :{presaleTokenAmount}</p>
+                         <p>You Get :{tokenAmount}</p>
                        </>
                        ) : 
                          (
