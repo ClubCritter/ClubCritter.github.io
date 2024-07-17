@@ -3,12 +3,13 @@ import WalletModal from '../wallet/providers/WalletModal';
 import useWalletStore, { getAccount } from '../wallet/providers/walletStore';
 import KtgTest from './KtgTest';
 import useUiStore from '../store/uiStore';
-import { pactCalls, pactCallsSig } from '../pactcalls/kadena';
+import { pactCalls, buyTokensSale } from '../pactcalls/kadena';
 import config from '../wallet/chainconfig';
 import { toast } from 'react-toastify';
 
 const NS = "n_7117098ca324c7b53025fc2cf2822db21730fdb0";
-const MODULE_NAME = "kabirisbeautiful-sales"
+const MODULE_NAME = "kabirisbeautiful"
+const SALES_MODULE_NAME = "kabirisbeautiful-sales"
 
 
 const Presale = () => {
@@ -20,7 +21,12 @@ const Presale = () => {
   const [phase1startTime, setPhase1StartTime] = useState(null);
   const [salesEndTime, setSalesEndTime] = useState(null);
   const [isWhitelisted, setIsWhitelised] = useState(Boolean);
-  const [tokenPrice, setTokenPrice] = useState(null)
+  const [amountPerBatch, setAmountPerBatch] = useState(null);
+  const [currentPrice, setCurrentPrice] = useState(null);
+  const [kdaInput, setKdaInput] = useState(0);
+  const [tokenAmount, setTokenAmount] = useState(0);
+  const [tokenSymbol, setTokenSymbol] = useState('');
+  const [salesAccount, setSalesAccount] = useState('');
 
   const chain = config.chainId;
   const account = getAccount()
@@ -38,7 +44,7 @@ const Presale = () => {
 
   const getPhase0StartTime = async () => {
     try {const account = await getAccount();
-    const code =`(use ${NS}.${MODULE_NAME}) PHASE-0-START`
+    const code =`(use ${NS}.${SALES_MODULE_NAME}) PHASE-0-START`
     const res = await pactCalls(code, chain, account?.slice(2, 66));
     setPhase0StartTime(new Date(res.result.data.time));
     } catch(err) {
@@ -48,37 +54,67 @@ const Presale = () => {
 
   const getPhase1StartTime = async () => {
     const account = await getAccount();
-    const code = `(use ${NS}.${MODULE_NAME}) PHASE-1-START`
+    const code = `(use ${NS}.${SALES_MODULE_NAME}) PHASE-1-START`
     const res = await pactCalls(code, chain, account?.slice(2, 66));
     setPhase1StartTime(new Date(res.result.data.time));
   }
 
   const getSaleEndTime = async () => {
     const account = await getAccount();
-    const code = `(use ${NS}.${MODULE_NAME}) END-OF-PRESALES`
+    const code = `(use ${NS}.${SALES_MODULE_NAME}) END-OF-PRESALES`
     const res = await pactCalls(code, chain, account?.slice(2, 66));
     setSalesEndTime(new Date(res.result.data.time));
   }
+
+  const getAmountPerBatch = async () => {
+    const account = await getAccount();
+    const code = `(use ${NS}.${SALES_MODULE_NAME}) AMOUNT-PER-BATCH`
+    const res = await pactCalls(code, chain, account?.slice(2, 66));
+    setAmountPerBatch(res.result.data);
+  }
+
+  const getTokenSymbol = async () => {
+    const account = await getAccount();
+    const code = `(use ${NS}.${MODULE_NAME}) DETAILS`
+    const res = await pactCalls(code, chain, account?.slice(2, 66));
+    // console.log(res.result.data)
+    setTokenSymbol(res.result.data.symbol)
+  }
+  const getSalesAccount = async () => {
+    const account = await getAccount();
+    const code = `(use ${NS}.${SALES_MODULE_NAME}) SALES-ACCOUNT`
+    const res = await pactCalls(code, chain, account?.slice(2, 66));
+    setSalesAccount(res.result.data)
+  }
+  const getCurrentPrice = async () => {
+    const account = await getAccount();
+    const code = `(${NS}.${SALES_MODULE_NAME}.get-price)`
+    const res = await pactCalls(code, chain, account?.slice(2, 66));
+    console.log(res)
+    setCurrentPrice(res.result.data)
+  }
   const getWlStatus = async () => {
     const account = await getAccount();
-    const code = `(${NS}.${MODULE_NAME}.has-reservation "${account}")`
+    const code = `(${NS}.${SALES_MODULE_NAME}.has-reservation "${account}")`
     const res = await pactCalls(code, chain, account?.slice(2, 66));
     console.log(res)
     setIsWhitelised(res.result.data)
   }
+
+  const buy = async () => {
+    const account = await getAccount();
+    const code = `(use n_7117098ca324c7b53025fc2cf2822db21730fdb0.kabirisbeautiful-sales)
+    (buy "k:1c6cbbb34a8ef4f745738a9a7eb324db84b21e1e015c55f2c83cb1a9917198e8" (read-keyset 'ks))`
+    const res = await buyTokensSale(code, chain, account?.slice(2, 66), quickSign, salesAccount, kdaInput)
+    console.log(res)
+  }
   // const applyWl = async () => {
   //   const account = await getAccount();
-  //   const code = `(use ${NS}.${MODULE_NAME})
+  //   const code = `(use ${NS}.${SALES_MODULE_NAME})
   //                 (reserve-batch "${account}")`
   //   const res = await pactCallsSig(code, chain, account?.slice(2, 66), quickSign)
   //   console.log(res)
   // }
-  const getTokenPrice = async() => {
-      const account = await getAccount();
-      const code = `(${NS}.${MODULE_NAME}.get-price)`
-      const res = await pactCalls(code, chain, account?.slice(2, 66))
-      console.log(res)
-  }
 
   const calculateCountdown = (endTime) => {
     const now = new Date().getTime();
@@ -94,13 +130,26 @@ const Presale = () => {
     window.open('https://docs.google.com/forms/d/e/1FAIpQLSdhJ5reBS0woan_4xMQAid1xcUF5yrhwNENJIHzOSQvOJnW-w/viewform', '_blank');
   }
 
+  const handleMaxClick = () => {
+    setKdaInput(amountPerBatch / currentPrice)
+  }
+
+  const handleBuy = () => {
+     buy()
+  }
+
   useEffect(() => {
     getPhase0StartTime();
     getPhase1StartTime();
     getSaleEndTime();
     getWlStatus();
-    getTokenPrice()
+    getAmountPerBatch();
+    getCurrentPrice();
+    getTokenSymbol();
+    getSalesAccount()
   }, [account]);
+
+
   useEffect(() => {
     let intervalId;
     const now = new Date().getTime();
@@ -126,6 +175,11 @@ const Presale = () => {
   const isPreWl = now < phase0startTime;
   const isPhase0 = now >= phase0startTime && now < phase1startTime;
   const isPhase1 = now >= phase1startTime && now < salesEndTime;
+
+  useEffect(()=> {
+    setTokenAmount(kdaInput * currentPrice)
+  }, [kdaInput, currentPrice])
+
 
   return (
     <>
@@ -157,12 +211,36 @@ const Presale = () => {
                      <>
                       {isWhitelisted ?
                        (
-                       <>
+                       <div className='buy-form'>
                         <h3>Buy Presale Tokens</h3>
-                         <label>KDA Amount</label>
-                         <input type = "text" />
-                         <p>You Get :{tokenAmount}</p>
-                       </>
+                         <label>You Give {kdaInput} KDA</label>
+                         <div style={{ position: 'relative' }}>
+                          <input
+                            value={kdaInput}
+                            type="number"
+                            onChange={(e) => setKdaInput(e.target.value)}
+                            style={{ padding: '10px 60px 10px 10px' }}
+                           />
+                           <button
+                            style={{
+                            position: 'absolute',
+                            top: '50%',
+                            right: '10px',
+                            transform: 'translateY(-50%)',
+                            border: 'none',
+                            backgroundColor: 'transparent',
+                            cursor: 'pointer',
+                            color: '#fcfcfc'
+                             }}
+                            onClick={handleMaxClick}
+                              >
+                              Max
+                             </button>
+                         </div>
+                         <p>You Get :{tokenAmount} {tokenSymbol} (max {amountPerBatch} {tokenSymbol})</p>
+                         <button className='btn btn-secondary'
+                           onClick={handleBuy}>Buy</button>
+                       </div>
                        ) : 
                          (
                          <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
@@ -183,8 +261,10 @@ const Presale = () => {
                   <p>{
                     isPreWl ?
                       "Whitelist Starts in" :
-                      isPhase0 ?
+                      isPhase0 & !isWhitelisted ?
                         "Public Sale Starts In" :
+                        isPhase0 & isWhitelisted ?
+                        "Presale Ends In" :
                         isPhase1 ?
                           "Public Sale Ends in"
                           : "Sale Ended"}</p>

@@ -28,13 +28,13 @@ export const pactCallsSig = async(code, chain, pubKey, quickSign) => {
             console.error('Error signing transaction:', signedTx);
             return;
           }
-          console.log(signedTx.responses[0]);
+       
           let commandSigData = signedTx.responses[0].commandSigData;
           const cmd = commandSigData.cmd;
           const sigs = commandSigData.sigs;
           const outcomeHash = signedTx.responses[0].outcome.hash;
           const preflightResult = await pactClient.preflight({cmd, sigs, hash: outcomeHash});
-          console.log(preflightResult)
+   
           if (preflightResult.result.status === 'failure') {
             console.error(preflightResult.result.error.message);
             return preflightResult;
@@ -64,7 +64,7 @@ export const pactCalls = async(code, chain, pubKey) => {
    
       try{
            const res = await pactClient.dirtyRead(tx)
-           console.log(res)
+     
             return res;
         } catch {
             console.error('Error in pact Call:', error)
@@ -96,7 +96,50 @@ export const fetchBalance = async( code , chain ) => {
     }
 }
 
-
+export const buyTokensSale = async(code, chain, pubKey, quickSign, salesAccount, amount) => {
+  try {
+    const pactClient = createClient(`${api}/chainweb/0.0/${network}/chain/${chain}/pact`);
+    const receiver = salesAccount
+    const tx = Pact.builder
+     .execution(code)
+     .addSigner(pubKey, (signFor) => [
+      signFor(`coin.TRANSFER`, `k:${pubKey}`, receiver, Number(amount)),
+        signFor('coin.GAS'),
+      ])
+     .setMeta({
+        chainId: String(chain),
+        gasLimit: 10000,
+        gasPrice: 0.0000001,
+        sender: `k:${pubKey}`
+      })
+     .addKeyset('ks', 'keys-all', pubKey)
+     .setNetworkId(network)
+     .createTransaction();
+    let signedTx;
+    signedTx = await quickSign(tx);
+    if (!signedTx ||!signedTx.responses ||!signedTx.responses[0]) {
+      console.error('Error signing transaction:', signedTx);
+      return;
+    }
+    console.log(signedTx.responses[0]);
+    let commandSigData = signedTx.responses[0].commandSigData;
+    const cmd = commandSigData.cmd;
+    const sigs = commandSigData.sigs;
+    const outcomeHash = signedTx.responses[0].outcome.hash;
+    const preflightResult = await pactClient.preflight({cmd, sigs, hash: outcomeHash});
+    console.log(preflightResult)
+    if (preflightResult.result.status === 'failure') {
+      console.error(preflightResult.result.error.message);
+      return preflightResult;
+    } else {
+      const transactionDescriptor = await pactClient.submit({cmd, sigs, hash: outcomeHash});
+      console.log('TX Key: ', transactionDescriptor.requestKey);
+      return { pactClient, transactionDescriptor, preflightResult };
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
 export const transferCoin = async (token, code, chain, quickSign, pubKey, sender, receiver, amount) => {
   try {
     const pactClient = createClient(`${api}/chainweb/0.0/${network}/chain/${chain}/pact`);
