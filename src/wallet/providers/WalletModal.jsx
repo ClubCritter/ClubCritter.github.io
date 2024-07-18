@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import useWalletStore from './walletStore';
 import useSpireKeyStore from './spireKey';
 import { useWalletConnect } from "../providers/walletConnect/walletConnectStore";
+import ecko from "../assets/ecko.svg"
 
 const WalletModal = ({ setShowModal }) => {
   const { connectSpireKey } = useSpireKeyStore()
@@ -58,9 +59,10 @@ const WalletModal = ({ setShowModal }) => {
   return (
     <div className='wallet-modal-container tm-bg-dark-n'>
         <div className='wallet-modal'>
-            <button onClick={handleEckoWalletClick} className='btn btn-primary provider-button'> Ecko Wallet </button>
+            <p className='btn btn-primary provider-button'>Connect using Ecko Wallet extension</p> 
+            <button onClick={handleEckoWalletClick} className='btn btn-primary provider-button'>Ecko Wallet </button>
             <button onClick={handleSpireKeyClick} className='btn btn-primary provider-button' disabled> SpireKey </button>
-            <button onClick={handleWalletConnect} className='btn btn-primary provider-button'> Wallet Connect </button>
+            <button onClick={handleWalletConnect} className='btn btn-primary provider-button' disabled> Wallet Connect </button>
         </div>
     </div>
   )

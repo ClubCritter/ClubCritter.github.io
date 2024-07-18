@@ -55,7 +55,7 @@ export const pactCalls = async(code, chain, pubKey) => {
                .execution(code)
                .setMeta({
                   chainId: String(chain),
-                  gasLimit: 1000,
+                  gasLimit: 80000,
                   gasPrice: 0.0000001,
                })
                .setNetworkId(network)

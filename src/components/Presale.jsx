@@ -27,6 +27,7 @@ const Presale = () => {
   const [tokenAmount, setTokenAmount] = useState(0);
   const [tokenSymbol, setTokenSymbol] = useState('');
   const [salesAccount, setSalesAccount] = useState('');
+  const [salesData, setSalesData] = useState([])
 
   const chain = config.chainId;
   const account = getAccount()
@@ -90,17 +91,20 @@ const Presale = () => {
     const account = await getAccount();
     const code = `(${NS}.${SALES_MODULE_NAME}.get-price)`
     const res = await pactCalls(code, chain, account?.slice(2, 66));
-    console.log(res)
     setCurrentPrice(res.result.data)
   }
   const getWlStatus = async () => {
     const account = await getAccount();
     const code = `(${NS}.${SALES_MODULE_NAME}.has-reservation "${account}")`
     const res = await pactCalls(code, chain, account?.slice(2, 66));
-    console.log(res)
     setIsWhitelised(res.result.data)
   }
-
+  const getSales = async () => {
+    const account = await getAccount();
+    const code = `(${NS}.${SALES_MODULE_NAME}.get-sales)`
+    const res = await pactCalls(code, chain, account?.slice(2, 66));
+    setSalesData(res.result.data)
+  }
   const buy = async () => {
     const account = await getAccount();
     const code = `(use n_7117098ca324c7b53025fc2cf2822db21730fdb0.kabirisbeautiful-sales)
@@ -125,7 +129,9 @@ const Presale = () => {
     const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
     return { days, hours, minutes, seconds };
   };
-
+  const accountExists = salesData.some(sale => sale.account === account);
+  const accountSalesData = salesData.filter(sale => sale.account === account)
+  
   const handleApplyWl = () => {
     window.open('https://docs.google.com/forms/d/e/1FAIpQLSdhJ5reBS0woan_4xMQAid1xcUF5yrhwNENJIHzOSQvOJnW-w/viewform', '_blank');
   }
@@ -134,8 +140,9 @@ const Presale = () => {
     setKdaInput(amountPerBatch / currentPrice)
   }
 
-  const handleBuy = () => {
-     buy()
+  const handleBuy = async () => {
+     await buy()
+     toast.success("Successfully Bought :", {tokenSymbol})
   }
 
   useEffect(() => {
@@ -146,7 +153,8 @@ const Presale = () => {
     getAmountPerBatch();
     getCurrentPrice();
     getTokenSymbol();
-    getSalesAccount()
+    getSalesAccount();
+    getSales()
   }, [account]);
 
 
@@ -156,7 +164,7 @@ const Presale = () => {
 
     if (phase0startTime && now < phase0startTime?.getTime()) {
       intervalId = setInterval(async() => {
-        setCountdown(calculateCountdown(phase0startTime?.getTime()));
+        setCountdown(calculateCountdown(phase0startTime.getTime()));
       }, 1000);
     } else if (phase1startTime && now >= phase0startTime?.getTime() && now < phase1startTime?.getTime()) {
       intervalId = setInterval(() => {
@@ -209,7 +217,7 @@ const Presale = () => {
                     {
                      isPhase0 ? (
                      <>
-                      {isWhitelisted ?
+                      {isWhitelisted & accountSalesData[0]?.reserved?.int > 0 ?
                        (
                        <div className='buy-form'>
                         <h3>Buy Presale Tokens</h3>
@@ -241,12 +249,16 @@ const Presale = () => {
                          <button className='btn btn-secondary'
                            onClick={handleBuy}>Buy</button>
                        </div>
-                       ) : 
-                         (
-                         <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
-                           onClick={handleApplyWl}>Apply For WL</button>)
-                        }
-                      
+                       ) :
+                         ( accountExists ? <>
+                                            <h3>  Your Presale Buying </h3>
+                                            <h5>You Shall Get total {accountSalesData[0].bought.int} {tokenSymbol} after public sale ends</h5>
+                                            <p>Your Currently reserved tokens {accountSalesData[0].reserved.int} {tokenSymbol}</p>
+                                           </> 
+                                        :
+                                          <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
+                                               onClick={handleApplyWl}>Apply For WL</button>)
+                         }
                     </>
                     ) : isPhase1 ?
                     (
