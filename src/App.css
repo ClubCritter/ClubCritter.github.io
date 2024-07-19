@@ -899,6 +899,13 @@ textarea {
 .buy-form{
     display: grid;
     place-items: center;
+    gap: 1rem;
+}
+
+.buy-modal{
+    display: grid;
+    gap: 1rem;
+    padding: 3rem;
 }
 @media (min-width: 992px) {
     .navbar-expand-lg .navbar-collapse {

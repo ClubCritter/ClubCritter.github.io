@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import WalletModal from '../wallet/providers/WalletModal';
 import useWalletStore, { getAccount } from '../wallet/providers/walletStore';
 import KtgTest from './KtgTest';
+import BuyModal from './BuyModal';
 import useUiStore from '../store/uiStore';
 import { pactCalls, buyTokensSale } from '../pactcalls/kadena';
 import config from '../wallet/chainconfig';
@@ -107,12 +108,24 @@ const Presale = () => {
     setSalesData(res.result.data)
   }
   const buy = async () => {
-    const account = await getAccount();
-    const code = `(use ${NS}.${SALES_MODULE_NAME})
-    (buy "${account}" (read-keyset 'ks))`
-    const res = await buyTokensSale(code, chain, account?.slice(2, 66), quickSign, salesAccount, kdaInput)
-    console.log(res)
-  }
+    try {
+      const account = await getAccount();
+      const code = `(use ${NS}.${SALES_MODULE_NAME})
+      (buy "${account}" (read-keyset 'ks))`;
+      const res = await buyTokensSale(code, chain, account?.slice(2, 66), quickSign, salesAccount, kdaInput);
+      
+      console.log("Buy response:", res);
+  
+      const data = res.preflightResult.result.data;
+      const reqKey = res.preflightResult.reqKey;
+      const result = res.preflightResult.result.status;
+      
+      return { data, reqKey, result };
+    } catch (error) {
+      console.error("Error in buy function:", error);
+      throw error;
+    }
+  };
   // const applyWl = async () => {
   //   const account = await getAccount();
   //   const code = `(use ${NS}.${SALES_MODULE_NAME})
@@ -142,9 +155,41 @@ const Presale = () => {
   }
 
   const handleBuy = async () => {
-     await buy()
-     toast.success("Successfully Bought :", {tokenSymbol})
-  }
+    try {
+      const { data, reqKey, result } = await buy();
+      
+      console.log("HandleBuy result:", result);
+      console.log("HandleBuy data:", data);
+      console.log("HandleBuy reqKey:", reqKey);
+  
+      if (result === "success") {
+        setShowBuyModal(false);
+        toast.success(`Success: ${data}`, {
+          position: 'top-center',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        toast.success(`Request Key: ${reqKey}`, {
+          position: 'bottom-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } else {
+        toast.error(`Error: ${data}`);
+      }
+    } catch (error) {
+      console.error("Error in handleBuy function:", error);
+      toast.error("An error occurred during the purchase");
+    }
+  };
 
   const handleBuyPublicSale = () => {
       setShowBuyModal(true)
@@ -275,7 +320,8 @@ const Presale = () => {
                             tokenAmount = {tokenAmount}
                             kdaInput = {kdaInput}
                             setKdaInput = {setKdaInput}
-                            handleBuy = {handleBuy} /> 
+                            handleBuy = {handleBuy}
+                            setShowBuyModal = {setShowBuyModal} /> 
                         }
                     </>
                     ) : null
