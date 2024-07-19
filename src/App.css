@@ -68,7 +68,9 @@ p {
     line-height: 1.7;
 
 }
-
+input {
+    padding: 10px 30px;
+}
 .account-name p {
     word-break: break-all;
 }

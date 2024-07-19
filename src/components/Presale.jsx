@@ -27,7 +27,8 @@ const Presale = () => {
   const [tokenAmount, setTokenAmount] = useState(0);
   const [tokenSymbol, setTokenSymbol] = useState('');
   const [salesAccount, setSalesAccount] = useState('');
-  const [salesData, setSalesData] = useState([])
+  const [salesData, setSalesData] = useState([]);
+  const [showBuyModal, setShowBuyModal] = useState(false)
 
   const chain = config.chainId;
   const account = getAccount()
@@ -107,8 +108,8 @@ const Presale = () => {
   }
   const buy = async () => {
     const account = await getAccount();
-    const code = `(use n_7117098ca324c7b53025fc2cf2822db21730fdb0.kabirisbeautiful-sales)
-    (buy "k:1c6cbbb34a8ef4f745738a9a7eb324db84b21e1e015c55f2c83cb1a9917198e8" (read-keyset 'ks))`
+    const code = `(use ${NS}.${SALES_MODULE_NAME})
+    (buy "${account}" (read-keyset 'ks))`
     const res = await buyTokensSale(code, chain, account?.slice(2, 66), quickSign, salesAccount, kdaInput)
     console.log(res)
   }
@@ -143,6 +144,10 @@ const Presale = () => {
   const handleBuy = async () => {
      await buy()
      toast.success("Successfully Bought :", {tokenSymbol})
+  }
+
+  const handleBuyPublicSale = () => {
+      setShowBuyModal(true)
   }
 
   useEffect(() => {
@@ -263,7 +268,15 @@ const Presale = () => {
                     ) : isPhase1 ?
                     (
                     <>
-                       <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'>Buy Tokens</button>
+                       <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
+                           onClick={handleBuyPublicSale}>Buy Tokens</button>
+                        {showBuyModal && 
+                          <BuyModal tokenSymbol={tokenSymbol}   
+                            tokenAmount = {tokenAmount}
+                            kdaInput = {kdaInput}
+                            setKdaInput = {setKdaInput}
+                            handleBuy = {handleBuy} /> 
+                        }
                     </>
                     ) : null
                   }
