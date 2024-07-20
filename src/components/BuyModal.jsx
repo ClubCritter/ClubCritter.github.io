@@ -27,14 +27,15 @@ const BuyModal = ({tokenSymbol, tokenAmount, kdaInput, setKdaInput, handleBuy, s
   };
   return (
     <>
-       <div className='wallet-modal-container tm-bg-dark-n'>
-        <div className='buy-modal'>
+       <div className='wallet-modal-container tm-bg-light-n'>
+        <div className='buy-modal tm-bg-darker-a'>
             <h2>Buy {tokenSymbol}</h2>
             <h4>in public sale you can buy as many tokens as you want</h4>
             <div className="buy-form">
+              <label>You Give {kdaInput} KDA</label>
                <input value= {kdaInput} onChange={(e) => setKdaInput(e.target.value)} />
                <button onClick={handleBuy} className='btn btn-secondary'>Buy</button>
-               <p>you shall get total {tokenAmount} {tokenSymbol}</p>
+               <p>you shall get {tokenAmount} {tokenSymbol}</p>
             </div>
         </div>
     </div>

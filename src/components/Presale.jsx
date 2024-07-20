@@ -315,7 +315,8 @@ const Presale = () => {
                     <>
                        <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
                            onClick={handleBuyPublicSale}>Buy Tokens</button>
-                        {showBuyModal && 
+                        <h5>You Shall Get total {accountSalesData[0].bought.int} {tokenSymbol} after public sale ends</h5>
+                       {showBuyModal && 
                           <BuyModal tokenSymbol={tokenSymbol}   
                             tokenAmount = {tokenAmount}
                             kdaInput = {kdaInput}
