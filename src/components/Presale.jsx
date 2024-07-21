@@ -110,8 +110,17 @@ const Presale = () => {
   const buy = async () => {
     try {
       const account = await getAccount();
-      const code = `(use ${NS}.${SALES_MODULE_NAME})
-      (buy "${account}" (read-keyset 'ks))`;
+      const kdaInputValue = kdaInput;
+      const currentPriceValue = currentPrice;
+      const tokenAmount = kdaInputValue / currentPriceValue;
+      const buyCode = `(use ${NS}.${SALES_MODULE_NAME})`;
+
+      let buyLines = '';
+      for (let i = 0; i < tokenAmount; i++) {
+        buyLines += `(buy "${account}" (read-keyset 'ks))\n`;
+      }
+
+      const code = `${buyCode}\n${buyLines}`;
       const res = await buyTokensSale(code, chain, account?.slice(2, 66), quickSign, salesAccount, kdaInput);
       
       console.log("Buy response:", res);
@@ -157,11 +166,7 @@ const Presale = () => {
   const handleBuy = async () => {
     try {
       const { data, reqKey, result } = await buy();
-      
-      console.log("HandleBuy result:", result);
-      console.log("HandleBuy data:", data);
-      console.log("HandleBuy reqKey:", reqKey);
-  
+
       if (result === "success") {
         setShowBuyModal(false);
         toast.success(`Success: ${data}`, {
@@ -206,8 +211,12 @@ const Presale = () => {
     getSalesAccount();
     getSales()
   }, [account]);
+  
+  useEffect(() => {
+    setKdaInput(currentPrice);
+  }, [currentPrice])
 
-
+  
   useEffect(() => {
     let intervalId;
     const now = new Date().getTime();
@@ -235,7 +244,7 @@ const Presale = () => {
   const isPhase1 = now >= phase1startTime && now < salesEndTime;
 
   useEffect(()=> {
-    setTokenAmount(kdaInput * currentPrice)
+    setTokenAmount(kdaInput / currentPrice)
   }, [kdaInput, currentPrice])
 
 
@@ -276,6 +285,8 @@ const Presale = () => {
                           <input
                             value={kdaInput}
                             type="number"
+                            min={currentPrice}
+                            step={currentPrice}
                             onChange={(e) => setKdaInput(e.target.value)}
                             style={{ padding: '10px 60px 10px 10px' }}
                            />
@@ -315,14 +326,15 @@ const Presale = () => {
                     <>
                        <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
                            onClick={handleBuyPublicSale}>Buy Tokens</button>
-                        <h5>You Shall Get total {accountSalesData[0].bought.int} {tokenSymbol} after public sale ends</h5>
+                        <h5>You Shall Get total {accountSalesData[0]?.bought.int} {tokenSymbol} after public sale ends</h5>
                        {showBuyModal && 
                           <BuyModal tokenSymbol={tokenSymbol}   
                             tokenAmount = {tokenAmount}
                             kdaInput = {kdaInput}
                             setKdaInput = {setKdaInput}
                             handleBuy = {handleBuy}
-                            setShowBuyModal = {setShowBuyModal} /> 
+                            setShowBuyModal = {setShowBuyModal} 
+                            currentPrice={currentPrice}/> 
                         }
                     </>
                     ) : null
