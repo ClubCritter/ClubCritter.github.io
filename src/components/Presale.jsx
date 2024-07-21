@@ -9,8 +9,8 @@ import config from '../wallet/chainconfig';
 import { toast } from 'react-toastify';
 
 const NS = "n_7117098ca324c7b53025fc2cf2822db21730fdb0";
-const MODULE_NAME = "kabirisbeautiful"
-const SALES_MODULE_NAME = "kabirisbeautiful-sales"
+const MODULE_NAME = "Sample"
+const SALES_MODULE_NAME = "Sample-sales"
 
 
 const Presale = () => {
@@ -211,12 +211,11 @@ const Presale = () => {
     getSalesAccount();
     getSales()
   }, [account]);
-  
+
   useEffect(() => {
     setKdaInput(currentPrice);
   }, [currentPrice])
 
-  
   useEffect(() => {
     let intervalId;
     const now = new Date().getTime();
