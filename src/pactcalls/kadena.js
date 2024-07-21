@@ -108,7 +108,7 @@ export const buyTokensSale = async(code, chain, pubKey, quickSign, salesAccount,
       ])
      .setMeta({
         chainId: String(chain),
-        gasLimit: 10000,
+        gasLimit: 80000,
         gasPrice: 0.0000001,
         sender: `k:${pubKey}`
       })
