@@ -9,8 +9,8 @@ import config from '../wallet/chainconfig';
 import { toast } from 'react-toastify';
 
 const NS = "n_7117098ca324c7b53025fc2cf2822db21730fdb0";
-const MODULE_NAME = "sample2"
-const SALES_MODULE_NAME = "sample2-sales"
+const MODULE_NAME = "Sample"
+const SALES_MODULE_NAME = "Sample-sales"
 
 
 const Presale = () => {
@@ -29,6 +29,7 @@ const Presale = () => {
   const [tokenSymbol, setTokenSymbol] = useState('');
   const [salesAccount, setSalesAccount] = useState('');
   const [salesData, setSalesData] = useState([]);
+  const [totalBuy, setTotalbuy] = useState(Number)
   const [showBuyModal, setShowBuyModal] = useState(false)
 
   const chain = config.chainId;
@@ -111,7 +112,19 @@ const Presale = () => {
 
   const getSalesAmount = async () => {
     const account = await getAccount();
-    const code = `(${NS}.${SALES_MODULE_NAME}.get-sales)`
+    const code = `(use n_7117098ca324c7b53025fc2cf2822db21730fdb0.kabirisbeautiful-sales)
+
+                   (let* 
+                      (
+                    (format-sale (lambda (sale)
+                     { "account": (at 'account sale)
+                     , "balance": (* AMOUNT-PER-BATCH (at 'bought sale))
+                          }))
+                    (sales (get-sales))
+                    (formatted-sales (map format-sale sales)))
+                    (format "[Sales data: {}]" [formatted-sales]))`
+  const res = await pactCalls(code, chain, account?.slice(2, 66));
+  console.log(res.result.data)
   } 
   const buy = async () => {
     try {
@@ -215,7 +228,8 @@ const Presale = () => {
     getCurrentPrice();
     getTokenSymbol();
     getSalesAccount();
-    getSales()
+    getSales();
+    getSalesAmount()
   }, [account]);
 
   useEffect(() => {
