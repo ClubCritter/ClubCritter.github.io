@@ -337,14 +337,11 @@ const Presale = () => {
                            onClick={handleBuy}>Buy</button>
                        </div>
                        ) :
-                         ( accountExists ? <>
+                         ( accountExists && <>
                                             <h3>  Your Presale Buying </h3>
                                             <h5>You total bought {accountSalesData[0].bought.int} batches of {tokenSymbol} after public sale ends</h5>
                                             <p>Your Currently have reserved {accountSalesData[0].reserved.int} batches of {tokenSymbol}</p>
-                                           </> 
-                                        :
-                                          <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
-                                               onClick={handleApplyWl}>Apply For WL</button>)
+                                           </> )
                          }
                     </>
                     ) : isPhase1 ?
