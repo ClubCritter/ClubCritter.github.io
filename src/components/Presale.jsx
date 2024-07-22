@@ -292,8 +292,12 @@ const Presale = () => {
                     >
                       Disconnect
                     </button>
+                    {!isWhitelisted? 
                     <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
-                                               onClick={handleApplyWl}>Apply For WL</button>
+                    onClick={handleApplyWl}>Apply For WL</button>
+                    : <p>You are Whitelisted</p>
+                  }
+                    
                     {
                      isPhase0 ? (
                      <>
