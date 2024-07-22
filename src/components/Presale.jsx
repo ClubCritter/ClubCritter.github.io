@@ -9,8 +9,8 @@ import config from '../wallet/chainconfig';
 import { toast } from 'react-toastify';
 
 const NS = "n_7117098ca324c7b53025fc2cf2822db21730fdb0";
-const MODULE_NAME = "Sample"
-const SALES_MODULE_NAME = "Sample-sales"
+const MODULE_NAME = "sample2"
+const SALES_MODULE_NAME = "sample2-sales"
 
 
 const Presale = () => {
@@ -112,7 +112,7 @@ const Presale = () => {
 
   const getSalesAmount = async () => {
     const account = await getAccount();
-    const code = `(use n_7117098ca324c7b53025fc2cf2822db21730fdb0.kabirisbeautiful-sales)
+    const code = `(use ${NS}.${SALES_MODULE_NAME})
 
                    (let* 
                       (
