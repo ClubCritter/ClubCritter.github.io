@@ -100,6 +100,7 @@ const Presale = () => {
     const code = `(${NS}.${SALES_MODULE_NAME}.has-reservation "${account}")`
     const res = await pactCalls(code, chain, account?.slice(2, 66));
     setIsWhitelised(res.result.data)
+    console.log(isWhitelisted)
   }
   const getSales = async () => {
     const account = await getAccount();
@@ -275,7 +276,7 @@ const Presale = () => {
                     {
                      isPhase0 ? (
                      <>
-                      {isWhitelisted & accountSalesData[0]?.reserved?.int > 0 ?
+                      {isWhitelisted ?
                        (
                        <div className='buy-form'>
                         <h3>Buy Presale Tokens</h3>
@@ -312,8 +313,8 @@ const Presale = () => {
                        ) :
                          ( accountExists ? <>
                                             <h3>  Your Presale Buying </h3>
-                                            <h5>You Shall Get total {accountSalesData[0].bought.int} {tokenSymbol} after public sale ends</h5>
-                                            <p>Your Currently reserved tokens {accountSalesData[0].reserved.int} {tokenSymbol}</p>
+                                            <h5>You total bought {accountSalesData[0].bought.int} batches of {tokenSymbol} after public sale ends</h5>
+                                            <p>Your Currently have reserved {accountSalesData[0].reserved.int} batches of {tokenSymbol}</p>
                                            </> 
                                         :
                                           <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
