@@ -9,8 +9,8 @@ import config from '../wallet/chainconfig';
 import { toast } from 'react-toastify';
 
 const NS = "n_7117098ca324c7b53025fc2cf2822db21730fdb0";
-const MODULE_NAME = "Sample"
-const SALES_MODULE_NAME = "Sample-sales"
+const MODULE_NAME = "sample2"
+const SALES_MODULE_NAME = "sample2-sales"
 
 
 const Presale = () => {
@@ -108,6 +108,11 @@ const Presale = () => {
     const res = await pactCalls(code, chain, account?.slice(2, 66));
     setSalesData(res.result.data)
   }
+
+  const getSalesAmount = async () => {
+    const account = await getAccount();
+    const code = `(${NS}.${SALES_MODULE_NAME}.get-sales)`
+  } 
   const buy = async () => {
     try {
       const account = await getAccount();
@@ -157,7 +162,7 @@ const Presale = () => {
   const accountSalesData = salesData.filter(sale => sale.account === account)
   
   const handleApplyWl = () => {
-    window.open('https://docs.google.com/forms/d/e/1FAIpQLSdhJ5reBS0woan_4xMQAid1xcUF5yrhwNENJIHzOSQvOJnW-w/viewform', '_blank');
+    window.open('https://docs.google.com/forms/d/e/1FAIpQLSeSmCRVZiWhMgoxdT_qp5C61WGz23AcSmzagZpaf3c2qyb3fg/viewform', '_blank');
   }
 
   const handleMaxClick = () => {
