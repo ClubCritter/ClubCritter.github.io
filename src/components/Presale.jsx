@@ -101,7 +101,8 @@ const Presale = () => {
     const code = `(${NS}.${SALES_MODULE_NAME}.has-reservation "${account}")`
     const res = await pactCalls(code, chain, account?.slice(2, 66));
     setIsWhitelised(res.result.data)
-    console.log(isWhitelisted)
+    console.log(res.result)
+    console.log(account)
   }
   const getSales = async () => {
     const account = await getAccount();
@@ -292,10 +293,10 @@ const Presale = () => {
                     >
                       Disconnect
                     </button>
-                    {!isWhitelisted? 
+                    { !isWhitelisted ?
                     <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
                     onClick={handleApplyWl}>Apply For WL</button>
-                    : <p>You are Whitelisted</p>
+                    : <p>You are whitelisted</p>
                   }
                     
                     {
