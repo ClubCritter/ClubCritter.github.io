@@ -349,7 +349,7 @@ const Presale = () => {
                               Max
                              </button>
                          </div>
-                         <p>You Get :{batchCount} batch of {tokenSymbol} (total {amountPerBatch} {tokenSymbol.toUpperCase()} tokens)</p>
+                         <p>You Get :{batchCount} batch of {tokenSymbol} ({amountPerBatch} {tokenSymbol.toUpperCase()} per Batch)</p>
                          <button className='btn btn-secondary'
                            onClick={handleBuy}>Buy</button>
                        </div>
@@ -367,7 +367,7 @@ const Presale = () => {
                     <>
                        <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
                            onClick={handleBuyPublicSale}>Buy Tokens</button>
-                        <h5>You Shall Get total {accountSalesData[0]?.bought.int} {tokenSymbol} after public sale ends</h5>
+                        <h5>You shall get total {accountTokenBought} {tokenSymbol.toUpperCase()} tokens after public sale ends</h5>
                        {showBuyModal && 
                           <BuyModal tokenSymbol={tokenSymbol}   
                             batchCount = {batchCount}
