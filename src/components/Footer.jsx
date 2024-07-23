@@ -8,7 +8,7 @@ function Footer() {
     <div className="container-fluid footer">
       <footer className="row mx-auto tm-footer">
         <div className="col-md-6 tm-bg-dark">
-           Copyright 2024 Club Critter - <a href="https://x.com/KadenaCritter"> Cosmic Critter </a> Project _ A <a href='https://www.kadenai.com/' target='_blank'>KadenAi</a> & <a href='https://www.heronheroes.com/welcome' target='_blank'>Heron Heroes</a> Initiantive - website developed by <a href='https://x.com/kabir_crypto' target='_blank'>ⓀKabir</a>
+           Copyright 2024 Club Critter - <a href="https://x.com/KadenaCritter"> Cosmic Critter </a> Project _ A <a href='https://www.kadenai.com/' target='_blank'>KadenAi</a> & <a href='https://www.heronheroes.com/welcome' target='_blank'>Heron Heroes</a> Initiative - website developed by <a href='https://x.com/kabir_crypto' target='_blank'>ⓀKabir</a>
         </div>
         <div className="col-md-6 px-0 tm-footer-right">
           <a href='https://discord.gg/U5EMjSvb4s' target='_blank'>
