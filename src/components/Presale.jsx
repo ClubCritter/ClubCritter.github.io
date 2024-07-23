@@ -25,10 +25,11 @@ const Presale = () => {
   const [amountPerBatch, setAmountPerBatch] = useState(null);
   const [currentPrice, setCurrentPrice] = useState(null);
   const [kdaInput, setKdaInput] = useState(0);
-  const [tokenAmount, setTokenAmount] = useState(0);
+  const [batchCount, setBatchCount] = useState(0);
   const [tokenSymbol, setTokenSymbol] = useState('');
   const [salesAccount, setSalesAccount] = useState('');
   const [salesData, setSalesData] = useState([]);
+  const [saleTokenData, setSaleTokenData] = useState(Array);
   const [totalBuy, setTotalbuy] = useState(Number)
   const [showBuyModal, setShowBuyModal] = useState(false)
 
@@ -101,8 +102,6 @@ const Presale = () => {
     const code = `(${NS}.${SALES_MODULE_NAME}.has-reservation "${account}")`
     const res = await pactCalls(code, chain, account?.slice(2, 66));
     setIsWhitelised(res.result.data)
-    console.log(res.result)
-    console.log(account)
   }
   const getSales = async () => {
     const account = await getAccount();
@@ -112,31 +111,35 @@ const Presale = () => {
   }
 
   const getSalesAmount = async () => {
-    const account = await getAccount();
-    const code = `(use ${NS}.${SALES_MODULE_NAME})
-
-                   (let* 
+    try {
+      const code = `(use ${NS}.${SALES_MODULE_NAME})
+                    (let* 
                       (
-                    (format-sale (lambda (sale)
-                     { "account": (at 'account sale)
-                     , "balance": (* AMOUNT-PER-BATCH (at 'bought sale))
+                        (format-sale (lambda (sale)
+                          { "account": (at 'account sale)
+                          , "balance": (* AMOUNT-PER-BATCH (at 'bought sale))
                           }))
-                    (sales (get-sales))
-                    (formatted-sales (map format-sale sales)))
-                    (format "[Sales data: {}]" [formatted-sales]))`
-  const res = await pactCalls(code, chain, account?.slice(2, 66));
-  console.log(res.result.data)
-  } 
+                        (sales (get-sales))
+                        (formatted-sales (map format-sale sales)))
+                    formatted-sales)`;
+      const res = await pactCalls(code, chain, account?.slice(2, 66));
+      setSaleTokenData(res.result.data);
+    } catch (err) {
+      console.log(err);
+      setSaleTokenData([]);
+    }
+  };
+
   const buy = async () => {
     try {
       const account = await getAccount();
       const kdaInputValue = kdaInput;
       const currentPriceValue = currentPrice;
-      const tokenAmount = kdaInputValue / currentPriceValue;
+      const batchCount = kdaInputValue / currentPriceValue;
       const buyCode = `(use ${NS}.${SALES_MODULE_NAME})`;
 
       let buyLines = '';
-      for (let i = 0; i < tokenAmount; i++) {
+      for (let i = 0; i < batchCount; i++) {
         buyLines += `(buy "${account}" (read-keyset 'ks))\n`;
       }
 
@@ -175,12 +178,24 @@ const Presale = () => {
   const accountExists = salesData.some(sale => sale.account === account);
   const accountSalesData = salesData.filter(sale => sale.account === account)
   
+  const findBalance = (accounts, accountName) => {
+  if (!Array.isArray(accounts)) {
+    console.error('Expected accounts to be an array:', accounts);
+    return null;
+  }
+  const account = accounts.find(acc => acc.account === accountName);
+  return account ? account.balance : null;
+};
+ 
+  const accountTokenBought = findBalance(saleTokenData, account);
+
+
   const handleApplyWl = () => {
     window.open('https://docs.google.com/forms/d/e/1FAIpQLSeSmCRVZiWhMgoxdT_qp5C61WGz23AcSmzagZpaf3c2qyb3fg/viewform', '_blank');
   }
 
   const handleMaxClick = () => {
-    setKdaInput(amountPerBatch / currentPrice)
+    setKdaInput(batchCount / currentPrice)
   }
 
   const handleBuy = async () => {
@@ -220,6 +235,7 @@ const Presale = () => {
       setShowBuyModal(true)
   }
 
+  
   useEffect(() => {
     getPhase0StartTime();
     getPhase1StartTime();
@@ -264,7 +280,7 @@ const Presale = () => {
   const isPhase1 = now >= phase1startTime && now < salesEndTime;
 
   useEffect(()=> {
-    setTokenAmount(kdaInput / currentPrice)
+    setBatchCount(kdaInput / currentPrice)
   }, [kdaInput, currentPrice])
 
 
@@ -293,10 +309,10 @@ const Presale = () => {
                     >
                       Disconnect
                     </button>
-                    { !isWhitelisted ?
+                    { !isWhitelisted & accountSalesData[0]?.bought.int < 1 ?
                     <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
                     onClick={handleApplyWl}>Apply For WL</button>
-                    : <p>You are whitelisted</p>
+                    : null
                   }
                     
                     {
@@ -313,6 +329,7 @@ const Presale = () => {
                             type="number"
                             min={currentPrice}
                             step={currentPrice}
+                            max={currentPrice}
                             onChange={(e) => setKdaInput(e.target.value)}
                             style={{ padding: '10px 60px 10px 10px' }}
                            />
@@ -332,15 +349,16 @@ const Presale = () => {
                               Max
                              </button>
                          </div>
-                         <p>You Get :{tokenAmount} {tokenSymbol} (max {amountPerBatch} {tokenSymbol})</p>
+                         <p>You Get :{batchCount} batch of {tokenSymbol} (total {amountPerBatch} {tokenSymbol.toUpperCase()} tokens)</p>
                          <button className='btn btn-secondary'
                            onClick={handleBuy}>Buy</button>
                        </div>
                        ) :
                          ( accountExists && <>
                                             <h3>  Your Presale Buying </h3>
-                                            <h5>You total bought {accountSalesData[0].bought.int} batches of {tokenSymbol} after public sale ends</h5>
-                                            <p>Your Currently have reserved {accountSalesData[0].reserved.int} batches of {tokenSymbol}</p>
+                                            <h5>You total bought {accountSalesData[0].bought.int} batches of {tokenSymbol.toUpperCase()}</h5>
+                                            <h5>You shall get total {accountTokenBought} {tokenSymbol.toUpperCase()} tokens after public sale ends</h5>
+                                            <p>Your Currently have reserved {accountSalesData[0].reserved.int} batches of {tokenSymbol.toUpperCase()}</p>
                                            </> )
                          }
                     </>
@@ -352,7 +370,7 @@ const Presale = () => {
                         <h5>You Shall Get total {accountSalesData[0]?.bought.int} {tokenSymbol} after public sale ends</h5>
                        {showBuyModal && 
                           <BuyModal tokenSymbol={tokenSymbol}   
-                            tokenAmount = {tokenAmount}
+                            batchCount = {batchCount}
                             kdaInput = {kdaInput}
                             setKdaInput = {setKdaInput}
                             handleBuy = {handleBuy}
