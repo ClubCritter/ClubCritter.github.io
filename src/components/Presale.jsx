@@ -30,15 +30,15 @@ const Presale = () => {
   const [salesAccount, setSalesAccount] = useState('');
   const [salesData, setSalesData] = useState([]);
   const [saleTokenData, setSaleTokenData] = useState(Array);
-  const [totalBuy, setTotalbuy] = useState(Number)
-  const [showBuyModal, setShowBuyModal] = useState(false)
+  const [showBuyModal, setShowBuyModal] = useState(false);
+  const [reqKey, setReqKey] = useState('')
 
   const chain = config.chainId;
   const account = getAccount()
   const handleConnectWallet = () => {
     setShowModal(true);
   }
-
+  const explorerLink = `https://explorer.chainweb.com/testnet/tx/${reqKey}` 
   const handleKtgTest = () => {
     setShowKtgTest(!showKtgTest);
   }
@@ -194,10 +194,6 @@ const Presale = () => {
     window.open('https://docs.google.com/forms/d/e/1FAIpQLSeSmCRVZiWhMgoxdT_qp5C61WGz23AcSmzagZpaf3c2qyb3fg/viewform', '_blank');
   }
 
-  const handleMaxClick = () => {
-    setKdaInput(batchCount / currentPrice)
-  }
-
   const handleBuy = async () => {
     try {
       const { data, reqKey, result } = await buy();
@@ -222,6 +218,7 @@ const Presale = () => {
           draggable: true,
           progress: undefined,
         });
+        setReqKey(reqKey)
       } else {
         toast.error(`Error: ${data}`);
       }
@@ -328,31 +325,20 @@ const Presale = () => {
                             value={kdaInput}
                             type="number"
                             min={currentPrice}
-                            step={currentPrice}
                             max={currentPrice}
                             onChange={(e) => setKdaInput(e.target.value)}
                             style={{ padding: '10px 60px 10px 10px' }}
+                            disabled
+                            hidden
                            />
-                           <button
-                            style={{
-                            position: 'absolute',
-                            top: '50%',
-                            right: '10px',
-                            transform: 'translateY(-50%)',
-                            border: 'none',
-                            backgroundColor: 'transparent',
-                            cursor: 'pointer',
-                            color: '#fcfcfc'
-                             }}
-                            onClick={handleMaxClick}
-                              >
-                              Max
-                             </button>
                          </div>
                          <p>You Get :{batchCount} batch of {tokenSymbol} ({amountPerBatch} {tokenSymbol.toUpperCase()} per Batch)</p>
                          <button className='btn btn-secondary'
                            onClick={handleBuy}>Buy</button>
-                       </div>
+                           {reqKey !== '' &&
+                             <h6>view this transaction on <a href={explorerLink}>Chainweb Explorer</a></h6>
+                           }
+                      </div>
                        ) :
                          ( accountExists && <>
                                             <h3>  Your Presale Buying </h3>
