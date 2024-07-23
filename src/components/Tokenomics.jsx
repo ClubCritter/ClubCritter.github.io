@@ -42,7 +42,7 @@ const Tokenomics = () => {
                     <img src={img3} alt="Image" />
                     <figcaption>
                         <div>
-                            <p>30% Presale and burn</p>
+                            <p>30% Presale</p>
                         </div>
                     </figcaption>
                 </figure>
