@@ -4,6 +4,7 @@ import useWalletStore, { getAccount } from '../wallet/providers/walletStore';
 import KtgTest from './KtgTest';
 import BuyModal from './BuyModal';
 import useUiStore from '../store/uiStore';
+import cpyi from '../assets/img/cpy.svg'
 import { pactCalls, buyTokensSale } from '../pactcalls/kadena';
 import config from '../wallet/chainconfig';
 import { toast } from 'react-toastify';
@@ -12,7 +13,6 @@ import { toast } from 'react-toastify';
 const NS = "n_7117098ca324c7b53025fc2cf2822db21730fdb0"
 const MODULE_NAME = "Sample3"
 const SALES_MODULE_NAME = "Sample3-sales"
-const CONTRACT_CHAIN = "Chain 1"
 
 
 const Presale = () => {
@@ -33,9 +33,10 @@ const Presale = () => {
   const [salesData, setSalesData] = useState([]);
   const [saleTokenData, setSaleTokenData] = useState(Array);
   const [showBuyModal, setShowBuyModal] = useState(false);
-  const [reqKey, setReqKey] = useState('')
+  const [reqKey, setReqKey] = useState('');
+  const [supplyChain, setSupplyChain] = useState('1')
 
-  const chain = config.chainId;
+  const chain = supplyChain;
   const account = getAccount()
   const handleConnectWallet = () => {
     setShowModal(true);
@@ -79,13 +80,18 @@ const Presale = () => {
     const res = await pactCalls(code, chain, account?.slice(2, 66));
     setAmountPerBatch(res.result.data);
   }
-
+  const getSupplyChain = async() => {
+    const account = getAccount();
+    const code = `(use ${NS}.${MODULE_NAME}) SUPPLY-CHAIN`
+    const res = await pactCalls(code, chain, account?.slice(2, 66));
+    setSupplyChain(res.result.data);
+  }
   const getTokenSymbol = async () => {
     const account = await getAccount();
     const code = `(use ${NS}.${MODULE_NAME}) DETAILS`
     const res = await pactCalls(code, chain, account?.slice(2, 66));
     // console.log(res.result.data)
-    setTokenSymbol(res.result.data.symbol).toUpperCase()
+    setTokenSymbol(res.result.data.symbol)?.toUpperCase()
   }
   const getSalesAccount = async () => {
     const account = await getAccount();
@@ -233,7 +239,18 @@ const Presale = () => {
   const handleBuyPublicSale = () => {
       setShowBuyModal(true)
   }
-
+  const copyContractAddress = () => {
+    navigator.clipboard.writeText(NS + "." + MODULE_NAME);
+    toast.success("Contract address copied to clipboard", {
+      position: 'top-center',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  }
   
   useEffect(() => {
     getPhase0StartTime();
@@ -245,7 +262,8 @@ const Presale = () => {
     getTokenSymbol();
     getSalesAccount();
     getSales();
-    getSalesAmount()
+    getSalesAmount();
+    getSupplyChain()
   }, [account]);
 
   useEffect(() => {
@@ -301,8 +319,20 @@ const Presale = () => {
 
                 ) : (
                   <div className='account-name'>
-                    <h3>Hello,</h3>
-                    <p> {account} </p>
+                    <div>
+                      <h3>Hello,</h3>
+                      <p> {account} </p>
+                    </div>
+                    <div>
+                      <p>Token Contract Address:</p>
+                      <p className="contract-add">{NS}.{MODULE_NAME} 
+                        <button style={{background: "transparent", border:"none"}}
+                          onClick={copyContractAddress}>
+                           <img style={{width: "1.5rem", height: "1.5rem"}} src={cpyi}/>
+                        </button>
+                      </p>
+                    </div>
+                    <p>Chain : {supplyChain}</p>
                     <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
                       onClick={handleDisconnectWallet}
                     >
@@ -320,7 +350,7 @@ const Presale = () => {
                       {isWhitelisted ?
                        (
                        <div className='buy-form'>
-                        <h3>Buy Presale Tokens {CONTRACT_CHAIN}</h3>
+                        <h3>Buy Presale Tokens</h3>
                          <label>You Give {kdaInput} KDA</label>
                          <div style={{ position: 'relative' }}>
                           <input
@@ -360,7 +390,7 @@ const Presale = () => {
                     (
                     <>
                        <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
-                           onClick={handleBuyPublicSale}>Buy Tokens {CONTRACT_CHAIN}</button>
+                           onClick={handleBuyPublicSale}>Buy Tokens </button>
                         <h5>You shall get total {accountTokenBought} {tokenSymbol.toUpperCase()} tokens after public sale ends</h5>
                        {showBuyModal && 
                           <BuyModal tokenSymbol={tokenSymbol}   

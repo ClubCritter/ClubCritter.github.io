@@ -916,6 +916,14 @@ textarea {
     gap: 1rem;
     padding: 3rem;
 }
+.contract-add{
+    border: 2px solid rgba(212, 212, 212, 0.8);
+    padding-inline: 1rem;
+    padding-block: auto;
+}
+.contract-add button{
+    padding: 0, 0, 0, 1rem;
+}
 @media (min-width: 992px) {
     .navbar-expand-lg .navbar-collapse {
         justify-content: flex-end;
