@@ -659,6 +659,7 @@ figure.effect-julia:hover p {
     place-items: center;
     padding: 0.35rem;
     border: 2px solid rgba(212, 212, 212, 1);
+    background: rgba(12, 12, 12, 0.5)
 }
 
 .countdown-container p {

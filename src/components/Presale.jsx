@@ -9,8 +9,9 @@ import config from '../wallet/chainconfig';
 import { toast } from 'react-toastify';
 
 const NS = "n_7117098ca324c7b53025fc2cf2822db21730fdb0";
-const MODULE_NAME = "sample2"
-const SALES_MODULE_NAME = "sample2-sales"
+const MODULE_NAME = "Sample3"
+const SALES_MODULE_NAME = "Sample3-sales"
+const CONTRACT_CHAIN = "chain 2"
 
 
 const Presale = () => {
@@ -318,7 +319,7 @@ const Presale = () => {
                       {isWhitelisted ?
                        (
                        <div className='buy-form'>
-                        <h3>Buy Presale Tokens</h3>
+                        <h3>Buy Presale Tokens {CONTRACT_CHAIN}</h3>
                          <label>You Give {kdaInput} KDA</label>
                          <div style={{ position: 'relative' }}>
                           <input
@@ -352,7 +353,7 @@ const Presale = () => {
                     (
                     <>
                        <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
-                           onClick={handleBuyPublicSale}>Buy Tokens</button>
+                           onClick={handleBuyPublicSale}>Buy Tokens {CONTRACT_CHAIN}</button>
                         <h5>You shall get total {accountTokenBought} {tokenSymbol.toUpperCase()} tokens after public sale ends</h5>
                        {showBuyModal && 
                           <BuyModal tokenSymbol={tokenSymbol}   
