@@ -1032,7 +1032,10 @@ textarea {
         padding-block: 0.25rem !important;
     }
 }
-
+.centered-div{
+    display: grid;
+    place-items: center;
+}
 @media (max-width: 600px) {
 
     .intro-left,

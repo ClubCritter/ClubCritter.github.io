@@ -8,10 +8,11 @@ import { pactCalls, buyTokensSale } from '../pactcalls/kadena';
 import config from '../wallet/chainconfig';
 import { toast } from 'react-toastify';
 
-const NS = "n_7117098ca324c7b53025fc2cf2822db21730fdb0";
+
+const NS = "n_7117098ca324c7b53025fc2cf2822db21730fdb0"
 const MODULE_NAME = "Sample3"
 const SALES_MODULE_NAME = "Sample3-sales"
-const CONTRACT_CHAIN = "chain 2"
+const CONTRACT_CHAIN = "Chain 1"
 
 
 const Presale = () => {
@@ -84,7 +85,7 @@ const Presale = () => {
     const code = `(use ${NS}.${MODULE_NAME}) DETAILS`
     const res = await pactCalls(code, chain, account?.slice(2, 66));
     // console.log(res.result.data)
-    setTokenSymbol(res.result.data.symbol)
+    setTokenSymbol(res.result.data.symbol).toUpperCase()
   }
   const getSalesAccount = async () => {
     const account = await getAccount();
@@ -337,16 +338,22 @@ const Presale = () => {
                          <button className='btn btn-secondary'
                            onClick={handleBuy}>Buy</button>
                            {reqKey !== '' &&
-                             <h6>view this transaction on <a href={explorerLink}>Chainweb Explorer</a></h6>
+                             <h6>view this transaction on <a href={explorerLink} target='_blank'>Chainweb Explorer</a></h6>
                            }
                       </div>
                        ) :
-                         ( accountExists && <>
-                                            <h3>  Your Presale Buying </h3>
-                                            <h5>You total bought {accountSalesData[0].bought.int} batches of {tokenSymbol.toUpperCase()}</h5>
-                                            <h5>You shall get total {accountTokenBought} {tokenSymbol.toUpperCase()} tokens after public sale ends</h5>
-                                            <p>Your Currently have reserved {accountSalesData[0].reserved.int} batches of {tokenSymbol.toUpperCase()}</p>
-                                           </> )
+                         ( accountExists && <div className='centered-div'>
+                                            <div>
+                                              <h3>  Your Presale Buying </h3>
+                                              <h5>You total bought {accountSalesData[0].bought.int} batches of {tokenSymbol.toUpperCase()}</h5>
+                                              <h5>You shall get total {accountTokenBought} {tokenSymbol.toUpperCase()} tokens after public sale ends</h5>
+                                              <p>Your Currently have reserved {accountSalesData[0].reserved.int} batches of {tokenSymbol.toUpperCase()}</p>
+                                            </div>
+                                            {accountSalesData[0]?.reserved.int > 0 &&
+                                               <button className='btn btn-secondary'
+                                                 onClick={handleBuy}>Buy More</button>
+                                            }
+                                           </div> )
                          }
                     </>
                     ) : isPhase1 ?
