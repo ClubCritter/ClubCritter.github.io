@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import WalletModal from '../wallet/providers/WalletModal';
-import useWalletStore, { getAccount } from '../wallet/providers/walletStore';
+import ConnectWalletModal from '../wallet/providers/ConnectWalletModal';
+import useWalletStore from '../wallet/walletStore';
 import KtgTest from './KtgTest';
 import BuyModal from './BuyModal';
 import useUiStore from '../store/uiStore';
 import cpyi from '../assets/img/cpy.svg'
 import { pactCalls, buyTokensSale } from '../pactcalls/kadena';
-import config from '../wallet/chainconfig';
 import { toast } from 'react-toastify';
+import WalletConnectButton from './WalletConnectButton';
+import walletConnectStore from '../wallet/providers/connectWalletModalSlice';
+
 
 
 const NS = "n_7117098ca324c7b53025fc2cf2822db21730fdb0"
@@ -16,9 +18,9 @@ const SALES_MODULE_NAME = "Sample3-sales"
 
 
 const Presale = () => {
-  const { disconnectProvider, quickSign } = useWalletStore();
+  const { disconnectWallet } = useWalletStore();
   const { showKtgTest, setShowKtgTest } = useUiStore();
-  const [showModal, setShowModal] = useState(false);
+  const showModal = walletConnectStore.getState().showModal;
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [phase0startTime, setPhase0StartTime] = useState(null);
   const [phase1startTime, setPhase1StartTime] = useState(null);
@@ -37,7 +39,10 @@ const Presale = () => {
   const [supplyChain, setSupplyChain] = useState('1')
 
   const chain = supplyChain;
-  const account = getAccount()
+  
+  const account = useWalletStore.getState().account
+  
+ 
   const handleConnectWallet = () => {
     setShowModal(true);
   }
@@ -47,72 +52,63 @@ const Presale = () => {
   }
 
   const handleDisconnectWallet = () => {
-    disconnectProvider();
+    disconnectWallet();
   }
 
   const getPhase0StartTime = async () => {
-    try {const account = await getAccount();
-    const code =`(use ${NS}.${SALES_MODULE_NAME}) PHASE-0-START`
-    const res = await pactCalls(code, chain, account?.slice(2, 66));
-    setPhase0StartTime(new Date(res.result.data.time));
+    try {
+      const code =`(use ${NS}.${SALES_MODULE_NAME}) PHASE-0-START`
+      const res = await pactCalls(code, chain, account?.slice(2, 66));
+      setPhase0StartTime(new Date(res.result.data.time));
     } catch(err) {
       console.log(err)
     }
   }
 
   const getPhase1StartTime = async () => {
-    const account = await getAccount();
     const code = `(use ${NS}.${SALES_MODULE_NAME}) PHASE-1-START`
     const res = await pactCalls(code, chain, account?.slice(2, 66));
     setPhase1StartTime(new Date(res.result.data.time));
   }
 
   const getSaleEndTime = async () => {
-    const account = await getAccount();
     const code = `(use ${NS}.${SALES_MODULE_NAME}) END-OF-PRESALES`
     const res = await pactCalls(code, chain, account?.slice(2, 66));
     setSalesEndTime(new Date(res.result.data.time));
   }
 
   const getAmountPerBatch = async () => {
-    const account = await getAccount();
     const code = `(use ${NS}.${SALES_MODULE_NAME}) AMOUNT-PER-BATCH`
     const res = await pactCalls(code, chain, account?.slice(2, 66));
     setAmountPerBatch(res.result.data);
   }
   const getSupplyChain = async() => {
-    const account = getAccount();
     const code = `(use ${NS}.${MODULE_NAME}) SUPPLY-CHAIN`
     const res = await pactCalls(code, chain, account?.slice(2, 66));
     setSupplyChain(res.result.data);
   }
   const getTokenSymbol = async () => {
-    const account = await getAccount();
     const code = `(use ${NS}.${MODULE_NAME}) DETAILS`
     const res = await pactCalls(code, chain, account?.slice(2, 66));
     // console.log(res.result.data)
     setTokenSymbol(res.result.data.symbol)?.toUpperCase()
   }
   const getSalesAccount = async () => {
-    const account = await getAccount();
     const code = `(use ${NS}.${SALES_MODULE_NAME}) SALES-ACCOUNT`
     const res = await pactCalls(code, chain, account?.slice(2, 66));
     setSalesAccount(res.result.data)
   }
   const getCurrentPrice = async () => {
-    const account = await getAccount();
     const code = `(${NS}.${SALES_MODULE_NAME}.get-price)`
     const res = await pactCalls(code, chain, account?.slice(2, 66));
     setCurrentPrice(res.result.data)
   }
   const getWlStatus = async () => {
-    const account = await getAccount();
     const code = `(${NS}.${SALES_MODULE_NAME}.has-reservation "${account}")`
     const res = await pactCalls(code, chain, account?.slice(2, 66));
     setIsWhitelised(res.result.data)
   }
   const getSales = async () => {
-    const account = await getAccount();
     const code = `(${NS}.${SALES_MODULE_NAME}.get-sales)`
     const res = await pactCalls(code, chain, account?.slice(2, 66));
     setSalesData(res.result.data)
@@ -140,7 +136,6 @@ const Presale = () => {
 
   const buy = async () => {
     try {
-      const account = await getAccount();
       const kdaInputValue = kdaInput;
       const currentPriceValue = currentPrice;
       const batchCount = kdaInputValue / currentPriceValue;
@@ -311,12 +306,12 @@ const Presale = () => {
             <div className="row">
               <div className="tm-contact-left tm-bg-dark">
                 {!account ? (
-                  <button className='btn btn-primary tm-intro-btn tm-page-link'
-                    onClick={handleConnectWallet}
-                  >
-                    Connect Wallet
-                  </button>
-
+                  // <button className='btn btn-primary tm-intro-btn tm-page-link'
+                  //   onClick={handleConnectWallet}
+                  // >
+                  //   Connect Wallet
+                  // </button>
+                   <WalletConnectButton />
                 ) : (
                   <div className='account-name'>
                     <div>
@@ -439,7 +434,7 @@ const Presale = () => {
         </div>
       </div>
       {showModal ? (
-        <WalletModal setShowModal={setShowModal} />
+        <ConnectWalletModal />
       ) : null}
     </>
   );

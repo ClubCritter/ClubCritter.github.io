@@ -1,11 +1,16 @@
 import { Pact, createClient } from '@kadena/client';
-import config from '../wallet/chainconfig';
+import config from '../wallet/config';
+
+import useWalletStore from "../wallet/walletStore";
+import providers from "../wallet/providers/providers";
+import { toast } from "react-toastify";
 
 const network = config.networkId;
 const api = config.apiUrl;
 
 export const pactCallsSig = async(code, chain, pubKey, quickSign) => {
   try  {
+        const { account, pubKey } = useWalletStore.getState()
         const pactClient = createClient(`${api}/chainweb/0.0/${network}/chain/${chain}/pact`)
   
          const tx = Pact.builder
@@ -15,7 +20,7 @@ export const pactCallsSig = async(code, chain, pubKey, quickSign) => {
                     chainId: String(chain),
                     gasLimit: 1000,
                     gasPrice: 0.0000001,
-                    sender: `k:${pubKey}`
+                    sender: account
               })
                .setNetworkId(network)
                .addKeyset('ks', 'keys-all', pubKey)

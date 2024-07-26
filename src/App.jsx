@@ -3,7 +3,7 @@ import { BrowserRouter } from 'react-router-dom';
 import bgVideo from './assets/video/gfp-astro-timelapse.mp4';
 import Home from './pages/Home';
 import './App.css';
-import { ClientContextProvider } from './wallet/providers/walletConnect/ClientContextProvider';
+import ClientContextProvider from './wallet/providers/ClientContextProvider';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 

@@ -1,7 +1,7 @@
 
 import React, { useState, useCallback } from 'react';
 import { fetchBalance, transferCoin, airdropCoins, multiTransfer, nftMinting } from '../pactcalls/kadena';
-import useWalletStore, { getAccount } from '../wallet/providers/walletStore';
+import useWalletStore from '../wallet/walletStore';
 import CheckBalance from './CheckBalance';
 import SendTokens from './SendTokens';
 import SendAirdrop from './SendAirdrop';

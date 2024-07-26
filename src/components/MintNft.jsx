@@ -4,7 +4,7 @@ import useTokenStore from '../store/tokenStore'
 // import { createTokenIdFromKey } from '../pactcalls/tokenIdGenerate'
 import { toast } from 'react-toastify'
 import { pactCalls } from '../pactcalls/kadena'
-import { getAccount } from '../wallet/providers/walletStore'
+import useWalletStore from '../wallet/walletStore'
 import paste from '../assets/img/paste.svg'
 
 const MintNft = ({ mintNft}) => {
@@ -16,7 +16,7 @@ const MintNft = ({ mintNft}) => {
   const [debouncedUri, setDebouncedUri] = useState(uri);
   const [debouncedPolicies, setDebouncedPolicies] = useState(policies);
   const [reqKey, setReqKey] = useState('')
-  const pubKey = getAccount().slice(2, 66)
+  const pubKey = useWalletStore.getState().pubKey
   
   useEffect(() => {
     const handler = setTimeout(() => {
