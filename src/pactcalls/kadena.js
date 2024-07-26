@@ -1,6 +1,5 @@
 import { Pact, createClient } from '@kadena/client';
 import config from '../wallet/config';
-
 import useWalletStore from "../wallet/walletStore";
 import providers from "../wallet/providers/providers";
 import { toast } from "react-toastify";
@@ -8,11 +7,12 @@ import { toast } from "react-toastify";
 const network = config.networkId;
 const api = config.apiUrl;
 
-export const pactCallsSig = async(code, chain, pubKey, quickSign) => {
+export const pactCallsSig = async(code, chain, quickSign) => {
   try  {
-        const { account, pubKey } = useWalletStore.getState()
+        const { account, pubKey, provider } = useWalletStore.getState()
         const pactClient = createClient(`${api}/chainweb/0.0/${network}/chain/${chain}/pact`)
-  
+        const providerName = provider
+        console.log(providerName)
          const tx = Pact.builder
                .execution(code)
                .addSigner(pubKey, () => [])
@@ -101,43 +101,68 @@ export const fetchBalance = async( code , chain ) => {
     }
 }
 
-export const buyTokensSale = async(code, chain, pubKey, quickSign, salesAccount, amount) => {
+export const buyTokensSale = async(code, chain, salesAccount, amount, client, session) => {
   try {
-    const pactClient = createClient(`${api}/chainweb/0.0/${network}/chain/${chain}/pact`);
+    const { account, pubKey } = useWalletStore.getState();
+    const pactClient = createClient(`${api}/chainweb/0.0/${network}/chain/${chain}/pact`)
+    const providerName = useWalletStore.getState().provider;
+    const provider = providers[providerName]
+    console.log(provider)
+    
+    if (providerName === null) {
+      throw new Error("Provider not found");
+    }
+
     const receiver = salesAccount
     const tx = Pact.builder
      .execution(code)
      .addSigner(pubKey, (signFor) => [
-      signFor(`coin.TRANSFER`, `k:${pubKey}`, receiver, Number(amount)),
+      signFor(`coin.TRANSFER`, account, receiver, Number(amount)),
         signFor('coin.GAS'),
       ])
      .setMeta({
         chainId: String(chain),
         gasLimit: 80000,
         gasPrice: 0.0000001,
-        sender: `k:${pubKey}`
+        sender: account
       })
      .addKeyset('ks', 'keys-all', pubKey)
      .setNetworkId(network)
      .createTransaction();
-    let signedTx;
-    signedTx = await quickSign(tx);
-    if (!signedTx ||!signedTx.responses ||!signedTx.responses[0]) {
-      console.error('Error signing transaction:', signedTx);
-      return;
-    }
-    console.log(signedTx.responses[0]);
-    let commandSigData = signedTx.responses[0].commandSigData;
-    const cmd = commandSigData.cmd;
-    const sigs = commandSigData.sigs;
-    const outcomeHash = signedTx.responses[0].outcome.hash;
-    const preflightResult = await pactClient.preflight({cmd, sigs, hash: outcomeHash});
+    
+     let signedTx;
+     let cmd, sigs, outcomeHash;
+   
+     try {
+       signedTx = await provider.sign(tx, client, session);
+       if (provider.name === "wc") {
+         // If the provider is 'WC', use the cmd, sigs, and hash directly from signedTx
+         cmd = signedTx.cmd;
+         sigs = signedTx.sigs;
+         outcomeHash = signedTx.hash;
+       } else {
+         // For other providers, extract from commandSigData
+         cmd = signedTx.signedCmd.cmd;
+         sigs = signedTx.signedCmd.sigs;
+         outcomeHash = signedTx.signedCmd.hash;
+       }
+     } catch (error) {
+       console.error(error);
+     }
+
+    const bodyPayload = {
+      cmd,
+      sigs,
+      hash: outcomeHash,
+    };
+
+    const preflightResult = await pactClient.dirtyRead(bodyPayload);
     console.log(preflightResult)
     if (preflightResult.result.status === 'failure') {
       console.error(preflightResult.result.error.message);
       return preflightResult;
     } else {
-      const transactionDescriptor = await pactClient.submit({cmd, sigs, hash: outcomeHash});
+      const transactionDescriptor = await pactClient.submit(bodyPayload);
       console.log('TX Key: ', transactionDescriptor.requestKey);
       return { pactClient, transactionDescriptor, preflightResult };
     }
@@ -145,6 +170,7 @@ export const buyTokensSale = async(code, chain, pubKey, quickSign, salesAccount,
     console.error(error);
   }
 }
+
 export const transferCoin = async (token, code, chain, quickSign, pubKey, sender, receiver, amount) => {
   try {
     const pactClient = createClient(`${api}/chainweb/0.0/${network}/chain/${chain}/pact`);

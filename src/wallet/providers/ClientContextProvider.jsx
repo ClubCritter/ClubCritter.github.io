@@ -170,10 +170,9 @@ function ClientContextProvider({ children }) {
         relayUrl: import.meta.env.VITE_APP_relayUrl,
         projectId: import.meta.env.VITE_APP_projectId,
         metadata: {
-          name: "Tokengo",
-          description: "Tokengo Platform",
-          url: "https://tokengo.fun",
-          icons: ["https://ktg.nyc3.cdn.digitaloceanspaces.com/tokengofun.jpg"],
+          name: "CritterToken",
+          description: "CritterToken",
+          url: "crittertoken.xyz"
         },
       });
 

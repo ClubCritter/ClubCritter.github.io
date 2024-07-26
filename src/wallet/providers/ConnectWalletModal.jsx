@@ -27,10 +27,12 @@ const ConnectWalletModal = ({ onWalletConnected }) => {
     }
   };
 
-  const connectXWalletClicked = () => connectWallet(X_WALLET);
+  const connectXWalletClicked = () => {connectWallet(X_WALLET);
+    closeModal()
+  };
   const connectKoalaClicked = () => connectWallet(KOALA);
   const connectSpireKeyClicked = () => {
-    if (!spireKey.isLoggedIn) {
+    if (!spireKey?.isLoggedIn) {
       spireKey.login();
     } else {
       console.log("User is already logged in:");
@@ -40,6 +42,7 @@ const ConnectWalletModal = ({ onWalletConnected }) => {
   const handleWalletConnect = async () => {
     handleConnect();
     connectWallet(WC, connectWithWalletConnect);
+    closeModal();
     // connectWallet(WC);
   };
 
@@ -63,23 +66,10 @@ const ConnectWalletModal = ({ onWalletConnected }) => {
   return (
     <div className="wallet-modal-container tm-bg-dark-n">
       <div className="wallet-modal" ref={modalRef}>
-        <div>
-          <button className="" onClick={connectXWalletClicked}>
-            {/* <Ecko className="svglogos" />  */}
-            Ecko Wallet
-          </button>
-          {/* <button className="modal-button" onClick={connectKoalaClicked}>
-            <Koala className="svglogos" /> Koala Wallet
-          </button> */}
-          <button className="" onClick={handleWalletConnect}>
-            {/* <WalletConnect className="svglogos" />  */}
-            Wallet Connect
-          </button>
-          <button className="" onClick={connectSpireKeyClicked}>
-            {/* <SpireKey className="svglogos" />  */}
-            Kadena SpireKey
-          </button>
-        </div>
+      <p className='btn btn-primary provider-button'>Connect using Ecko Wallet extension</p> 
+            <button onClick={connectXWalletClicked} className='btn btn-primary provider-button' > Ecko Wallet </button>
+            <button onClick={connectSpireKeyClicked} className='btn btn-primary provider-button' disabled> SpireKey </button>
+            <button onClick={handleWalletConnect} className='btn btn-primary provider-button' > Wallet Connect </button>
       </div>
     </div>
   );

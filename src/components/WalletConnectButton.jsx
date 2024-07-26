@@ -30,7 +30,8 @@ const WalletConnectButton = () => {
   };
 
   return (
-    <button onClick={handleClick}>
+    <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
+       onClick={handleClick}>
       {isConnected ? "Disconnect Wallet" : "Connect Wallet"}
     </button>
   );

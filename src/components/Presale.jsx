@@ -9,16 +9,18 @@ import { pactCalls, buyTokensSale } from '../pactcalls/kadena';
 import { toast } from 'react-toastify';
 import WalletConnectButton from './WalletConnectButton';
 import walletConnectStore from '../wallet/providers/connectWalletModalSlice';
+import { useWalletConnectClient } from "../wallet/providers/ClientContextProvider"
 
 
 
 const NS = "n_7117098ca324c7b53025fc2cf2822db21730fdb0"
-const MODULE_NAME = "Sample3"
-const SALES_MODULE_NAME = "Sample3-sales"
+const MODULE_NAME = "morganfreeman"
+const SALES_MODULE_NAME = "morganfreeman-sales"
 
 
 const Presale = () => {
   const { disconnectWallet } = useWalletStore();
+  const { client, session } = useWalletConnectClient();
   const { showKtgTest, setShowKtgTest } = useUiStore();
   const showModal = walletConnectStore.getState().showModal;
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -40,12 +42,8 @@ const Presale = () => {
 
   const chain = supplyChain;
   
-  const account = useWalletStore.getState().account
+  const {account, pubKey} = useWalletStore.getState()
   
- 
-  const handleConnectWallet = () => {
-    setShowModal(true);
-  }
   const explorerLink = `https://explorer.chainweb.com/testnet/tx/${reqKey}` 
   const handleKtgTest = () => {
     setShowKtgTest(!showKtgTest);
@@ -58,7 +56,7 @@ const Presale = () => {
   const getPhase0StartTime = async () => {
     try {
       const code =`(use ${NS}.${SALES_MODULE_NAME}) PHASE-0-START`
-      const res = await pactCalls(code, chain, account?.slice(2, 66));
+      const res = await pactCalls(code, chain, pubKey);
       setPhase0StartTime(new Date(res.result.data.time));
     } catch(err) {
       console.log(err)
@@ -67,50 +65,50 @@ const Presale = () => {
 
   const getPhase1StartTime = async () => {
     const code = `(use ${NS}.${SALES_MODULE_NAME}) PHASE-1-START`
-    const res = await pactCalls(code, chain, account?.slice(2, 66));
+    const res = await pactCalls(code, chain, pubKey);
     setPhase1StartTime(new Date(res.result.data.time));
   }
 
   const getSaleEndTime = async () => {
     const code = `(use ${NS}.${SALES_MODULE_NAME}) END-OF-PRESALES`
-    const res = await pactCalls(code, chain, account?.slice(2, 66));
+    const res = await pactCalls(code, chain, pubKey);
     setSalesEndTime(new Date(res.result.data.time));
   }
 
   const getAmountPerBatch = async () => {
     const code = `(use ${NS}.${SALES_MODULE_NAME}) AMOUNT-PER-BATCH`
-    const res = await pactCalls(code, chain, account?.slice(2, 66));
+    const res = await pactCalls(code, chain, pubKey);
     setAmountPerBatch(res.result.data);
   }
   const getSupplyChain = async() => {
     const code = `(use ${NS}.${MODULE_NAME}) SUPPLY-CHAIN`
-    const res = await pactCalls(code, chain, account?.slice(2, 66));
+    const res = await pactCalls(code, chain, pubKey);
     setSupplyChain(res.result.data);
   }
   const getTokenSymbol = async () => {
     const code = `(use ${NS}.${MODULE_NAME}) DETAILS`
-    const res = await pactCalls(code, chain, account?.slice(2, 66));
+    const res = await pactCalls(code, chain, pubKey);
     // console.log(res.result.data)
     setTokenSymbol(res.result.data.symbol)?.toUpperCase()
   }
   const getSalesAccount = async () => {
     const code = `(use ${NS}.${SALES_MODULE_NAME}) SALES-ACCOUNT`
-    const res = await pactCalls(code, chain, account?.slice(2, 66));
+    const res = await pactCalls(code, chain, pubKey);
     setSalesAccount(res.result.data)
   }
   const getCurrentPrice = async () => {
     const code = `(${NS}.${SALES_MODULE_NAME}.get-price)`
-    const res = await pactCalls(code, chain, account?.slice(2, 66));
+    const res = await pactCalls(code, chain, pubKey);
     setCurrentPrice(res.result.data)
   }
   const getWlStatus = async () => {
     const code = `(${NS}.${SALES_MODULE_NAME}.has-reservation "${account}")`
-    const res = await pactCalls(code, chain, account?.slice(2, 66));
+    const res = await pactCalls(code, chain, pubKey);
     setIsWhitelised(res.result.data)
   }
   const getSales = async () => {
     const code = `(${NS}.${SALES_MODULE_NAME}.get-sales)`
-    const res = await pactCalls(code, chain, account?.slice(2, 66));
+    const res = await pactCalls(code, chain, pubKey);
     setSalesData(res.result.data)
   }
 
@@ -126,7 +124,7 @@ const Presale = () => {
                         (sales (get-sales))
                         (formatted-sales (map format-sale sales)))
                     formatted-sales)`;
-      const res = await pactCalls(code, chain, account?.slice(2, 66));
+      const res = await pactCalls(code, chain, pubKey);
       setSaleTokenData(res.result.data);
     } catch (err) {
       console.log(err);
@@ -147,7 +145,7 @@ const Presale = () => {
       }
 
       const code = `${buyCode}\n${buyLines}`;
-      const res = await buyTokensSale(code, chain, account?.slice(2, 66), quickSign, salesAccount, kdaInput);
+      const res = await buyTokensSale(code, chain, salesAccount, kdaInput, client, session);
       
       console.log("Buy response:", res);
   
@@ -165,7 +163,7 @@ const Presale = () => {
   //   const account = await getAccount();
   //   const code = `(use ${NS}.${SALES_MODULE_NAME})
   //                 (reserve-batch "${account}")`
-  //   const res = await pactCallsSig(code, chain, account?.slice(2, 66), quickSign)
+  //   const res = await pactCallsSig(code, chain, pubKey, quickSign)
   //   console.log(res)
   // }
 
@@ -178,19 +176,19 @@ const Presale = () => {
     const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
     return { days, hours, minutes, seconds };
   };
-  const accountExists = salesData.some(sale => sale.account === account);
-  const accountSalesData = salesData.filter(sale => sale.account === account)
+  const accountExists = (salesData || []).some((sale) => sale.account === account);;
+  const accountSalesData = (salesData || []).filter(sale => sale.account === account)
   
-  const findBalance = (accounts, accountName) => {
-  if (!Array.isArray(accounts)) {
-    console.error('Expected accounts to be an array:', accounts);
-    return null;
-  }
-  const account = accounts.find(acc => acc.account === accountName);
-  return account ? account.balance : null;
-};
+//   const findBalance = (accounts, accountName) => {
+//   if (!Array.isArray(accounts)) {
+//     console.error('Expected accounts to be an array:', accounts);
+//     return null;
+//   }
+//   const account = accounts.find(acc => acc.account === accountName);
+//   return account ? account.balance : null;
+// };
  
-  const accountTokenBought = findBalance(saleTokenData, account);
+//   const accountTokenBought = findBalance(saleTokenData, account);
 
 
   const handleApplyWl = () => {
@@ -295,7 +293,7 @@ const Presale = () => {
     setBatchCount(kdaInput / currentPrice)
   }, [kdaInput, currentPrice])
 
-
+console.log()
   return (
     <>
       <div className='presale-container'>
@@ -328,11 +326,7 @@ const Presale = () => {
                       </p>
                     </div>
                     <p>Chain : {supplyChain}</p>
-                    <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
-                      onClick={handleDisconnectWallet}
-                    >
-                      Disconnect
-                    </button>
+                      <WalletConnectButton />
                     { !isWhitelisted & accountSalesData[0]?.bought.int < 1 ?
                     <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
                     onClick={handleApplyWl}>Apply For WL</button>
@@ -342,7 +336,11 @@ const Presale = () => {
                     {
                      isPhase0 ? (
                      <>
-                      {isWhitelisted ?
+                      {
+                        !isWhitelisted ?
+                          <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
+                           onClick={handleApplyWl}>Apply For WL</button> 
+                        : isWhitelisted ?
                        (
                        <div className='buy-form'>
                         <h3>Buy Presale Tokens</h3>
@@ -371,7 +369,7 @@ const Presale = () => {
                                             <div>
                                               <h3>  Your Presale Buying </h3>
                                               <h5>You total bought {accountSalesData[0].bought.int} batches of {tokenSymbol.toUpperCase()}</h5>
-                                              <h5>You shall get total {accountTokenBought} {tokenSymbol.toUpperCase()} tokens after public sale ends</h5>
+                                              {/* <h5>You shall get total {accountTokenBought} {tokenSymbol.toUpperCase()} tokens after public sale ends</h5> */}
                                               <p>Your Currently have reserved {accountSalesData[0].reserved.int} batches of {tokenSymbol.toUpperCase()}</p>
                                             </div>
                                             {accountSalesData[0]?.reserved.int > 0 &&
