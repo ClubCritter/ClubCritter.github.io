@@ -41,8 +41,7 @@ const wc = {
       throw new Error("WalletConnect client is not initialized");
     }
   },
-  sign: async function (signingCommand) {
-    const { client, session } = useWalletConnectClient();
+  sign: async function (signingCommand, client, session) {
     if (client && session) {
       const request = {
         topic: session.topic,

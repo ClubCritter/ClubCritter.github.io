@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 import WalletConnectButton from './WalletConnectButton';
 import walletConnectStore from '../wallet/providers/connectWalletModalSlice';
 import { useWalletConnectClient } from "../wallet/providers/ClientContextProvider"
+import './presale.css'
 
 
 
@@ -35,6 +36,7 @@ const Presale = () => {
   const [tokenSymbol, setTokenSymbol] = useState('');
   const [salesAccount, setSalesAccount] = useState('');
   const [salesData, setSalesData] = useState([]);
+  const [availableBatches, setAvailableBatches] = useState(Number)
   const [saleTokenData, setSaleTokenData] = useState(Array);
   const [showBuyModal, setShowBuyModal] = useState(false);
   const [reqKey, setReqKey] = useState('');
@@ -49,9 +51,6 @@ const Presale = () => {
     setShowKtgTest(!showKtgTest);
   }
 
-  const handleDisconnectWallet = () => {
-    disconnectWallet();
-  }
 
   const getPhase0StartTime = async () => {
     try {
@@ -111,7 +110,11 @@ const Presale = () => {
     const res = await pactCalls(code, chain, pubKey);
     setSalesData(res.result.data)
   }
-
+  const getAvailableBatches = async() => {
+    const code = `(${NS}.${SALES_MODULE_NAME}.available-batches "${account}")`
+    const res = await pactCalls(code, chain, pubKey);
+    setAvailableBatches(res.result.data)
+  }
   const getSalesAmount = async () => {
     try {
       const code = `(use ${NS}.${SALES_MODULE_NAME})
@@ -134,17 +137,10 @@ const Presale = () => {
 
   const buy = async () => {
     try {
-      const kdaInputValue = kdaInput;
-      const currentPriceValue = currentPrice;
-      const batchCount = kdaInputValue / currentPriceValue;
-      const buyCode = `(use ${NS}.${SALES_MODULE_NAME})`;
-
-      let buyLines = '';
-      for (let i = 0; i < batchCount; i++) {
-        buyLines += `(buy "${account}" (read-keyset 'ks))\n`;
-      }
-
-      const code = `${buyCode}\n${buyLines}`;
+      const code = `
+         (use ${NS}.${SALES_MODULE_NAME})
+         (buy "${account}" (read-keyset 'buyKeyset) ${batchCount})
+      `;
       const res = await buyTokensSale(code, chain, salesAccount, kdaInput, client, session);
       
       console.log("Buy response:", res);
@@ -255,6 +251,7 @@ const Presale = () => {
     getTokenSymbol();
     getSalesAccount();
     getSales();
+    getAvailableBatches();
     getSalesAmount();
     getSupplyChain()
   }, [account]);
@@ -290,8 +287,8 @@ const Presale = () => {
   const isPhase1 = now >= phase1startTime && now < salesEndTime;
 
   useEffect(()=> {
-    setBatchCount(kdaInput / currentPrice)
-  }, [kdaInput, currentPrice])
+    setKdaInput(batchCount * currentPrice)
+  }, [batchCount, currentPrice])
 
 console.log()
   return (
@@ -344,20 +341,20 @@ console.log()
                        (
                        <div className='buy-form'>
                         <h3>Buy Presale Tokens</h3>
+                        <p>reserved {availableBatches} batches of {tokenSymbol.toUpperCase()}</p>
                          <label>You Give {kdaInput} KDA</label>
                          <div style={{ position: 'relative' }}>
                           <input
-                            value={kdaInput}
+                            value={batchCount}
                             type="number"
-                            min={currentPrice}
-                            max={currentPrice}
-                            onChange={(e) => setKdaInput(e.target.value)}
-                            style={{ padding: '10px 60px 10px 10px' }}
-                            disabled
-                            hidden
+                            min={1}
+                            step = {1}
+                            max={availableBatches}
+                            onChange={(e) => setBatchCount(e.target.value)}
                            />
                          </div>
-                         <p>You Get :{batchCount} batch of {tokenSymbol} ({amountPerBatch} {tokenSymbol.toUpperCase()} per Batch)</p>
+                         <p>You Get :{batchCount} batch of {tokenSymbol.toUpperCase()} ({amountPerBatch} {tokenSymbol.toUpperCase()} per Batch)</p>
+                         <h3>Total {batchCount * amountPerBatch} {tokenSymbol.toUpperCase()}</h3>
                          <button className='btn btn-secondary'
                            onClick={handleBuy}>Buy</button>
                            {reqKey !== '' &&
@@ -370,7 +367,7 @@ console.log()
                                               <h3>  Your Presale Buying </h3>
                                               <h5>You total bought {accountSalesData[0].bought.int} batches of {tokenSymbol.toUpperCase()}</h5>
                                               {/* <h5>You shall get total {accountTokenBought} {tokenSymbol.toUpperCase()} tokens after public sale ends</h5> */}
-                                              <p>Your Currently have reserved {accountSalesData[0].reserved.int} batches of {tokenSymbol.toUpperCase()}</p>
+                                              <p>Your Currently have reserved {availableBatches} batches of {tokenSymbol.toUpperCase()}</p>
                                             </div>
                                             {accountSalesData[0]?.reserved.int > 0 &&
                                                <button className='btn btn-secondary'

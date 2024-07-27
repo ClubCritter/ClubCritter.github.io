@@ -116,6 +116,7 @@ export const buyTokensSale = async(code, chain, salesAccount, amount, client, se
     const receiver = salesAccount
     const tx = Pact.builder
      .execution(code)
+     .addData("buyKeyset", { "keys": [ pubKey ], "pred": "keys-all" })
      .addSigner(pubKey, (signFor) => [
       signFor(`coin.TRANSFER`, account, receiver, Number(amount)),
         signFor('coin.GAS'),
