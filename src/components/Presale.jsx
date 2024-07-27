@@ -148,8 +148,9 @@ const Presale = () => {
       const data = res.preflightResult.result.data;
       const reqKey = res.preflightResult.reqKey;
       const result = res.preflightResult.result.status;
+      const errormsg = res.preflightResult.result.error.message;
       
-      return { data, reqKey, result };
+      return { data, reqKey, result, errormsg };
     } catch (error) {
       console.error("Error in buy function:", error);
       throw error;
@@ -192,9 +193,8 @@ const Presale = () => {
   }
 
   const handleBuy = async () => {
-    try {
-      const { data, reqKey, result } = await buy();
-
+      const { data, reqKey, result, errormsg } = await buy();
+      console.log(errormsg)
       if (result === "success") {
         setShowBuyModal(false);
         toast.success(`Success: ${data}`, {
@@ -217,12 +217,8 @@ const Presale = () => {
         });
         setReqKey(reqKey)
       } else {
-        toast.error(`Error: ${data}`);
+        toast.error(`Error: ${errormsg}`);
       }
-    } catch (error) {
-      console.error("Error in handleBuy function:", error);
-      toast.error("An error occurred during the purchase");
-    }
   };
 
   const handleBuyPublicSale = () => {

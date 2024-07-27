@@ -164,6 +164,7 @@ export const buyTokensSale = async(code, chain, salesAccount, amount, client, se
     console.log(preflightResult)
     if (preflightResult.result.status === 'failure') {
       console.error(preflightResult.result.error.message);
+      toast.error(preflightResult.result.error.message)
       return preflightResult;
     } else {
       const transactionDescriptor = await pactClient.submit(bodyPayload);
