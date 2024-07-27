@@ -114,11 +114,12 @@ export const buyTokensSale = async(code, chain, salesAccount, amount, client, se
     }
 
     const receiver = salesAccount
+    console.log(receiver)
+    console.log(amount)
     const tx = Pact.builder
      .execution(code)
-     .addData("buyKeyset", { "keys": [ pubKey ], "pred": "keys-all" })
      .addSigner(pubKey, (signFor) => [
-      signFor(`coin.TRANSFER`, account, receiver, Number(amount)),
+       signFor(`coin.TRANSFER`, account, receiver, Number(amount)),
         signFor('coin.GAS'),
       ])
      .setMeta({
@@ -133,9 +134,9 @@ export const buyTokensSale = async(code, chain, salesAccount, amount, client, se
     
      let signedTx;
      let cmd, sigs, outcomeHash;
-   
+     console.log(provider.config)
      try {
-       signedTx = await provider.sign(tx, client, session);
+       signedTx = await provider.quickSign(tx, client, session);
        if (provider.name === "wc") {
          // If the provider is 'WC', use the cmd, sigs, and hash directly from signedTx
          cmd = signedTx.cmd;
@@ -143,10 +144,12 @@ export const buyTokensSale = async(code, chain, salesAccount, amount, client, se
          outcomeHash = signedTx.hash;
        } else {
          // For other providers, extract from commandSigData
-         cmd = signedTx.signedCmd.cmd;
-         sigs = signedTx.signedCmd.sigs;
-         outcomeHash = signedTx.signedCmd.hash;
-       }
+         console.log(signedTx)
+         const commandSigData = signedTx.responses[0].commandSigData;
+         cmd = commandSigData.cmd;
+         sigs = commandSigData.sigs;
+         outcomeHash = signedTx.responses[0].outcome.hash;
+               }
      } catch (error) {
        console.error(error);
      }

@@ -105,11 +105,11 @@ const Presale = () => {
     const res = await pactCalls(code, chain, pubKey);
     setIsWhitelised(res.result.data)
   }
-  const getSales = async () => {
-    const code = `(${NS}.${SALES_MODULE_NAME}.get-sales)`
-    const res = await pactCalls(code, chain, pubKey);
-    setSalesData(res.result.data)
-  }
+  // const getSales = async () => {
+  //   const code = `(${NS}.${SALES_MODULE_NAME}.get-sales)`
+  //   const res = await pactCalls(code, chain, pubKey);
+  //   setSalesData(res.result.data)
+  // }
   const getAvailableBatches = async() => {
     const code = `(${NS}.${SALES_MODULE_NAME}.available-batches "${account}")`
     const res = await pactCalls(code, chain, pubKey);
@@ -138,8 +138,8 @@ const Presale = () => {
   const buy = async () => {
     try {
       const code = `
-         (use ${NS}.${SALES_MODULE_NAME})
-         (buy "${account}" (read-keyset 'buyKeyset) ${batchCount})
+         (${NS}.${SALES_MODULE_NAME}.buy 
+               "${account}" (read-keyset 'ks) ${batchCount})
       `;
       const res = await buyTokensSale(code, chain, salesAccount, kdaInput, client, session);
       
@@ -172,8 +172,8 @@ const Presale = () => {
     const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
     return { days, hours, minutes, seconds };
   };
-  const accountExists = (salesData || []).some((sale) => sale.account === account);;
-  const accountSalesData = (salesData || []).filter(sale => sale.account === account)
+  // const accountExists = salesData.some((sale) => sale.account === account);;
+  // const accountSalesData = salesData.filter(sale => sale.account === account)
   
 //   const findBalance = (accounts, accountName) => {
 //   if (!Array.isArray(accounts)) {
@@ -250,7 +250,7 @@ const Presale = () => {
     getCurrentPrice();
     getTokenSymbol();
     getSalesAccount();
-    getSales();
+    // getSales();
     getAvailableBatches();
     getSalesAmount();
     getSupplyChain()
@@ -324,7 +324,7 @@ console.log()
                     </div>
                     <p>Chain : {supplyChain}</p>
                       <WalletConnectButton />
-                    { !isWhitelisted & accountSalesData[0]?.bought.int < 1 ?
+                    { !isWhitelisted ?
                     <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
                     onClick={handleApplyWl}>Apply For WL</button>
                     : null
@@ -365,7 +365,7 @@ console.log()
                          ( accountExists && <div className='centered-div'>
                                             <div>
                                               <h3>  Your Presale Buying </h3>
-                                              <h5>You total bought {accountSalesData[0].bought.int} batches of {tokenSymbol.toUpperCase()}</h5>
+                                              <h5>You total bought batches of {tokenSymbol.toUpperCase()}</h5>
                                               {/* <h5>You shall get total {accountTokenBought} {tokenSymbol.toUpperCase()} tokens after public sale ends</h5> */}
                                               <p>Your Currently have reserved {availableBatches} batches of {tokenSymbol.toUpperCase()}</p>
                                             </div>
