@@ -328,10 +328,7 @@ console.log()
                      isPhase0 ? (
                      <>
                       {
-                        !isWhitelisted ?
-                          <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
-                           onClick={handleApplyWl}>Apply For WL</button> 
-                        : isWhitelisted ?
+                       isWhitelisted ?
                        (
                        <div className='buy-form'>
                         <h3>Buy Presale Tokens</h3>
@@ -358,7 +355,7 @@ console.log()
                        ) :
                          ( accountExists && <div className='centered-div'>
                                             <div>
-                                              <h3>  Your Presale Buying </h3>
+                                              <h3> Your Presale Buying </h3>
                                               <h5>You total bought batches of {tokenSymbol.toUpperCase()}</h5>
                                               {/* <h5>You shall get total {accountTokenBought} {tokenSymbol.toUpperCase()} tokens after public sale ends</h5> */}
                                               <p>Your Currently have reserved {availableBatches} batches of {tokenSymbol.toUpperCase()}</p>
