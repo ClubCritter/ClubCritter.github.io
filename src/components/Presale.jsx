@@ -236,7 +236,7 @@ const getBalance = async() => {
     getAvailableBatches();
     getSupplyChain()
     // getCounters()
-  }, [account]);
+  }, [account, balance]);
 // console.log(counters)
   useEffect(() => {
     setKdaInput(currentPrice);
@@ -272,9 +272,11 @@ const getBalance = async() => {
     setKdaInput(batchCount * currentPrice)
   }, [batchCount, currentPrice])
   
-  if(reqKey !== ''){
-    setShowWcMessage(false)
-  }
+  useEffect(() => {
+    if (reqKey !== '') {
+      setShowWcMessage(false);
+    }
+  }, [reqKey]);
 
   console.log(showWcMessage)
   return (
@@ -373,7 +375,7 @@ const getBalance = async() => {
                     <>
                        <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
                            onClick={handleBuyPublicSale}>Buy Tokens </button>
-                        <h5>You shall get total {accountTokenBought} {tokenSymbol.toUpperCase()} tokens after public sale ends</h5>
+                        <h5>You shall get total {(p0Reserved - availableBatches) * amountPerBatch} {tokenSymbol.toUpperCase()} tokens after public sale ends</h5>
                        {showBuyModal && 
                           <BuyModal tokenSymbol={tokenSymbol}   
                             batchCount = {batchCount}
