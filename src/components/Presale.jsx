@@ -148,9 +148,8 @@ const Presale = () => {
       const data = res.preflightResult.result.data;
       const reqKey = res.preflightResult.reqKey;
       const result = res.preflightResult.result.status;
-      const errormsg = res.preflightResult.result.error.message;
       
-      return { data, reqKey, result, errormsg };
+      return { data, reqKey, result};
     } catch (error) {
       console.error("Error in buy function:", error);
       throw error;
@@ -193,8 +192,8 @@ const Presale = () => {
   }
 
   const handleBuy = async () => {
-      const { data, reqKey, result, errormsg } = await buy();
-      console.log(errormsg)
+      const { data, reqKey, result } = await buy();
+      setReqKey(reqKey)
       if (result === "success") {
         setShowBuyModal(false);
         toast.success(`Success: ${data}`, {
@@ -215,9 +214,8 @@ const Presale = () => {
           draggable: true,
           progress: undefined,
         });
-        setReqKey(reqKey)
       } else {
-        toast.error(`Error: ${errormsg}`);
+        toast.error(`Error: ${result.error?.message}`);
       }
   };
 
@@ -343,8 +341,8 @@ console.log()
                           <input
                             value={batchCount}
                             type="number"
-                            min={1}
-                            step = {1}
+                            min='1'
+                            step = '1'
                             max={availableBatches}
                             onChange={(e) => setBatchCount(e.target.value)}
                            />
