@@ -29,18 +29,18 @@ const Presale = () => {
   const [phase1startTime, setPhase1StartTime] = useState(null);
   const [salesEndTime, setSalesEndTime] = useState(null);
   const [isWhitelisted, setIsWhitelised] = useState(Boolean);
+  const [p0Reserved, setp0Reserved] = useState(Number)
   const [amountPerBatch, setAmountPerBatch] = useState(null);
   const [currentPrice, setCurrentPrice] = useState(null);
   const [kdaInput, setKdaInput] = useState(0);
   const [batchCount, setBatchCount] = useState(0);
   const [tokenSymbol, setTokenSymbol] = useState('');
   const [salesAccount, setSalesAccount] = useState('');
-  const [salesData, setSalesData] = useState([]);
   const [availableBatches, setAvailableBatches] = useState(Number)
-  const [saleTokenData, setSaleTokenData] = useState(Array);
   const [showBuyModal, setShowBuyModal] = useState(false);
   const [reqKey, setReqKey] = useState('');
   const [supplyChain, setSupplyChain] = useState('1')
+  const [counters, setCounters] = useState([])
 
   const chain = supplyChain;
   
@@ -61,19 +61,21 @@ const Presale = () => {
       console.log(err)
     }
   }
-
   const getPhase1StartTime = async () => {
     const code = `(use ${NS}.${SALES_MODULE_NAME}) PHASE-1-START`
     const res = await pactCalls(code, chain, pubKey);
     setPhase1StartTime(new Date(res.result.data.time));
   }
-
   const getSaleEndTime = async () => {
     const code = `(use ${NS}.${SALES_MODULE_NAME}) END-OF-PRESALES`
     const res = await pactCalls(code, chain, pubKey);
     setSalesEndTime(new Date(res.result.data.time));
   }
-
+  const getP0reserved = async() => {
+    const code = `(use ${NS}.${SALES_MODULE_NAME}) P0-RESERVED`
+    const res = await pactCalls(code, chain, pubKey);
+    setp0Reserved(res.result.data)
+  }
   const getAmountPerBatch = async () => {
     const code = `(use ${NS}.${SALES_MODULE_NAME}) AMOUNT-PER-BATCH`
     const res = await pactCalls(code, chain, pubKey);
@@ -105,36 +107,17 @@ const Presale = () => {
     const res = await pactCalls(code, chain, pubKey);
     setIsWhitelised(res.result.data)
   }
-  // const getSales = async () => {
-  //   const code = `(${NS}.${SALES_MODULE_NAME}.get-sales)`
-  //   const res = await pactCalls(code, chain, pubKey);
-  //   setSalesData(res.result.data)
-  // }
   const getAvailableBatches = async() => {
     const code = `(${NS}.${SALES_MODULE_NAME}.available-batches "${account}")`
     const res = await pactCalls(code, chain, pubKey);
     setAvailableBatches(res.result.data)
   }
-  const getSalesAmount = async () => {
-    try {
-      const code = `(use ${NS}.${SALES_MODULE_NAME})
-                    (let* 
-                      (
-                        (format-sale (lambda (sale)
-                          { "account": (at 'account sale)
-                          , "balance": (* AMOUNT-PER-BATCH (at 'bought sale))
-                          }))
-                        (sales (get-sales))
-                        (formatted-sales (map format-sale sales)))
-                    formatted-sales)`;
-      const res = await pactCalls(code, chain, pubKey);
-      setSaleTokenData(res.result.data);
-    } catch (err) {
-      console.log(err);
-      setSaleTokenData([]);
-    }
-  };
-
+  const getCounters = async() => {
+    const code = `(${NS}.${SALES_MODULE_NAME}.get-counters")`
+    const res = await pactCalls(code, chain, pubKey);
+    console.log(res)
+    setCounters(res.result)
+  }
   const buy = async () => {
     try {
       const code = `
@@ -172,19 +155,7 @@ const Presale = () => {
     const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
     return { days, hours, minutes, seconds };
   };
-  // const accountExists = salesData.some((sale) => sale.account === account);;
-  // const accountSalesData = salesData.filter(sale => sale.account === account)
-  
-//   const findBalance = (accounts, accountName) => {
-//   if (!Array.isArray(accounts)) {
-//     console.error('Expected accounts to be an array:', accounts);
-//     return null;
-//   }
-//   const account = accounts.find(acc => acc.account === accountName);
-//   return account ? account.balance : null;
-// };
- 
-//   const accountTokenBought = findBalance(saleTokenData, account);
+
 
 
   const handleApplyWl = () => {
@@ -240,16 +211,17 @@ const Presale = () => {
     getPhase1StartTime();
     getSaleEndTime();
     getWlStatus();
+    getP0reserved();
     getAmountPerBatch();
     getCurrentPrice();
     getTokenSymbol();
     getSalesAccount();
     // getSales();
     getAvailableBatches();
-    getSalesAmount();
     getSupplyChain()
+    getCounters()
   }, [account]);
-
+console.log(counters)
   useEffect(() => {
     setKdaInput(currentPrice);
   }, [currentPrice])
@@ -284,7 +256,7 @@ const Presale = () => {
     setKdaInput(batchCount * currentPrice)
   }, [batchCount, currentPrice])
 
-console.log()
+  console.log(p0Reserved)
   return (
     <>
       <div className='presale-container'>
@@ -328,7 +300,7 @@ console.log()
                      isPhase0 ? (
                      <>
                       {
-                       isWhitelisted ?
+                        isWhitelisted ?
                        (
                        <div className='buy-form'>
                         <h3>Buy Presale Tokens</h3>
@@ -351,20 +323,11 @@ console.log()
                            {reqKey !== '' &&
                              <h6>view this transaction on <a href={explorerLink} target='_blank'>Chainweb Explorer</a></h6>
                            }
+                          <h5>You shall get total {(p0Reserved - availableBatches) * amountPerBatch} {tokenSymbol.toUpperCase()} tokens after public sale ends</h5>
+                          <h5>You total bought {p0Reserved - availableBatches} batches of {tokenSymbol.toUpperCase()}</h5>
                       </div>
                        ) :
-                         ( accountExists && <div className='centered-div'>
-                                            <div>
-                                              <h3> Your Presale Buying </h3>
-                                              <h5>You total bought batches of {tokenSymbol.toUpperCase()}</h5>
-                                              {/* <h5>You shall get total {accountTokenBought} {tokenSymbol.toUpperCase()} tokens after public sale ends</h5> */}
-                                              <p>Your Currently have reserved {availableBatches} batches of {tokenSymbol.toUpperCase()}</p>
-                                            </div>
-                                            {accountSalesData[0]?.reserved.int > 0 &&
-                                               <button className='btn btn-secondary'
-                                                 onClick={handleBuy}>Buy More</button>
-                                            }
-                                           </div> )
+                         null
                          }
                     </>
                     ) : isPhase1 ?
