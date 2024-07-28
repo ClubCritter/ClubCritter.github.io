@@ -5,7 +5,7 @@ import KtgTest from './KtgTest';
 import BuyModal from './BuyModal';
 import useUiStore from '../store/uiStore';
 import cpyi from '../assets/img/cpy.svg'
-import { pactCalls, buyTokensSale } from '../pactcalls/kadena';
+import { pactCalls, buyTokensSale, fetchBalance } from '../pactcalls/kadena';
 import { toast } from 'react-toastify';
 import WalletConnectButton from './WalletConnectButton';
 import walletConnectStore from '../wallet/providers/connectWalletModalSlice';
@@ -20,11 +20,12 @@ const SALES_MODULE_NAME = "morganfreeman-sales"
 
 
 const Presale = () => {
-  const { disconnectWallet } = useWalletStore();
+  const { provider } = useWalletStore();
   const { client, session } = useWalletConnectClient();
   const { showKtgTest, setShowKtgTest } = useUiStore();
   const showModal = walletConnectStore.getState().showModal;
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [balance, setBalance] = useState(0);
   const [phase0startTime, setPhase0StartTime] = useState(null);
   const [phase1startTime, setPhase1StartTime] = useState(null);
   const [salesEndTime, setSalesEndTime] = useState(null);
@@ -40,10 +41,11 @@ const Presale = () => {
   const [showBuyModal, setShowBuyModal] = useState(false);
   const [reqKey, setReqKey] = useState('');
   const [supplyChain, setSupplyChain] = useState('1')
-  const [counters, setCounters] = useState([])
+  const [showWcMessage, setShowWcMessage] = useState(false)
+  // const [counters, setCounters] = useState([])
 
   const chain = supplyChain;
-  
+  console.log(provider)
   const {account, pubKey} = useWalletStore.getState()
   
   const explorerLink = `https://explorer.chainweb.com/testnet/tx/${reqKey}` 
@@ -51,7 +53,16 @@ const Presale = () => {
     setShowKtgTest(!showKtgTest);
   }
 
-
+const getBalance = async() => {
+  try{
+    const code = `(coin.get-balance "${account}")`;
+      const balance = await fetchBalance(code, chain);
+    console.log(balance)
+    setBalance(balance)
+  } catch (err){
+    console.log(err)
+  }
+}
   const getPhase0StartTime = async () => {
     try {
       const code =`(use ${NS}.${SALES_MODULE_NAME}) PHASE-0-START`
@@ -112,12 +123,12 @@ const Presale = () => {
     const res = await pactCalls(code, chain, pubKey);
     setAvailableBatches(res.result.data)
   }
-  const getCounters = async() => {
-    const code = `(${NS}.${SALES_MODULE_NAME}.get-counters")`
-    const res = await pactCalls(code, chain, pubKey);
-    console.log(res)
-    setCounters(res.result)
-  }
+  // const getCounters = async() => {
+  //   const code = `(${NS}.${SALES_MODULE_NAME}.get-counters")`
+  //   const res = await pactCalls(code, chain, pubKey);
+  //   console.log(res)
+  //   setCounters(res.result)
+  // }
   const buy = async () => {
     try {
       const code = `
@@ -162,7 +173,12 @@ const Presale = () => {
     window.open('https://docs.google.com/forms/d/e/1FAIpQLSeSmCRVZiWhMgoxdT_qp5C61WGz23AcSmzagZpaf3c2qyb3fg/viewform', '_blank');
   }
 
-  const handleBuy = async () => {
+  const handleBuy = async () =>{
+      {
+        if(provider[0] === 'WC') {
+          setShowWcMessage(true)
+        }
+      }
       const { data, reqKey, result } = await buy();
       setReqKey(reqKey)
       if (result === "success") {
@@ -189,7 +205,6 @@ const Presale = () => {
         toast.error(`Error: ${result.error?.message}`);
       }
   };
-
   const handleBuyPublicSale = () => {
       setShowBuyModal(true)
   }
@@ -207,6 +222,7 @@ const Presale = () => {
   }
   
   useEffect(() => {
+    getBalance()
     getPhase0StartTime();
     getPhase1StartTime();
     getSaleEndTime();
@@ -219,9 +235,9 @@ const Presale = () => {
     // getSales();
     getAvailableBatches();
     getSupplyChain()
-    getCounters()
+    // getCounters()
   }, [account]);
-console.log(counters)
+// console.log(counters)
   useEffect(() => {
     setKdaInput(currentPrice);
   }, [currentPrice])
@@ -255,8 +271,12 @@ console.log(counters)
   useEffect(()=> {
     setKdaInput(batchCount * currentPrice)
   }, [batchCount, currentPrice])
+  
+  if(reqKey !== ''){
+    setShowWcMessage(false)
+  }
 
-  console.log(p0Reserved)
+  console.log(showWcMessage)
   return (
     <>
       <div className='presale-container'>
@@ -288,7 +308,11 @@ console.log(counters)
                         </button>
                       </p>
                     </div>
-                    <p>Chain : {supplyChain}</p>
+                    <div className='balance-wrap'>
+                      <p>Chain : {supplyChain}</p>
+                      <p>Balance : {balance} KDA</p>
+                    </div>
+                    
                       <WalletConnectButton />
                     { !isWhitelisted ?
                     <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
@@ -303,9 +327,18 @@ console.log(counters)
                         isWhitelisted ?
                        (
                        <div className='buy-form'>
-                        <h3>Buy Presale Tokens</h3>
-                        <p>reserved {availableBatches} batches of {tokenSymbol.toUpperCase()}</p>
-                         <label>You Give {kdaInput} KDA</label>
+                        <div className='presale-info'>
+                          <h2>Presale Info</h2>
+                          <div>
+                            <h3> 1 Batch : {amountPerBatch} {tokenSymbol.toUpperCase()}</h3>
+                            <h3> Reserved Per WL : {p0Reserved} Batches </h3>
+                            <h3> Price per Batch : {currentPrice} KDA</h3>
+                            <h3> Your reservation : {availableBatches} Batches</h3>
+                          </div>
+                       </div>
+                        
+                        <div className='number-input'>
+                        <label>You Give {kdaInput} KDA</label>
                          <div style={{ position: 'relative' }}>
                           <input
                             value={batchCount}
@@ -315,11 +348,16 @@ console.log(counters)
                             max={availableBatches}
                             onChange={(e) => setBatchCount(e.target.value)}
                            />
+                        </div>
+                         
                          </div>
                          <p>You Get :{batchCount} batch of {tokenSymbol.toUpperCase()} ({amountPerBatch} {tokenSymbol.toUpperCase()} per Batch)</p>
                          <h3>Total {batchCount * amountPerBatch} {tokenSymbol.toUpperCase()}</h3>
-                         <button className='btn btn-secondary'
+                         <button className='buy-btn'
                            onClick={handleBuy}>Buy</button>
+                           {showWcMessage && 
+                             <p>Check your Wallet and sign transaction </p> 
+                           }
                            {reqKey !== '' &&
                              <h6>view this transaction on <a href={explorerLink} target='_blank'>Chainweb Explorer</a></h6>
                            }
