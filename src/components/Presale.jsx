@@ -183,6 +183,8 @@ const getBalance = async() => {
       setReqKey(reqKey)
       if (result === "success") {
         setShowBuyModal(false);
+        setAvailableBatches(availableBatches - batchCount)
+        setBalance(balance - kdaInput)
         toast.success(`Success: ${data}`, {
           position: 'top-center',
           autoClose: 5000,
@@ -236,7 +238,8 @@ const getBalance = async() => {
     getAvailableBatches();
     getSupplyChain()
     // getCounters()
-  }, [account, balance]);
+  }, []);
+
 // console.log(counters)
   useEffect(() => {
     setKdaInput(currentPrice);
