@@ -65,6 +65,14 @@ input[type="number"] {
     padding-block: 5px;
     vertical-align: middle;
     margin-bottom: 0;
+    display: grid;
+    place-items: center;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    gap: auto;
+  }
+  .presale-info h3 span{
+    text-align: right;
   }
   .presale-info .infos{
     display: flex;
