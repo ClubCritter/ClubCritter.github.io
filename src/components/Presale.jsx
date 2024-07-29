@@ -238,7 +238,7 @@ const getBalance = async() => {
     getAvailableBatches();
     getSupplyChain()
     // getCounters()
-  }, []);
+  }, [account]);
 
 // console.log(counters)
   useEffect(() => {
@@ -314,8 +314,8 @@ const getBalance = async() => {
                       </p>
                     </div>
                     <div className='balance-wrap'>
-                      <p>Chain : {supplyChain}</p>
-                      <p>Balance : {balance} KDA</p>
+                      <p className='value'>Chain : {supplyChain}</p>
+                      <p className='value'>Balance : {balance} KDA</p>
                     </div>
                     
                       <WalletConnectButton />
@@ -334,11 +334,11 @@ const getBalance = async() => {
                        <div className='buy-form'>
                         <div className='presale-info'>
                           <h2>Presale Info</h2>
-                          <div>
+                          <div className='infos'>
                             <h3> 1 Batch : {amountPerBatch} {tokenSymbol.toUpperCase()}</h3>
-                            <h3> Reserved Per WL : {p0Reserved} Batches </h3>
-                            <h3> Price per Batch : {currentPrice} KDA</h3>
-                            <h3> Your reservation : {availableBatches} Batches</h3>
+                            <h3> Reserved Per WL : {p0Reserved} {p0Reserved > 1 ? "Batches" : "Batch"}</h3>
+                            <h3> Price per Batch : {currentPrice} KDA </h3>
+                            <h3> Reserved : {availableBatches} {availableBatches > 1 ? "Batches" : "Batch"} </h3>
                           </div>
                        </div>
                         
@@ -354,10 +354,10 @@ const getBalance = async() => {
                             onChange={(e) => setBatchCount(e.target.value)}
                            />
                         </div>
-                         
+                         <label>Batch Count</label>
                          </div>
-                         <p>You Get :{batchCount} batch of {tokenSymbol.toUpperCase()} ({amountPerBatch} {tokenSymbol.toUpperCase()} per Batch)</p>
-                         <h3>Total {batchCount * amountPerBatch} {tokenSymbol.toUpperCase()}</h3>
+                         <p>You Get : <span className='value'>{batchCount} {batchCount > 1 ? "batches" : "batch"}</span></p>
+                         <h3>Total <span className='value'>{batchCount * amountPerBatch} {tokenSymbol.toUpperCase()}</span></h3>
                          <button className='buy-btn'
                            onClick={handleBuy}>Buy</button>
                            {showWcMessage && 
@@ -366,8 +366,8 @@ const getBalance = async() => {
                            {reqKey !== '' &&
                              <h6>view this transaction on <a href={explorerLink} target='_blank'>Chainweb Explorer</a></h6>
                            }
-                          <h5>You shall get total {(p0Reserved - availableBatches) * amountPerBatch} {tokenSymbol.toUpperCase()} tokens after public sale ends</h5>
-                          <h5>You total bought {p0Reserved - availableBatches} batches of {tokenSymbol.toUpperCase()}</h5>
+                          <h5>You shall get total <span className='value'>{(p0Reserved - availableBatches) * amountPerBatch} {tokenSymbol.toUpperCase()}</span> tokens after public sale ends</h5>
+                          <h5>You total bought <span className='value'>{p0Reserved - availableBatches} batches</span> of {tokenSymbol.toUpperCase()}</h5>
                       </div>
                        ) :
                          null
