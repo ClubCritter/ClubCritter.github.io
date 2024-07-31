@@ -329,7 +329,7 @@ const getBalance = async() => {
                     </div>
                     <div className='balance-wrap'>
                       <p className='value'>Chain : {supplyChain}</p>
-                      <p className='value'>Balance : {balance.toFixed(8)} KDA</p>
+                      <p className='value'>Balance : {balance?.toFixed(8)} KDA</p>
                     </div>
                     
                       <WalletConnectButton />
