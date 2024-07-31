@@ -11,6 +11,7 @@ import { useWalletConnect, useWalletConnection } from "../wcStore";
 // import Koala from "../../assets/koalalogo.svg?react";
 // import SpireKey from "../../assets/spirekey.svg?react";
 import { useSpireKey } from "../spirekey/spireKeyProvider";
+import { toast } from "react-toastify";
 
 const ConnectWalletModal = ({ onWalletConnected }) => {
   const spireKey = useSpireKey();
@@ -27,17 +28,19 @@ const ConnectWalletModal = ({ onWalletConnected }) => {
     }
   };
 
-  const connectXWalletClicked = () => {connectWallet(X_WALLET);
+  const connectXWalletClicked = () => {
+    !window.kadena && toast.error("eckoWallet not installed")
+    connectWallet(X_WALLET);
     closeModal()
   };
-  const connectKoalaClicked = () => connectWallet(KOALA);
-  const connectSpireKeyClicked = () => {
-    if (!spireKey?.isLoggedIn) {
-      spireKey.login();
-    } else {
-      console.log("User is already logged in:");
-    }
-  };
+  // const connectKoalaClicked = () => connectWallet(KOALA);
+  // const connectSpireKeyClicked = () => {
+  //   if (!spireKey?.isLoggedIn) {
+  //     spireKey.login();
+  //   } else {
+  //     console.log("User is already logged in:");
+  //   }
+  // };
 
   const handleWalletConnect = async () => {
     handleConnect();
@@ -66,9 +69,7 @@ const ConnectWalletModal = ({ onWalletConnected }) => {
   return (
     <div className="wallet-modal-container tm-bg-dark-n">
       <div className="wallet-modal" ref={modalRef}>
-      <p className='btn btn-primary provider-button'>Connect using Ecko Wallet extension</p> 
             <button onClick={connectXWalletClicked} className='btn btn-primary provider-button' > Ecko Wallet </button>
-            <button onClick={connectSpireKeyClicked} className='btn btn-primary provider-button' disabled> SpireKey </button>
             <button onClick={handleWalletConnect} className='btn btn-primary provider-button' > Wallet Connect </button>
       </div>
     </div>
