@@ -15,8 +15,8 @@ import './presale.css'
 
 
 const NS = "n_7117098ca324c7b53025fc2cf2822db21730fdb0"
-const MODULE_NAME = "morganfreeman"
-const SALES_MODULE_NAME = "morganfreeman-sales"
+const MODULE_NAME = "morganfreemanwifhat"
+const SALES_MODULE_NAME = "morganfreemanwifhat-sales"
 
 
 const Presale = () => {
