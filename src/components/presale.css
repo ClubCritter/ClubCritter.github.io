@@ -56,6 +56,9 @@ input[type="number"] {
     padding-top: 10px;
     gap: 15px;
   }
+  .contract-add{
+    word-break: break-all;
+  }
   .presale-info h2{
     margin-bottom: 0;
   }
@@ -91,6 +94,7 @@ input[type="number"] {
     border-radius: 10px 0 10px 0;
     border: 0;
     color: #fcfcfc;
+    border: 0.1px solid #fcfcfc !important;
     font-weight: 800;
     background: #f07c47 !important;
     margin-bottom: 20px;
@@ -101,6 +105,9 @@ input[type="number"] {
     font-weight: 800;
     background: #fcfcfc !important;
   }
+.link {
+  color: #f07c47 ;
+}
   @media (max-width : 600px) {
     .number-input{
       flex-direction: column-reverse;

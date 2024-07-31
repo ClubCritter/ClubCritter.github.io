@@ -291,6 +291,29 @@ const getBalance = async() => {
           ) : (
             <div className="row">
               <div className="tm-contact-left tm-bg-dark">
+                <div>
+                  <h2>{tokenSymbol.toUpperCase()} Presale</h2>
+                  <p>Token Contract Address:</p>
+                  <p className="contract-add">{NS}.{MODULE_NAME} 
+                  <button style={{background: "transparent", border:"none"}}
+                    onClick={copyContractAddress}>
+                    <img style={{width: "1.5rem", height: "1.5rem"}} src={cpyi}/>
+                  </button>
+                  </p>
+                </div>
+                <div className='presale-info'>
+                          <h2>Presale Info</h2>
+                          <div className='infos'>
+                            <h3><span>1 Batch</span><span>|</span><span> {tokenSymbol.toUpperCase()} {amountPerBatch}</span> </h3>
+                            {isPhase0 &&
+                              <h3><span>Per WL</span><span>|</span><span>{p0Reserved} {p0Reserved > 1 ? "Batches" : "Batch"}</span></h3>
+                            }
+                            <h3><span>{isPhase0 && "WL"} Price</span><span>|</span><span>{currentPrice + " " + "KDA"}</span></h3>
+                            {account && isPhase0 && 
+                              <h3><span>Reserved</span><span>|</span><span>{availableBatches} {availableBatches > 1 ? "Batches" : "Batch"}</span></h3>
+                            }
+                          </div>
+                </div>
                 {!account ? (
                   // <button className='btn btn-primary tm-intro-btn tm-page-link'
                   //   onClick={handleConnectWallet}
@@ -304,18 +327,9 @@ const getBalance = async() => {
                       <h3>Hello,</h3>
                       <p> {account} </p>
                     </div>
-                    <div>
-                      <p>Token Contract Address:</p>
-                      <p className="contract-add">{NS}.{MODULE_NAME} 
-                        <button style={{background: "transparent", border:"none"}}
-                          onClick={copyContractAddress}>
-                           <img style={{width: "1.5rem", height: "1.5rem"}} src={cpyi}/>
-                        </button>
-                      </p>
-                    </div>
                     <div className='balance-wrap'>
                       <p className='value'>Chain : {supplyChain}</p>
-                      <p className='value'>Balance : {balance} KDA</p>
+                      <p className='value'>Balance : {balance.toFixed(8)} KDA</p>
                     </div>
                     
                       <WalletConnectButton />
@@ -332,18 +346,8 @@ const getBalance = async() => {
                         isWhitelisted ?
                        (
                        <div className='buy-form'>
-                        <div className='presale-info'>
-                          <h2>Presale Info</h2>
-                          <div className='infos'>
-                            <h3><span>1 Batch</span><span>|</span><span> {tokenSymbol.toUpperCase()} {amountPerBatch}</span> </h3>
-                            <h3><span>Per WL</span><span>|</span><span>{p0Reserved} {p0Reserved > 1 ? "Batches" : "Batch"}</span></h3>
-                            <h3><span>Price</span><span>|</span><span>{currentPrice + " " + "KDA"}</span></h3>
-                            <h3><span>Reserved</span><span>|</span><span>{availableBatches} {availableBatches > 1 ? "Batches" : "Batch"}</span></h3>
-                          </div>
-                       </div>
-                        
                         <div className='number-input'>
-                        <label>You Give {kdaInput} KDA</label>
+                        <label>You Give <h3>{kdaInput} KDA</h3></label>
                          <div style={{ position: 'relative' }}>
                           <input
                             value={batchCount}
@@ -356,18 +360,20 @@ const getBalance = async() => {
                         </div>
                          <label>Batch Count</label>
                          </div>
-                         <p>You Get : <span className='value'>{batchCount} {batchCount > 1 ? "batches" : "batch"}</span></p>
-                         <h3>Total <span className='value'>{batchCount * amountPerBatch} {tokenSymbol.toUpperCase()}</span></h3>
+                         <label>You get <h3>{batchCount * amountPerBatch} {tokenSymbol.toUpperCase()}</h3></label>
                          <button className='buy-btn'
                            onClick={handleBuy}>Buy</button>
                            {showWcMessage && 
                              <p>Check your Wallet and sign transaction </p> 
                            }
                            {reqKey !== '' &&
-                             <h6>view this transaction on <a href={explorerLink} target='_blank'>Chainweb Explorer</a></h6>
+                           <>
+                             <h6>Transaction Hash : {reqKey}</h6>
+                             <h6>view this transaction on <a className='link' href={explorerLink} target='_blank'>Chainweb Explorer</a></h6>
+                             <h5>You shall get total <span className='value'>{(p0Reserved - availableBatches) * amountPerBatch} {tokenSymbol.toUpperCase()}</span> tokens after public sale ends</h5>
+                             <h5>You total bought <span className='value'>{p0Reserved - availableBatches} batches</span> of {tokenSymbol.toUpperCase()}</h5>
+                           </>
                            }
-                          <h5>You shall get total <span className='value'>{(p0Reserved - availableBatches) * amountPerBatch} {tokenSymbol.toUpperCase()}</span> tokens after public sale ends</h5>
-                          <h5>You total bought <span className='value'>{p0Reserved - availableBatches} batches</span> of {tokenSymbol.toUpperCase()}</h5>
                       </div>
                        ) :
                          null
@@ -393,6 +399,7 @@ const getBalance = async() => {
                   }
                   </div>
                 )}
+                <h4>{isPreWl ? "Waiting for White Listed Presale to start" :isPhase0 ? "White Listed Presale is Live" : isPhase1 ? "Public Sale is Live" : "Sales Ended"}</h4>
                 <div className='countdown-container'>
                   <p>{
                     isPreWl ?
