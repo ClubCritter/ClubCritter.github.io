@@ -45,7 +45,6 @@ const Presale = () => {
   // const [counters, setCounters] = useState([])
 
   const chain = supplyChain;
-  console.log(provider)
   const {account, pubKey} = useWalletStore.getState()
   
   const explorerLink = `https://explorer.chainweb.com/testnet/tx/${reqKey}` 
@@ -57,7 +56,6 @@ const getBalance = async() => {
   try{
     const code = `(coin.get-balance "${account}")`;
       const balance = await fetchBalance(code, chain);
-    console.log(balance)
     setBalance(balance)
   } catch (err){
     console.log(err)
@@ -280,8 +278,13 @@ const getBalance = async() => {
       setShowWcMessage(false);
     }
   }, [reqKey]);
-
-  console.log(showWcMessage)
+  useEffect(() => {
+    if (kdaInput > balance){
+      setBatchCount(0)
+      toast.error("Insufficient balance on Chain :", {chain})
+    }
+  }, [kdaInput])
+  
   return (
     <>
       <div className='presale-container'>
@@ -333,7 +336,7 @@ const getBalance = async() => {
                     </div>
                     
                       <WalletConnectButton />
-                    { !isWhitelisted ?
+                    { !isWhitelisted & isPhase0 ?
                     <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
                     onClick={handleApplyWl}>Apply For WL</button>
                     : null
@@ -384,15 +387,15 @@ const getBalance = async() => {
                     <>
                        <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
                            onClick={handleBuyPublicSale}>Buy Tokens </button>
-                        <h5>You shall get total {(p0Reserved - availableBatches) * amountPerBatch} {tokenSymbol.toUpperCase()} tokens after public sale ends</h5>
                        {showBuyModal && 
                           <BuyModal tokenSymbol={tokenSymbol}   
                             batchCount = {batchCount}
+                            setBatchCount={setBatchCount}
+                            amountPerBatch = {amountPerBatch}
                             kdaInput = {kdaInput}
-                            setKdaInput = {setKdaInput}
                             handleBuy = {handleBuy}
                             setShowBuyModal = {setShowBuyModal} 
-                            currentPrice={currentPrice}/> 
+                            availableBatches={availableBatches}/> 
                         }
                     </>
                     ) : null

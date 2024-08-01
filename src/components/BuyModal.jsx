@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-const BuyModal = ({tokenSymbol, tokenAmount, kdaInput, setKdaInput, handleBuy, setShowBuyModal, currentPrice}) => {
+const BuyModal = ({tokenSymbol, batchCount, setBatchCount, amountPerBatch, kdaInput, handleBuy, setShowBuyModal, availableBatches}) => {
   const [isMounted, setIsMounted] = useState(false);
   
 
@@ -33,12 +33,13 @@ const BuyModal = ({tokenSymbol, tokenAmount, kdaInput, setKdaInput, handleBuy, s
             <h4>in public sale you can buy as many tokens as you want</h4>
             <div className="buy-form">
               <label>You Give {kdaInput} KDA</label>
-               <input value= {kdaInput} type="number"
-                                        min={currentPrice}
-                                        step={currentPrice}
-                      onChange={(e) => setKdaInput(e.target.value)} />
+               <input value= {batchCount} type="number"
+                                        min={1}
+                                        step={1}
+                                        max={availableBatches}
+                      onChange={(e) => setBatchCount(e.target.value)} />
                <button onClick={handleBuy} className='btn btn-secondary'>Buy</button>
-               <p>you shall get {tokenAmount} {tokenSymbol}</p>
+               <p>you shall get {amountPerBatch * batchCount} {tokenSymbol}</p>
             </div>
         </div>
     </div>

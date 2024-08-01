@@ -172,7 +172,8 @@ function ClientContextProvider({ children }) {
         metadata: {
           name: "CritterToken",
           description: "CritterToken",
-          url: "crittertoken.xyz"
+          url: "crittertoken.xyz",
+          icons: ["https://crittertoken.xyz/favicon.ico"],
         },
       });
 

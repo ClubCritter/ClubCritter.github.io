@@ -5,7 +5,6 @@ import Home from './pages/Home';
 import './App.css';
 import ClientContextProvider from './wallet/providers/ClientContextProvider';
 import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer } from 'react-toastify';
 
 function App() {
   const [allAssetsLoaded, setAllAssetsLoaded] = useState(false);
@@ -60,7 +59,6 @@ function App() {
         type="video/mp4"
       />
       <div className="page-container">
-        <ToastContainer />
         <ClientContextProvider>
           <BrowserRouter>
             <Home />

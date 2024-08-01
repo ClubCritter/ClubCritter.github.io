@@ -45,7 +45,7 @@ const wc = {
     if (client && session) {
       const request = {
         topic: session.topic,
-        chainId: `kadena:${config.networkId}`,
+        chainId: `kadena:${networkId}`,
         request: {
           method: "kadena_sign_v1", // use the Kadena signing method
           params: signingCommand, // directly pass the signingCommand
@@ -68,7 +68,7 @@ const wc = {
   },
   quickSign: async function (data, client, session) {
     if (client && session) {
-      const chainId = `kadena:${config.networkId}`;
+      const chainId = `kadena:${networkId}`;
       const quicksignWithWalletConnect = createWalletConnectQuicksign(
         client,
         session,
@@ -91,7 +91,7 @@ const wc = {
   quickSignAll: async function (data, client, session) {
     // console.log("data", data)
     if (client && session) {
-      const chainId = `kadena:${config.networkId}`;
+      const chainId = `kadena:${networkId}`;
       console.log("dt", data)
       // console.log("client", client)
       // console.log("session", session)
