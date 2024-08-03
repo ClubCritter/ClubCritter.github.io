@@ -68,7 +68,7 @@ const Tokenomics = () => {
       <div className="mx-auto position-relative gallery-container">
         <div className="grid place-items-center tm-bg-dark tm-border-top tm-border-bottom p-4">
           <h2 className="text-center mb-4" style={{ color: '#ffffff' }}>
-            Total supply: {addComma(newToken)} {tokenSymbol}
+            Total supply: {addComma(newToken)} ${tokenSymbol}
           </h2>
           <h3 className="text-center mb-2" style={{ color: '#cccccc' }}>
             Initial total Supply: {addComma(tokens)}
