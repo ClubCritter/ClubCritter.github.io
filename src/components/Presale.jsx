@@ -15,8 +15,8 @@ import './presale.css'
 
 
 export const NS = "n_7117098ca324c7b53025fc2cf2822db21730fdb0"
-export const MODULE_NAME = "Crittertoken1"
-export const SALES_MODULE_NAME = "Crittertoken1-sales"
+export const MODULE_NAME = "morganfreemanwifhat"
+export const SALES_MODULE_NAME = "morganfreemanwifhat-sales"
 
 
 const Presale = () => {
