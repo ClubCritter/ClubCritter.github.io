@@ -258,7 +258,9 @@ h2 {
 .page-width-3 {
     max-width: 1398px !important;
 }
-
+.intro-wrap {
+    padding-inline: 10rem;
+}
 .page-left {
     margin-left: 100px;
 }
@@ -311,7 +313,7 @@ h2 {
 .intro-left {
     margin-right: 20px;
     padding: 30px 40px;
-    max-width: 505px;
+    max-width: 60%;
 }
 
 .presale-container {
@@ -1056,6 +1058,9 @@ iframe img {
         grid-column: 3 / span 2 !important;
         border-radius: 0px 0px 30px 30px !important;
         padding-block: 0.25rem !important;
+    }
+    .intro-wrap {
+        padding-inline: 0;
     }
 }
 .centered-div{

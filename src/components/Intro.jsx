@@ -1,11 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import homeImg from '../assets/img/home-img-1.png'
+import homeImg from '/critter.png'
 
 const Intro = () => {
   return (
       <div className="px-3" >
-         <div className="page-width-3 page-left">
+         <div className="intro-wrap">
               <div className="d-flex position-relative tm-border-top tm-border-bottom intro-container">
                  <div className="intro-left tm-bg-dark">
                    <h2 className="mb-4">Welcome to Club Critter</h2>
