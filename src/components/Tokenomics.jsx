@@ -91,7 +91,7 @@ const Tokenomics = () => {
           </h3>
           <div className="line"></div>
         </div>
-        <div className="mx-auto tokenomics-grid-container tm-bg-dark-n" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <div className=" my-2 mx-auto tokenomics-grid-container tm-border-top tm-border-bottom tm-bg-dark" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <PieChart
               data={pieChartData}
               {...pieChartOptions}
