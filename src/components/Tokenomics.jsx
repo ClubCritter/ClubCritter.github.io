@@ -4,14 +4,15 @@ import img1 from '../assets/img/gallery-img-01.png';
 import img2 from '../assets/img/gallery-img-02.png';
 import img3 from '../assets/img/gallery-img-03.png';
 import img4 from '../assets/img/gallery-img-04.png';
-import { pactCalls } from "../pactcalls/kadena"
+import { pactCalls } from "../pactcalls/kadena";
 import { NS, MODULE_NAME } from "./Presale";
-import useWalletStore from "../wallet/walletStore"
+import useWalletStore from "../wallet/walletStore";
 const chain = 1;
 
 const Tokenomics = () => {
-  const {pubKey} = useWalletStore.getState()
+  const { pubKey } = useWalletStore.getState();
   const [totalsupply, setTotalSupply] = useState(0);
+  const [logouri, setLogoUri] = useState('');
   const burned = 0;
   const newToken = totalsupply - burned;
   const [token, setToken] = useState({});
@@ -19,15 +20,16 @@ const Tokenomics = () => {
   const [hoveredSegmentIndex, setHoveredSegmentIndex] = useState(null);
 
   useEffect(() => {
-    const getTokenSymbol = async () => {
+    const getToken = async () => {
       const code = `(use ${NS}.${MODULE_NAME}) DETAILS`;
       const res = await pactCalls(code, chain, pubKey);
       setToken(res.result.data);
+      console.log(res.result.data)
+      setTotalSupply(res.result.data.supply?.int);
+      setLogoUri(res.result.data.imageUrl);
     };
-
-    getTokenSymbol();
-    setTotalSupply(token?.supply?.int)
-  }, [token]);
+    getToken();
+  }, [pubKey, token]);
 
   const addComma = (num) => {
     return num?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -39,12 +41,14 @@ const Tokenomics = () => {
     { title: 'Presale', value: 30, color: '#2e865f' },
     { title: 'Locked Liquidity', value: 45, color: '#6c5ce7' },
   ];
+
   const getLabelStyle = () => {
     if (window.innerWidth < 600) {
       return { fontSize: '5px', fill: '#fcfcfc' };
     }
     return { fontSize: '7px', fill: '#fff' };
   };
+
   const pieChartOptions = {
     radius: 30,
     lineWidth: 50,
@@ -66,7 +70,16 @@ const Tokenomics = () => {
   return (
     <div data-page-no="2" className="tokenomics-container">
       <div className="mx-auto position-relative gallery-container">
-        <div className="grid place-items-center tm-bg-dark tm-border-top tm-border-bottom p-4">
+        <div className="token-details tm-bg-dark tm-border-top tm-border-bottom p-4">
+          {logouri && (
+            <img
+              src={logouri}
+              alt="Token Logo"
+              style={{
+                objectFit: 'cover' // or 'contain' if you prefer to maintain aspect ratio
+              }}
+            />
+          )}
           <h2 className="text-center mb-4" style={{ color: '#ffffff' }}>
             Total supply: {addComma(newToken)} ${token?.symbol}
           </h2>
@@ -77,22 +90,24 @@ const Tokenomics = () => {
             Burned so far: {addComma(burned)}
           </h3>
           <div className="line"></div>
-          <div className="mx-auto tokenomics-grid-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <PieChart
-                  data={pieChartData}
-                  {...pieChartOptions}
-                  onClick={(event, index) => {
-                      if(index == selectedSegmentIndex){
-                        setSelectedSegmentIndex(null);
-                      } else {setSelectedSegmentIndex(index);}
-                    }}
-                  onMouseOver={(event, index) => setHoveredSegmentIndex(index)}
-                  onMouseOut={() => setHoveredSegmentIndex(null)}
-                  style={{ height: '350px' }}
-                  aria-label="Tokenomics Pie Chart"
-                />
-          </div>
         </div>
+        <div className="mx-auto tokenomics-grid-container tm-bg-dark-n" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <PieChart
+              data={pieChartData}
+              {...pieChartOptions}
+              onClick={(event, index) => {
+                if (index === selectedSegmentIndex) {
+                  setSelectedSegmentIndex(null);
+                } else {
+                  setSelectedSegmentIndex(index);
+                }
+              }}
+              onMouseOver={(event, index) => setHoveredSegmentIndex(index)}
+              onMouseOut={() => setHoveredSegmentIndex(null)}
+              style={{ height: '350px' }}
+              aria-label="Tokenomics Pie Chart"
+            />
+          </div>
       </div>
     </div>
   );
