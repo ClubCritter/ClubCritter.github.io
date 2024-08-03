@@ -47,7 +47,7 @@ const Tokenomics = () => {
   };
   const pieChartOptions = {
     radius: 30,
-    lineWidth: 100,
+    lineWidth: 40,
     segmentsStyle: {
       transition: 'stroke .3s',
       cursor: 'pointer',
@@ -78,14 +78,15 @@ const Tokenomics = () => {
           </h3>
           <div className="line"></div>
           <div className="mx-auto tokenomics-grid-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <PieChart
-              data={pieChartData}
-              {...pieChartOptions}
-              onClick={(event, index) => setSelectedSegmentIndex(index)}
-              onMouseOver={(event, index) => setHoveredSegmentIndex(index)}
-              onMouseOut={() => setHoveredSegmentIndex(null)}
-              style={{ height: '350px' }}
-            />
+          <PieChart
+                  data={pieChartData}
+                  {...pieChartOptions}
+                  onClick={(event, index) => setSelectedSegmentIndex(index)}
+                  onMouseOver={(event, index) => setHoveredSegmentIndex(index)}
+                  onMouseOut={() => setHoveredSegmentIndex(null)}
+                  style={{ height: '350px' }}
+                  aria-label="Tokenomics Pie Chart"
+                />
           </div>
         </div>
       </div>
