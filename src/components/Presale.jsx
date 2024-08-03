@@ -308,7 +308,7 @@ const getBalance = async() => {
                 <div className='presale-info'>
                           <h2>Presale Info</h2>
                           <div className='infos'>
-                            <h3><span>1 Batch</span><span>|</span><span> {tokenSymbol.toUpperCase()} {amountPerBatch}</span> </h3>
+                            <h3><span>1 Batch</span><span>|</span><span> ${tokenSymbol.toUpperCase()} {amountPerBatch}</span> </h3>
                             {isPhase0 &&
                               <h3><span>Per WL</span><span>|</span><span>{p0Reserved} {p0Reserved > 1 ? "Batches" : "Batch"}</span></h3>
                             }

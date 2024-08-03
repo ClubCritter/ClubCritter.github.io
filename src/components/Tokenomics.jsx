@@ -11,10 +11,10 @@ const chain = 1;
 
 const Tokenomics = () => {
   const {pubKey} = useWalletStore.getState()
-  const tokens = 100000000000;
+  const [totalsupply, setTotalSupply] = useState(0);
   const burned = 0;
-  const newToken = tokens - burned;
-  const [tokenSymbol, setTokenSymbol] = useState('');
+  const newToken = totalsupply - burned;
+  const [token, setToken] = useState({});
   const [selectedSegmentIndex, setSelectedSegmentIndex] = useState(null);
   const [hoveredSegmentIndex, setHoveredSegmentIndex] = useState(null);
 
@@ -22,21 +22,21 @@ const Tokenomics = () => {
     const getTokenSymbol = async () => {
       const code = `(use ${NS}.${MODULE_NAME}) DETAILS`;
       const res = await pactCalls(code, chain, pubKey);
-      // console.log(res.result.data)
-      setTokenSymbol(res.result.data.symbol?.toUpperCase());
+      setToken(res.result.data);
     };
 
     getTokenSymbol();
-  }, []);
+    setTotalSupply(token?.supply?.int)
+  }, [token]);
 
   const addComma = (num) => {
-    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return num?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   };
 
   const pieChartData = [
     { title: 'Team', value: 15, color: '#2c3e50' },
     { title: 'Treasury', value: 10, color: '#3498db' },
-    { title: 'Presale', value: 30, color: '#8bc34a' },
+    { title: 'Presale', value: 30, color: '#2e865f' },
     { title: 'Locked Liquidity', value: 45, color: '#6c5ce7' },
   ];
   const getLabelStyle = () => {
@@ -47,14 +47,14 @@ const Tokenomics = () => {
   };
   const pieChartOptions = {
     radius: 30,
-    lineWidth: 40,
+    lineWidth: 50,
     segmentsStyle: {
       transition: 'stroke .3s',
       cursor: 'pointer',
     },
     segmentsShift: (index) => {
-      if (selectedSegmentIndex === index) return 2;
-      if (hoveredSegmentIndex === index) return 1;
+      if (selectedSegmentIndex === index) return 9;
+      if (hoveredSegmentIndex === index) return 2;
       return 0.5;
     },
     animate: true,
@@ -68,10 +68,10 @@ const Tokenomics = () => {
       <div className="mx-auto position-relative gallery-container">
         <div className="grid place-items-center tm-bg-dark tm-border-top tm-border-bottom p-4">
           <h2 className="text-center mb-4" style={{ color: '#ffffff' }}>
-            Total supply: {addComma(newToken)} ${tokenSymbol}
+            Total supply: {addComma(newToken)} ${token?.symbol}
           </h2>
           <h3 className="text-center mb-2" style={{ color: '#cccccc' }}>
-            Initial total Supply: {addComma(tokens)}
+            Initial total Supply: {addComma(totalsupply)}
           </h3>
           <h3 className="text-center" style={{ color: '#cccccc' }}>
             Burned so far: {addComma(burned)}
@@ -81,7 +81,11 @@ const Tokenomics = () => {
           <PieChart
                   data={pieChartData}
                   {...pieChartOptions}
-                  onClick={(event, index) => setSelectedSegmentIndex(index)}
+                  onClick={(event, index) => {
+                      if(index == selectedSegmentIndex){
+                        setSelectedSegmentIndex(null);
+                      } else {setSelectedSegmentIndex(index);}
+                    }}
                   onMouseOver={(event, index) => setHoveredSegmentIndex(index)}
                   onMouseOut={() => setHoveredSegmentIndex(null)}
                   style={{ height: '350px' }}

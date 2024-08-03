@@ -104,6 +104,7 @@ h2 {
     bottom: 0;
     left: 0;
     align-items: baseline;
+    padding-inline: 2rem !important;
 }
 
 .btn {
@@ -1081,6 +1082,9 @@ textarea {
 
     .tokenomics-grid-container {
         grid-template-columns: repeat(2, 1fr);
+    }
+    .footer{
+        margin-bottom: 2rem;
     }
 }
 
