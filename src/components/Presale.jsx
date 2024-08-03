@@ -14,9 +14,9 @@ import './presale.css'
 
 
 
-const NS = "n_7117098ca324c7b53025fc2cf2822db21730fdb0"
-const MODULE_NAME = "morganfreemanwifhat"
-const SALES_MODULE_NAME = "morganfreemanwifhat-sales"
+export const NS = "n_7117098ca324c7b53025fc2cf2822db21730fdb0"
+export const MODULE_NAME = "morganfreeman"
+export const SALES_MODULE_NAME = "morganfreeman-sales"
 
 
 const Presale = () => {
@@ -175,6 +175,7 @@ const getBalance = async() => {
       {
         if(provider[0] === 'WC') {
           setShowWcMessage(true)
+          setShowBuyModal(false)
         }
       }
       const { data, reqKey, result } = await buy();
@@ -396,6 +397,15 @@ const getBalance = async() => {
                             handleBuy = {handleBuy}
                             setShowBuyModal = {setShowBuyModal} 
                             availableBatches={availableBatches}/> 
+                        }
+                        {showWcMessage && 
+                             <p>Check your Wallet and sign transaction </p> 
+                        }
+                        {reqKey !== '' &&
+                        <>
+                          <h6>Transaction Hash : {reqKey}</h6>
+                          <h6>view this transaction on <a className='link' href={explorerLink} target='_blank'>Chainweb Explorer</a></h6>
+                        </> 
                         }
                     </>
                     ) : null
