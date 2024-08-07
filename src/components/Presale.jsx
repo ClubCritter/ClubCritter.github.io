@@ -168,7 +168,7 @@ const getBalance = async() => {
 
 
   const handleApplyWl = () => {
-    window.open('https://docs.google.com/forms/d/e/1FAIpQLSeSmCRVZiWhMgoxdT_qp5C61WGz23AcSmzagZpaf3c2qyb3fg/viewform', '_blank');
+    window.open('https://discord.gg/U5EMjSvb4s', '_blank');
   }
 
   const handleBuy = async () =>{
@@ -339,7 +339,7 @@ const getBalance = async() => {
                       <WalletConnectButton />
                     { !isWhitelisted & isPhase0 ?
                     <button className='btn btn-primary tm-intro-btn tm-page-link mb-4 col-12'
-                    onClick={handleApplyWl}>Apply For WL</button>
+                    onClick={handleApplyWl}>Join Our Discord</button>
                     : null
                   }
                     
