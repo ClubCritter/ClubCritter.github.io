@@ -12,6 +12,10 @@ const chain = 1;
 export const NS = import.meta.env.VITE_APP_NS
 export const MODULE_NAME = import.meta.env.VITE_APP_MODULE_NAME
 
+export const addComma = (num) => {
+  return num?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
+
 const Tokenomics = () => {
   const { pubKey } = useWalletStore.getState();
   const [totalsupply, setTotalSupply] = useState(0);
@@ -35,9 +39,6 @@ const Tokenomics = () => {
     getToken();
   }, [pubKey, token]);
 
-  const addComma = (num) => {
-    return num?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  };
 
   const pieChartData = [
     { title: 'Team', value: 15, color: '#2c3e50' },

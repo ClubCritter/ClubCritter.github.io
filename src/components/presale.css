@@ -70,12 +70,12 @@ input[type="number"] {
     margin-bottom: 0;
     display: grid;
     place-items: center;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 2fr 1fr 2fr;
     align-items: center;
     gap: auto;
   }
   .presale-info h3 span{
-    text-align: right;
+    text-align: center;
   }
   .presale-info .infos{
     display: flex;

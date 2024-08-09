@@ -1088,7 +1088,9 @@ iframe img {
     .intro-right {
         width: 100%;
     }
-
+    .intro-wrap{
+        margin-top: 0;
+    }
     .intro-left {
         margin-right: 0;
         margin-bottom: 20px;

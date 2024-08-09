@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import usePresaleStore from '../store/usePresaleStore';
+import { addComma } from './Tokenomics';
+
 
 const BuyModal = ({tokenSymbol, batchCount, amountPerBatch, kdaInput, handleBuy, setShowBuyModal, availableBatches}) => {
   const {setBatchCount} = usePresaleStore()
@@ -46,7 +48,7 @@ const BuyModal = ({tokenSymbol, batchCount, amountPerBatch, kdaInput, handleBuy,
                                         max={availableBatches}
                       onChange={(e) => setBatchCount(e.target.value)} />
                <button onClick={handleBuy} className='btn btn-secondary'>Buy</button>
-               <p>you shall get {amountPerBatch * batchCount} {tokenSymbol}</p>
+               <p>you shall get {addComma(amountPerBatch * batchCount)} {tokenSymbol}</p>
             </div>
         </div>
     </div>

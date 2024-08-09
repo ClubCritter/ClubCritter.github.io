@@ -12,6 +12,7 @@ import WalletConnectButton from './WalletConnectButton';
 import walletConnectStore from '../wallet/providers/connectWalletModalSlice';
 import { useWalletConnectClient } from "../wallet/providers/ClientContextProvider";
 import usePresaleStore from '../store/usePresaleStore';
+import { addComma } from './Tokenomics';
 import './presale.css';
 
 export const NS = import.meta.env.VITE_APP_NS;
@@ -188,6 +189,10 @@ const Presale = () => {
   useEffect(() => {
     setKdaInput(batchCount * currentPrice)
   }, [batchCount, currentPrice])
+  
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [])
 
   const now = new Date();
   const isPreWl = now < phase0startTime;
@@ -216,7 +221,7 @@ const Presale = () => {
                 <div className='presale-info'>
                   <h2>Presale Info</h2>
                   <div className='infos'>
-                    <h3><span>1 Batch</span><span>|</span><span> ${tokenSymbol.toUpperCase()} {amountPerBatch}</span></h3>
+                    <h3><span>1 Batch</span><span>|</span><span> {addComma(amountPerBatch)} ${tokenSymbol.toUpperCase()}</span></h3>
                     {isPhase0 && (
                       <h3><span>Per WL</span><span>|</span><span>{p0Reserved} {p0Reserved > 1 ? "Batches" : "Batch"}</span></h3>
                     )}
@@ -260,14 +265,14 @@ const Presale = () => {
                           </div>
                           <label>Batch Count</label>
                         </div>
-                        <label>You get <h3>{batchCount * amountPerBatch} {tokenSymbol.toUpperCase()}</h3></label>
+                        <label>You get <h3>{addComma(batchCount * amountPerBatch)} {tokenSymbol.toUpperCase()}</h3></label>
                         <button className='buy-btn' onClick={handleBuy}>Buy</button>
                         {showWcMessage && <p>Check your Wallet and sign transaction</p>}
                         {reqKey !== '' && (
                           <>
                             <h6>Transaction Hash: {reqKey}</h6>
                             <h6>View this transaction on <a className='link' href={explorerLink} target='_blank' rel="noopener noreferrer">Chainweb Explorer</a></h6>
-                            <h5>You shall get total <span className='value'>{(p0Reserved - availableBatches) * amountPerBatch} {tokenSymbol.toUpperCase()}</span> tokens after public sale ends</h5>
+                            <h5>You shall get total <span className='value'>{addComma((p0Reserved - availableBatches) * amountPerBatch)} {tokenSymbol.toUpperCase()}</span> tokens after public sale ends</h5>
                             <h5>You total bought <span className='value'>{p0Reserved - availableBatches} batches</span> of {tokenSymbol.toUpperCase()}</h5>
                           </>
                         )}
