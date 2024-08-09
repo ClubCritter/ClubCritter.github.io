@@ -137,6 +137,10 @@ export const buyTokensSale = async(code, chain, salesAccount, amount, client, se
      console.log(provider.config)
      try {
        signedTx = await provider.quickSign(tx, client, session);
+       if(signedTx.status === 'fail'){
+        console.log(signedTx)
+        toast.error(`Error :${signedTx.message}`, { position: 'top-center' })
+       }
        if (provider.name === "wc") {
          // If the provider is 'WC', use the cmd, sigs, and hash directly from signedTx
          cmd = signedTx.cmd;
@@ -144,7 +148,6 @@ export const buyTokensSale = async(code, chain, salesAccount, amount, client, se
          outcomeHash = signedTx.hash;
        } else {
          // For other providers, extract from commandSigData
-         console.log(signedTx)
          const commandSigData = signedTx.responses[0].commandSigData;
          cmd = commandSigData.cmd;
          sigs = commandSigData.sigs;

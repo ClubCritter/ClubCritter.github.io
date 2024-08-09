@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
+import usePresaleStore from '../store/usePresaleStore';
 
-const BuyModal = ({tokenSymbol, batchCount, setBatchCount, amountPerBatch, kdaInput, handleBuy, setShowBuyModal, availableBatches}) => {
+const BuyModal = ({tokenSymbol, batchCount, amountPerBatch, kdaInput, handleBuy, setShowBuyModal, availableBatches}) => {
+  const {setBatchCount} = usePresaleStore()
   const [isMounted, setIsMounted] = useState(false);
   
 
@@ -33,7 +35,7 @@ const BuyModal = ({tokenSymbol, batchCount, setBatchCount, amountPerBatch, kdaIn
             <h4>in public sale you can buy as many tokens as you want</h4>
             <div className="buy-form">
               <label>You Give {kdaInput} KDA</label>
-               <input value= {batchCount} type="number"
+               <input value= {batchCount < 1 ? 1 : batchCount} type="number"
                                         min={1}
                                         step={1}
                                         max={availableBatches}

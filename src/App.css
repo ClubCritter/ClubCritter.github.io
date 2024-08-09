@@ -1106,6 +1106,7 @@ iframe img {
     }
     .footer{
         margin-bottom: 2rem;
+        padding-inline: 0.3rem !important;
     }
 }
 

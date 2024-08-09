@@ -5,9 +5,12 @@ import img2 from '../assets/img/gallery-img-02.png';
 import img3 from '../assets/img/gallery-img-03.png';
 import img4 from '../assets/img/gallery-img-04.png';
 import { pactCalls } from "../pactcalls/kadena";
-import { NS, MODULE_NAME } from "./Presale";
 import useWalletStore from "../wallet/walletStore";
+
 const chain = 1;
+
+export const NS = import.meta.env.VITE_APP_NS
+export const MODULE_NAME = import.meta.env.VITE_APP_MODULE_NAME
 
 const Tokenomics = () => {
   const { pubKey } = useWalletStore.getState();
@@ -22,6 +25,7 @@ const Tokenomics = () => {
   useEffect(() => {
     const getToken = async () => {
       const code = `(use ${NS}.${MODULE_NAME}) DETAILS`;
+      console.log(code)
       const res = await pactCalls(code, chain, pubKey);
       setToken(res.result.data);
       console.log(res.result.data)

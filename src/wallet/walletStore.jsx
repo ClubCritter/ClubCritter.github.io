@@ -92,6 +92,7 @@ const useWalletStore = create((set) => ({
   },
 
   setProvider: (newProvider) => set({ provider: newProvider }),
+  getState: () => ({ /* return the current state */ }),
 }));
 
 export default useWalletStore;
