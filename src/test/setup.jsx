@@ -5,10 +5,6 @@ import { MemoryRouter } from 'react-router-dom';
 import * as matchers from '@testing-library/jest-dom/matchers';
 import { render } from '@testing-library/react';
 import ClientContextProvider from '../wallet/providers/ClientContextProvider';
-import { pactCalls, buyTokensSale, fetchBalance } from '../pactcalls/kadena';
-import useWalletStore from '../wallet/walletStore';
-import { useWalletConnectClient } from '../wallet/providers/ClientContextProvider';
-import { toast } from 'react-toastify';
 
 expect.extend(matchers);
 
@@ -53,18 +49,24 @@ vi.mock('@walletconnect/sign-client', () => ({
   }
 }));
 
-vi.mock('@walletconnect/modal', () => ({
-  __esModule: true,
-  WalletConnectModal: vi.fn().mockImplementation(() => ({
-    openModal: vi.fn(),
-    closeModal: vi.fn()
-  }))
-}));
+vi.mock('@walletconnect/modal', () => {
+  return {
+    __esModule: true,
+    WalletConnectModal: vi.fn().mockImplementation(() => {
+      return {
+        openModal: vi.fn(),
+        closeModal: vi.fn()
+      };
+    })
+  };
+});
 
-vi.mock('@walletconnect/utils', () => ({
-  __esModule: true,
-  getSdkError: vi.fn().mockReturnValue({})
-}));
+vi.mock('@walletconnect/utils', () => {
+  return {
+    __esModule: true,
+    getSdkError: vi.fn().mockReturnValue({})
+  };
+});
 
 // Mock pactCalls
 vi.mock('../pactcalls/kadena', () => ({

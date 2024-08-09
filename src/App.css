@@ -14,6 +14,7 @@ html,
 body,
 .page-container {
     height: 100%;
+    position: relative;
 }
 
 body {
@@ -98,7 +99,18 @@ h2 {
 .container-fluid {
     max-width: 1860px;
 }
-
+.navbar-container{
+    position: fixed;
+    height: 100px;
+    z-index: 1000;
+}
+.app-container{
+    margin-top: 100px;
+}
+.scrl img{
+  height: 2rem;
+  width: 2rem;
+}
 .footer {
     position: relative;
     bottom: 0;
@@ -155,9 +167,7 @@ h2 {
     color: #fcfcfc !important;
 }
 
-.navbar {
-    margin-top: 15px;
-}
+
 
 .navbar .navbar-nav .nav-item {
     margin-left: 15px;
@@ -260,6 +270,7 @@ h2 {
 }
 .intro-wrap {
     padding-inline: 10rem;
+    margin-top: 3rem;
 }
 .page-left {
     margin-left: 100px;
@@ -962,6 +973,10 @@ iframe img {
 @media (max-width: 1200px) {
     .navbar .navbar-nav .nav-item .nav-link {
         padding: 15px 45px;
+    }
+    .intro-wrap {
+        padding-inline: 2rem;
+        margin-top: 2rem;
     }
 }
 

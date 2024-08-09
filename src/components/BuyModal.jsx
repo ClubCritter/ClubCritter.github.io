@@ -27,6 +27,11 @@ const BuyModal = ({tokenSymbol, batchCount, amountPerBatch, kdaInput, handleBuy,
       setShowBuyModal(false);
     }
   };
+
+  useEffect(() => {
+    setBatchCount(1)
+  }, [])
+
   return (
     <>
        <div className='wallet-modal-container tm-bg-light-n'>
@@ -35,7 +40,7 @@ const BuyModal = ({tokenSymbol, batchCount, amountPerBatch, kdaInput, handleBuy,
             <h4>in public sale you can buy as many tokens as you want</h4>
             <div className="buy-form">
               <label>You Give {kdaInput} KDA</label>
-               <input value= {batchCount < 1 ? 1 : batchCount} type="number"
+               <input value= {batchCount} type="number"
                                         min={1}
                                         step={1}
                                         max={availableBatches}

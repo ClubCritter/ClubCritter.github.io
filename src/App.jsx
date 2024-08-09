@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import bgVideo from './assets/video/gfp-astro-timelapse.mp4';
+import upArrow from './assets/img/up-arrow.svg'
 import Home from './pages/Home';
 import './App.css';
 import ClientContextProvider from './wallet/providers/ClientContextProvider';
 import 'react-toastify/dist/ReactToastify.css';
+import useUiStore from './store/uiStore';
 
 function App() {
+  const { navbarOpacity } = useUiStore()
   const [allAssetsLoaded, setAllAssetsLoaded] = useState(false);
   const videoRef = useRef(null);
 
@@ -70,6 +73,26 @@ function App() {
         <div className="loader-section section-left"></div>
         <div className="loader-section section-right"></div>
       </div>
+      {navbarOpacity < 1 && 
+        <button style={{
+          position: 'fixed',
+          bottom: '10%',
+          left: '97%',
+          transform: 'translate(-50%, -50%)',
+          zIndex: 1000,
+          backgroundColor: 'transparent',
+          border: 'none'
+        }} 
+          className='tm-bg-dark-a scrl'
+          >
+          <img src={upArrow} 
+          onClick = {
+            () => {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }/>
+        </button>
+      }
     </>
   );
 }
