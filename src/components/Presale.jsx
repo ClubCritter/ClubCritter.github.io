@@ -137,7 +137,7 @@ const Presale = () => {
   const handleBuy = async () => {
 
     if (kdaInput > balance) {
-      setBatchCount(0);
+      setShowBuyModal(false)
       toast.error(`Insufficient balance on Chain: ${supplyChain}`);
       return
     }
@@ -153,7 +153,7 @@ const Presale = () => {
       `;
       const res = await buyTokensSale(code, supplyChain, salesAccount, kdaInput, client, session);
         
-      const { data, reqKey, result } = res.preflightResult;
+      const {reqKey, result } = res.preflightResult;
       setKdaInput(0)
       setReqKey(reqKey);
 
@@ -161,7 +161,7 @@ const Presale = () => {
         setShowBuyModal(false);
         setAvailableBatches(availableBatches - batchCount);
         setBalance(balance - kdaInput);
-        toast.success(`Success: ${data}`, { position: 'top-center' });
+        toast.success(`Success: ${result.data}`, { position: 'top-center' });
         toast.success(`Request Key: ${reqKey}`, { position: 'bottom-right' });
       } else {
         toast.error(`Error: ${result.error?.message}`);
@@ -172,6 +172,10 @@ const Presale = () => {
   };
 
   const handleBuyPublicSale = () => {
+    if (currentPrice > balance) {
+      toast.error(`Insufficient balance on Chain: ${supplyChain}`);
+      return
+    }
     setShowBuyModal(true);
   };
 
