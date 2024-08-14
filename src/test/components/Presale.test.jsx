@@ -27,7 +27,7 @@ describe('Presale Component', () => {
   });
 
      it('should load the presale component', () => {
-       renderWithRouter(<Presale />);
+       global.renderWithRouter(<Presale />);
        screen.debug()
      })
 

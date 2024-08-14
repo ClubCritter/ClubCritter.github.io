@@ -7,7 +7,7 @@ import img4 from '../assets/img/gallery-img-04.png';
 import { pactCalls } from "../pactcalls/kadena";
 import useWalletStore from "../wallet/walletStore";
 
-const chain = 1;
+const CHAIN = 1;
 
 export const NS = import.meta.env.VITE_APP_NS
 export const MODULE_NAME = import.meta.env.VITE_APP_MODULE_NAME
@@ -20,25 +20,42 @@ const Tokenomics = () => {
   const { pubKey } = useWalletStore.getState();
   const [totalsupply, setTotalSupply] = useState(0);
   const [logouri, setLogoUri] = useState('');
-  const burned = 0;
+  const [burned, setBurned] = useState(0);
   const newToken = totalsupply - burned;
   const [token, setToken] = useState({});
   const [selectedSegmentIndex, setSelectedSegmentIndex] = useState(null);
   const [hoveredSegmentIndex, setHoveredSegmentIndex] = useState(null);
+  
+  const getBurn = async (token) => {
+    try {
+        const code = `(n_e309f0fa7cf3a13f93a8da5325cdad32790d2070.burn.get-balance ${NS}.${MODULE_NAME})`;
+        const chain = CHAIN;
+        const res = await pactCalls(code, chain);
+        setBurned(res.result.data)
+    } catch (error) {
+        console.log(`${token.name} account does not exist`);
+        return null;
+    }
+};
+  
+  useEffect(() => {
+    getBurn()
+  }, [])
+
 
   useEffect(() => {
     const getToken = async () => {
       const code = `(use ${NS}.${MODULE_NAME}) DETAILS`;
-      console.log(code)
+      const chain = CHAIN;
       const res = await pactCalls(code, chain, pubKey);
       setToken(res.result.data);
-      console.log(res.result.data)
       setTotalSupply(res.result.data.supply?.int);
       setLogoUri(res.result.data.imageUrl);
     };
     getToken();
   }, [pubKey, token]);
 
+  
 
   const pieChartData = [
     { title: 'Team', value: 15, color: '#2c3e50' },
