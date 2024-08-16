@@ -195,13 +195,14 @@ const Presale = () => {
       setDeployerPubKey(deployerPubKey);
     } finally {
       setIsLoading(false);
-      setShowDeployerInfoModal(false);
     }
   };
 
   const handleClickDeployer = () => {
     setShowDeployerInfoModal(true);
-    getTokenDeployer();
+    if(deployerPubKey === ''){
+      getTokenDeployer();
+    }
   };
 
   useEffect(() => {
@@ -351,7 +352,8 @@ const Presale = () => {
       {showModal ? <ConnectWalletModal /> : null}
       {showDeployerInfoModal && 
         <DeployerInfoModal deployerPubKey = {deployerPubKey}
-          pubKey = {pubKey} />
+          pubKey = {pubKey} 
+          setShowDeployerInfoModal = { setShowDeployerInfoModal }/>
       }
     </>
   );
