@@ -108,6 +108,12 @@ input[type="number"] {
 .link {
   color: #f07c47 ;
 }
+.btn-small{
+  padding: 0 1em;
+  color: #f07c47 !important;
+  background: transparent;
+  border: 0;
+}
   @media (max-width : 600px) {
     .number-input{
       flex-direction: column-reverse;

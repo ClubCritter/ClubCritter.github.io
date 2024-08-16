@@ -1,6 +1,6 @@
 // src/store/usePresaleStore.js
 import { create } from 'zustand';
-import { pactCalls, fetchBalance } from '../pactcalls/kadena';
+import { pactCalls, fetchBalance, pactCallsSig } from '../pactcalls/kadena';
 
 const usePresaleStore = create((set) => ({
   balance: 0,
@@ -17,6 +17,7 @@ const usePresaleStore = create((set) => ({
   salesAccount: '',
   availableBatches: 0,
   supplyChain: '1',
+  deployer: '' ,
   
   setKdaInput: (input) => set({kdaInput: input}) ,
   setBatchCount: (input) => set({batchCount: input}),
@@ -127,6 +128,16 @@ const usePresaleStore = create((set) => ({
       const code = `(${NS}.${SALES_MODULE_NAME}.available-batches "${account}")`;
       const res = await pactCalls(code, chain, pubKey);
       set({ availableBatches: res.result.data });
+    } catch (err) {
+      console.error(err);
+    }
+  },
+  fetchDeployer:  async (NS, account, chain, pubKey) => {
+    try {
+      const code = `(describe-keyset "${NS}.gov")`;
+      const res = await pactCallsSig(code, chain, pubKey);
+      console.log(res)
+      set({ deployer: res.result.data.keys[0] });
     } catch (err) {
       console.error(err);
     }

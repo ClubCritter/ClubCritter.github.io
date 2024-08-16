@@ -61,11 +61,14 @@ const ConnectWalletModal = ({ onWalletConnected }) => {
       onWalletConnected(provider);
     }
   }, [provider, onWalletConnected]);
-
-  if (!showModal) {
-    return null;
-  }
-
+ 
+  useEffect(() => {
+    if (!showModal) {
+      return null;
+    }
+  }, [])
+  
+ console.log(showModal)
   return (
     <div className="wallet-modal-container tm-bg-dark-n">
       <div className="wallet-modal" ref={modalRef}>

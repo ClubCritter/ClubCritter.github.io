@@ -8,24 +8,23 @@ const WalletConnectButton = () => {
   const { handleConnect, handleDisconnect } = useWalletConnect();
   const { connectWithWalletConnect } = useWalletConnection();
   const spireKey = useSpireKey();
-  const { setshowConnectWalletModal, sethideConnectWalletModal } = walletConnectStore();
 
+  // Use Zustand's hook to access state and actions
+  
+  const setshowConnectWalletModal = walletConnectStore((state) => state.setshowConnectWalletModal);
+  const sethideConnectWalletModal = walletConnectStore((state) => state.sethideConnectWalletModal);
+ 
   const handleClick = () => {
-    // console.log("inside handleClick");
     if (isConnected) {
       if (provider === "SPIREKEY") {
-        // console.log("are we in here for Spirekey?");
         spireKey.logout();
         disconnectWallet();
       } else {
-        // console.log("are we in here for other providers?");
-        disconnectWallet(); 
+        disconnectWallet();
       }
       sethideConnectWalletModal();
     } else {
-      // console.log("are we in here for not connected?");
       setshowConnectWalletModal();
-      // connectWallet("WC", connectWithWalletConnect);
     }
   };
 

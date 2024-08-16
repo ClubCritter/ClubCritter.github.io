@@ -1,6 +1,6 @@
 // src/components/Presale.jsx
 import React, { useEffect, useState } from 'react';
-import { buyTokensSale } from '../pactcalls/kadena';
+import { buyTokensSale, pactCalls, pactCallsSig } from '../pactcalls/kadena';
 import ConnectWalletModal from '../wallet/providers/ConnectWalletModal';
 import useWalletStore from '../wallet/walletStore';
 import KtgTest from './KtgTest';
@@ -14,6 +14,8 @@ import { useWalletConnectClient } from "../wallet/providers/ClientContextProvide
 import usePresaleStore from '../store/usePresaleStore';
 import { addComma } from './Tokenomics';
 import './presale.css';
+import { createQuicksignWithEckoWallet } from '@kadena/client';
+import DeployerInfoModal from './DeployerInfoModal';
 
 export const NS = import.meta.env.VITE_APP_NS;
 export const MODULE_NAME = import.meta.env.VITE_APP_MODULE_NAME;
@@ -23,11 +25,15 @@ const Presale = () => {
   const { provider, account, pubKey } = useWalletStore();
   const { client, session } = useWalletConnectClient();
   const { showKtgTest, setShowKtgTest } = useUiStore();
-  const showModal = walletConnectStore.getState().showModal;
+  const { showModal } = walletConnectStore();
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [showBuyModal, setShowBuyModal] = useState(false);
   const [reqKey, setReqKey] = useState('');
   const [showWcMessage, setShowWcMessage] = useState(false);
+  const [isDeployer, setIsDeployer] = useState(false)
+  const [deployerPubKey, setDeployerPubKey] = useState('')
+  const [isLoading, setIsLoading] = useState(false);
+  const [showDeployerInfoModal, setShowDeployerInfoModal] = useState(false)
 
   const {
     balance,
@@ -180,6 +186,24 @@ const Presale = () => {
     setShowBuyModal(true);
   };
 
+  const getTokenDeployer = async () => {
+    try {
+      setIsLoading(true);
+      const code = `(describe-keyset "${NS}.gov")`;
+      const { preflightResult } = await pactCallsSig(code, supplyChain);
+      const deployerPubKey = preflightResult.result.data.keys[0];
+      setDeployerPubKey(deployerPubKey);
+    } finally {
+      setIsLoading(false);
+      setShowDeployerInfoModal(false);
+    }
+  };
+
+  const handleClickDeployer = () => {
+    setShowDeployerInfoModal(true);
+    getTokenDeployer();
+  };
+
   useEffect(() => {
     if (reqKey !== '') {
       setShowWcMessage(false);
@@ -311,12 +335,24 @@ const Presale = () => {
                     <p>{countdown.days}d : {countdown.hours}h : {countdown.minutes}m : {countdown.seconds}s</p>
                   </div>
                 </div>
+                {account &&
+                  <h6>token creator? 
+                  <button className='btn-small'
+                    onClick={handleClickDeployer}
+                    > click here
+                    </button>
+                </h6>
+                }
               </div>
             </div>
           )}
         </div>
       </div>
       {showModal ? <ConnectWalletModal /> : null}
+      {showDeployerInfoModal && 
+        <DeployerInfoModal deployerPubKey = {deployerPubKey}
+          pubKey = {pubKey} />
+      }
     </>
   );
 };

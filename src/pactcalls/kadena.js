@@ -7,12 +7,13 @@ import { toast } from "react-toastify";
 const network = config.networkId;
 const api = config.apiUrl;
 
-export const pactCallsSig = async(code, chain, quickSign) => {
+export const pactCallsSig = async(code, chain) => {
   try  {
-        const { account, pubKey, provider } = useWalletStore.getState()
+        const { account, pubKey } = useWalletStore.getState()
         const pactClient = createClient(`${api}/chainweb/0.0/${network}/chain/${chain}/pact`)
-        const providerName = provider
-        console.log(providerName)
+        const providerName = useWalletStore.getState().provider;
+        const provider = providers[providerName]
+      
          const tx = Pact.builder
                .execution(code)
                .addSigner(pubKey, () => [])
@@ -28,7 +29,7 @@ export const pactCallsSig = async(code, chain, quickSign) => {
    
           
           let signedTx;
-          signedTx = await quickSign(tx);   
+          signedTx = await provider.quickSign(tx);   
           if (!signedTx ||!signedTx.responses ||!signedTx.responses[0]) {
             console.error('Error signing transaction:', signedTx);
             return;
@@ -69,8 +70,7 @@ export const pactCalls = async(code, chain, pubKey) => {
    
       try{
            const res = await pactClient.dirtyRead(tx)
-     
-            return res;
+           return res;
         } catch {
             console.error('Error in pact Call:', error)
             return null;
