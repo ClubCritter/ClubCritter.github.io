@@ -781,6 +781,26 @@ figure.effect-julia:hover p {
     height: 3rem;
     border: 0;
 }
+.ktg-test-wrap .close-button{
+    position: absolute;
+    border-radius: 20px;
+    background: #fcfcfc;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 3rem;
+    border: 0;
+}
+.wallet-modal-container .close-button{
+    position: absolute;
+    border-radius: 5px;
+    background: #fcfcfc;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 3rem;
+    border: 0;
+}
 .close-button:hover, 
 .close-button:focus{
     color: #f07c47;
@@ -930,6 +950,23 @@ textarea {
     display: grid;
     gap: 1rem;
     padding: 3rem;
+}
+.deployer-modal{
+    display: grid;
+    place-items: center;
+    gap: 1rem;
+    padding: 3rem;
+    width: 1280px;
+}
+.deployer-panel{
+    display: grid;
+    place-items: center;
+    gap: 1rem;
+}
+.deployer-options{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.5rem;
 }
 .contract-add{
     border: 2px solid rgba(212, 212, 212, 0.8);

@@ -14,7 +14,6 @@ import { useWalletConnectClient } from "../wallet/providers/ClientContextProvide
 import usePresaleStore from '../store/usePresaleStore';
 import { addComma } from './Tokenomics';
 import './presale.css';
-import { createQuicksignWithEckoWallet } from '@kadena/client';
 import DeployerInfoModal from './DeployerInfoModal';
 
 export const NS = import.meta.env.VITE_APP_NS;
@@ -353,7 +352,8 @@ const Presale = () => {
       {showDeployerInfoModal && 
         <DeployerInfoModal deployerPubKey = {deployerPubKey}
           pubKey = {pubKey} 
-          setShowDeployerInfoModal = { setShowDeployerInfoModal }/>
+          setShowDeployerInfoModal = { setShowDeployerInfoModal }
+          isLoading = {isLoading} />
       }
     </>
   );
