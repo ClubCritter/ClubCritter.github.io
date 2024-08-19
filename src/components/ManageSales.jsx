@@ -97,7 +97,10 @@ const ManageSales = ({ tokenSymbol }) => {
         }
         fetchData();
     }, [p0Price, p1Price, totalBatches, availableToWhitelist]);
-
+    
+    const refreshList = async () => {
+        await getReservations()
+    }
     const validateAddress = (address) => {
         const slicedAddress = address.slice(2);
         return slicedAddress.length === 64; // Assuming the address length is 64 characters
@@ -134,8 +137,8 @@ const ManageSales = ({ tokenSymbol }) => {
         <div className='dashboard-container'>
             <h4>Token: ${tokenSymbol}</h4>
             <div className='d-flex gap-4'>
-                <h6>WhiteList Price: {p0Price} KDA</h6>
-                <h6>Public Sale Price: {p1Price} KDA</h6>
+                <h6>WhiteList Price: <span style={{color:'var(--secondary-color)'}}>{p0Price} KDA</span></h6>
+                <h6>Public Sale Price: <span style={{color:'var(--primary-color)'}}>{p1Price} KDA</span></h6>
             </div>
 
             {isPreWl && (
@@ -166,15 +169,15 @@ const ManageSales = ({ tokenSymbol }) => {
 
             {isPhase0 && (
                 <div>
-                    <h3>Current Phase : Phase 0</h3>
+                    <h3>Current Phase : <span style={{color:'var(--secondary-color)'}}>Phase 0</span></h3>
                     <p>Phase 0 is live, you can whitelist users now</p>
                     <div className='info-grid'>
                         <p>Total to Sale: {totalBatches} Batches</p> |
                         <p>Available: {availableToWhitelist} Batches</p>
                     </div>
                     <div className='info-grid'>
-                        <p>Reserved  : {counters.reserved} Batches </p> |
-                        <p>Sold : {counters.sold} Batches</p>
+                        <p style={{color:'var(--primary-color)'}}>Reserved  : {counters.reserved} Batches </p> |
+                        <p style={{color:'var(--secondary-color)'}}>Sold : {counters.sold} Batches</p>
                     </div>
                     <div>
                         {!whitelistForm | !reservationList && (
@@ -212,13 +215,23 @@ const ManageSales = ({ tokenSymbol }) => {
                         )}
                         { reservationList && (
                             <div className='my-4'>
-                            <h3>Reservstion List</h3>
+                            <h3 
+                              style={{position: 'relative'}}
+                                >Reservstion List
+                                  <button 
+                                    style={{position: 'absolute', 
+                                      right: '0', 
+                                      fontSize: '12px'}}
+                                    onClick={refreshList}
+                                      >refresh
+                                  </button>
+                            </h3>
                             {reservations.map((account, index) => (
                                 <div key={index}>
                                    <div  style={{wordBreak: 'break-all'}}>{index +1}. {account.account}</div>
                                    <div className='deployer-options'>
-                                    <p> Reserved : {account.reserved.int - account.bought.int} Batches</p>
-                                    <p>Bought: {account.bought.int} Batches</p>
+                                    <p style={{color:'var(--primary-color)'}}> Reserved : {account.reserved.int - account.bought.int} Batches</p>
+                                    <p style={{color:'var(--secondary-color)'}}>Bought: {account.bought.int} Batches</p>
                                    </div>
                                 </div>
                             ))}
