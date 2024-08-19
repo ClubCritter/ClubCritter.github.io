@@ -189,7 +189,7 @@ const Presale = () => {
     try {
       setIsLoading(true);
       const code = `(describe-keyset "${NS}.gov")`;
-      const { preflightResult } = await pactCallsSig(code, supplyChain);
+      const { preflightResult } = await pactCallsSig(code, supplyChain, client, session);
       const deployerPubKey = preflightResult.result.data.keys[0];
       setDeployerPubKey(deployerPubKey);
     } finally {
@@ -233,7 +233,7 @@ const Presale = () => {
             <div className="row">
               <div className="tm-contact-left tm-bg-dark">
                 <div>
-                  <h2>{tokenSymbol.toUpperCase()} Presale</h2>
+                  <h2>${tokenSymbol} Presale</h2>
                   <p>Token Contract Address:</p>
                   <p className="contract-add">
                     {NS}.{MODULE_NAME}
@@ -350,7 +350,9 @@ const Presale = () => {
       </div>
       {showModal ? <ConnectWalletModal /> : null}
       {showDeployerInfoModal && 
-        <DeployerInfoModal deployerPubKey = {deployerPubKey}
+        <DeployerInfoModal 
+          tokenSymbol={tokenSymbol}
+          deployerPubKey = {deployerPubKey}
           pubKey = {pubKey} 
           setShowDeployerInfoModal = { setShowDeployerInfoModal }
           isLoading = {isLoading} />

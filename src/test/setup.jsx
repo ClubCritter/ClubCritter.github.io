@@ -6,8 +6,10 @@ import * as matchers from '@testing-library/jest-dom/matchers';
 import { render } from '@testing-library/react';
 import ClientContextProvider from '../wallet/providers/ClientContextProvider';
 
+// Extend expect with matchers
 expect.extend(matchers);
 
+// Cleanup after each test
 afterEach(() => {
   cleanup();
 });
@@ -49,24 +51,18 @@ vi.mock('@walletconnect/sign-client', () => ({
   }
 }));
 
-vi.mock('@walletconnect/modal', () => {
-  return {
-    __esModule: true,
-    WalletConnectModal: vi.fn().mockImplementation(() => {
-      return {
-        openModal: vi.fn(),
-        closeModal: vi.fn()
-      };
-    })
-  };
-});
+vi.mock('@walletconnect/modal', () => ({
+  __esModule: true,
+  WalletConnectModal: vi.fn().mockImplementation(() => ({
+    openModal: vi.fn(),
+    closeModal: vi.fn()
+  }))
+}));
 
-vi.mock('@walletconnect/utils', () => {
-  return {
-    __esModule: true,
-    getSdkError: vi.fn().mockReturnValue({})
-  };
-});
+vi.mock('@walletconnect/utils', () => ({
+  __esModule: true,
+  getSdkError: vi.fn().mockReturnValue({})
+}));
 
 // Mock pactCalls
 vi.mock('../pactcalls/kadena', () => ({
@@ -76,27 +72,24 @@ vi.mock('../pactcalls/kadena', () => ({
 }));
 
 // Mock walletStore
-vi.mock('../wallet/walletStore', () => {
-  // Return a mock for the Zustand store
-  return {
-    __esModule: true,
-    default: () => ({
-      getState: vi.fn(() => ({
-        provider: 'mockProvider',
-        account: 'mockAccount',
-        pubKey: 'mockPubKey',
-        isConnected: true,
-        messages: 'mockMessages',
-        session: {},
-        setSessionData: vi.fn(),
-        connectWallet: vi.fn(),
-        disconnectWallet: vi.fn(),
-        setProvider: vi.fn(),
-      })),
-      setState: vi.fn(),  // Optionally mock setState if used
-    }),
-  };
-});
+vi.mock('../wallet/walletStore', () => ({
+  __esModule: true,
+  default: () => ({
+    getState: vi.fn(() => ({
+      provider: 'mockProvider',
+      account: 'mockAccount',
+      pubKey: 'mockPubKey',
+      isConnected: true,
+      messages: 'mockMessages',
+      session: {},
+      setSessionData: vi.fn(),
+      connectWallet: vi.fn(),
+      disconnectWallet: vi.fn(),
+      setProvider: vi.fn(),
+    })),
+    setState: vi.fn(),  // Optionally mock setState if used
+  }),
+}));
 
 // Mock useWalletConnectClient
 vi.mock('../wallet/providers/ClientContextProvider', () => ({
@@ -110,9 +103,8 @@ vi.mock('../wallet/providers/ClientContextProvider', () => ({
     connect: vi.fn(),
     disconnect: vi.fn(),
   }),
-  default: vi.fn(), // Add this line
+  default: vi.fn(), // Add this line if needed
 }));
-
 
 // Mock toastify
 vi.mock('react-toastify', () => ({

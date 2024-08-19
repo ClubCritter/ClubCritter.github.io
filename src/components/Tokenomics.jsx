@@ -31,6 +31,10 @@ const Tokenomics = () => {
         const code = `(n_e309f0fa7cf3a13f93a8da5325cdad32790d2070.burn.get-balance ${NS}.${MODULE_NAME})`;
         const chain = CHAIN;
         const res = await pactCalls(code, chain);
+        if(res.result.status === 'failure'){
+          console.log(res.result.error);
+          return null
+        }
         setBurned(res.result.data)
     } catch (error) {
         console.log(`${token.name} account does not exist`);
@@ -40,7 +44,7 @@ const Tokenomics = () => {
   
   useEffect(() => {
     getBurn()
-  }, [])
+  }, [burned])
 
 
   useEffect(() => {
@@ -54,8 +58,6 @@ const Tokenomics = () => {
     };
     getToken();
   }, [pubKey, token]);
-
-  
 
   const pieChartData = [
     { title: 'Team', value: 15, color: '#2c3e50' },

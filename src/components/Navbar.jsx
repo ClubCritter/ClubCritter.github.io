@@ -11,7 +11,7 @@ const Navbar = () => {
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
-      const opacity = Math.max(1 - scrollPosition / 200, 0);
+      const opacity = Math.max(1 - scrollPosition / 50, 0);
       setNavbarOpacity(opacity);
     };
 

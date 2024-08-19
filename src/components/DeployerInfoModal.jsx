@@ -48,10 +48,11 @@ const DeployerInfoModal = ({tokenSymbol, deployerPubKey, pubKey, setShowDeployer
                 pubKey === deployerPubKey ? 
                   <div className='centered-div'>
                     {deployerPanel ?
-                      <DeployerPanel setDeployerPanel = {setDeployerPanel} />
+                      <DeployerPanel setDeployerPanel = {setDeployerPanel}
+                        tokenSymbol={tokenSymbol} />
                     :
                     <>
-                    <h3> You Are the Deployer</h3>
+                    <h3> You Are the Deployer of ${tokenSymbol} </h3>
                       <button className='btn btn-secondary'
                         onClick={showDeployerPanel}
                           >Visit Deployer Panel

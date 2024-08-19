@@ -342,7 +342,7 @@ h2 {
     width: 100%;
     display: grid;
     place-items: center;
-    z-index: 10000;
+    z-index: 5000;
     overflow-y: auto;
   }
 
@@ -437,6 +437,7 @@ h2 {
 /* Gallery page */
 .gallery-container {
     max-width: 1300px;
+    width: 100%
 }
 
 .tokenomics-container {
@@ -533,7 +534,6 @@ h2 {
 }
 
 .tokenomics-grid-container {
-    max-width: 1180px;
     min-height: 450px;
     display: grid;
     place-items: center;
@@ -826,6 +826,7 @@ figure.effect-julia:hover p {
 .form-input{
     display: grid;
     place-items: top;
+    position: relative;
 }
 .send-tokens{
     display: grid;
@@ -951,23 +952,6 @@ textarea {
     gap: 1rem;
     padding: 3rem;
 }
-.deployer-modal{
-    display: grid;
-    place-items: center;
-    gap: 1rem;
-    padding: 3rem;
-    width: 1280px;
-}
-.deployer-panel{
-    display: grid;
-    place-items: center;
-    gap: 1rem;
-}
-.deployer-options{
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 0.5rem;
-}
 .contract-add{
     border: 2px solid rgba(212, 212, 212, 0.8);
     padding-inline: 1rem;
@@ -991,6 +975,10 @@ iframe img {
     border-radius: 2px 15px 2px 15px;
     border: 2px solid #fcfcfc;
     margin-block: 2rem;
+}
+.info-grid{
+    display: grid;
+    grid-template-columns: 5fr 1fr 5fr;
 }
 @media (min-width: 992px) {
     .navbar-expand-lg .navbar-collapse {
@@ -1113,6 +1101,9 @@ iframe img {
     }
     .intro-wrap {
         padding-inline: 0;
+    }
+    .deployer-options{
+        grid-template-columns: 1fr;
     }
 }
 .centered-div{

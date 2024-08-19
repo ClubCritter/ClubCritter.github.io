@@ -114,6 +114,32 @@ input[type="number"] {
   background: transparent;
   border: 0;
 }
+.dashboard-container{
+  width: 100%;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  gap: 1rem
+}
+.deployer-modal{
+  display: grid;
+  place-items: center;
+  gap: 1rem;
+  padding: 3rem;
+  width: 100%;
+  max-width: 1280px;
+}
+.deployer-panel{
+  display: grid;
+  place-items: center;
+  gap: 1rem;
+  max-width: 100%;
+}
+.deployer-options{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
   @media (max-width : 600px) {
     .number-input{
       flex-direction: column-reverse;

@@ -4,7 +4,7 @@ import walletConnectStore from "../wallet/providers/connectWalletModalSlice";
 import { useSpireKey } from "../wallet/spirekey/spireKeyProvider";
 
 const WalletConnectButton = () => {
-  const { connectWallet, disconnectWallet, isConnected, provider } = useWalletStore();
+  const { disconnectWallet, isConnected, provider } = useWalletStore();
   const { handleConnect, handleDisconnect } = useWalletConnect();
   const { connectWithWalletConnect } = useWalletConnection();
   const spireKey = useSpireKey();

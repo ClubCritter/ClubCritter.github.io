@@ -18,11 +18,17 @@ const usePresaleStore = create((set) => ({
   availableBatches: 0,
   supplyChain: '1',
   deployer: '' ,
+  p0Price: null,
+  p1Price: null,
+  totalSales: 0,
+  counters: {},
   
   setKdaInput: (input) => set({kdaInput: input}) ,
   setBatchCount: (input) => set({batchCount: input}),
   setAvailableBatches: (input) => set({availableBatches: input}),
   setBalance: (input) => set({balance: input}),
+  setP0Price: (input) => set({p0Price: input}),
+  setP1Price: (input) => set({p1Price: input}),
   
   fetchBalance: async (account, chain) => {
     try {
@@ -138,6 +144,33 @@ const usePresaleStore = create((set) => ({
       const res = await pactCallsSig(code, chain, pubKey);
       console.log(res)
       set({ deployer: res.result.data.keys[0] });
+    } catch (err) {
+      console.error(err);
+    }
+  },
+  fetchTotalSales: async (NS, SALES_MODULE_NAME, chain, pubKey) => {
+    try{
+      const code = `(${NS}.${SALES_MODULE_NAME}.get-sales)`;
+      const res = await pactCallsSig(code, chain, pubKey);
+      console.log(res.result.data)
+    } catch (err) {
+      console.error(err);
+    }
+  },
+  fetchP0Price: async (NS, SALES_MODULE_NAME, chain, pubKey) => {
+    try{
+      const code = `(${NS}.${SALES_MODULE_NAME}.get-p0-price)`;
+      const res = await pactCalls(code, chain);
+      set({p0Price: res.result.data})
+    } catch (err) {
+      console.error(err);
+    }
+  },
+  fetchP1Price: async (NS, SALES_MODULE_NAME, chain, pubKey) => {
+    try{
+      const code = `(${NS}.${SALES_MODULE_NAME}.get-p1-price)`;
+      const res = await pactCalls(code, chain);
+      set({p1Price: res.result.data})
     } catch (err) {
       console.error(err);
     }
