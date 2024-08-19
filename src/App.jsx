@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import bgVideo from './assets/video/gfp-astro-timelapse.mp4';
+import bgVideo from './assets/video/bg.mp4';
 import upArrow from './assets/img/up-arrow.svg'
 import Home from './pages/Home';
 import './App.css';

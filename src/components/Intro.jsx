@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import homeImg from '../assets/img/home-img-1.png'
+import homeImg from '../assets/img/intro.png'
 
 const Intro = () => {
   return (
