@@ -297,7 +297,7 @@ const Presale = () => {
                             <h6>Transaction Hash: {reqKey}</h6>
                             <h6>View this transaction on <a className='link' href={explorerLink} target='_blank' rel="noopener noreferrer">Chainweb Explorer</a></h6>
                             <h5>You shall get total <span className='value'>{addComma((p0Reserved - availableBatches) * amountPerBatch)} {tokenSymbol.toUpperCase()}</span> tokens after public sale ends</h5>
-                            <h5>You total bought <span className='value'>{p0Reserved - availableBatches} batches</span> of {tokenSymbol.toUpperCase()}</h5>
+                            <h5>You total bought <span className='value'>{p0Reserved - availableBatches} {(p0Reserved - availableBatches) > 1 ? "batches" : "batch"}</span> of {tokenSymbol.toUpperCase()}</h5>
                           </>
                         )}
                       </div>
