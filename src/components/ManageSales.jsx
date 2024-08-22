@@ -49,9 +49,9 @@ const ManageSales = ({ tokenSymbol }) => {
     const updatePrices = async () => {
         const code = `(${NS}.${SALES_MODULE_NAME}.set-price "phase-0" ${newP0Price}) (${NS}.${SALES_MODULE_NAME}.set-price "phase-1" ${newP1Price})`;
         const res = await pactCallsSales(code, supplyChain, client, session);
-        const { result } = res.preflightResult;
-        setP0Price(newP0Price);
-        setP1Price(newP1Price);
+        const { result } = await res.preflightResult;
+        await setP0Price(newP0Price);
+        await setP1Price(newP1Price);
         setPriceResult(result.data);
         setShowPriceChage(false);
     }
@@ -96,7 +96,7 @@ const ManageSales = ({ tokenSymbol }) => {
           await getReservations()
         }
         fetchData();
-    }, [p0Price, p1Price, totalBatches, availableToWhitelist]);
+    }, []);
     
     const refreshList = async () => {
         await getReservations()
@@ -153,7 +153,7 @@ const ManageSales = ({ tokenSymbol }) => {
                             <div className='d-flex gap-2'>
                                 <div className='col-6'>
                                     <label>New Whitelist Price (Per Batch)</label>
-                                    <input value={newP0Price} type='text' onChange={(e) => setNewP0Price(e.target.value)} />
+                                    <input value={(newP0Price)} type='text' onChange={(e) => setNewP0Price(e.target.value)} />
                                 </div>
                                 <div className='col-6'>
                                     <label>New Public Sale Price (Per Batch)</label>

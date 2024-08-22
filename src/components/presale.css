@@ -50,7 +50,6 @@ input[type="number"] {
   }
   .presale-info{
     display: grid;
-    margin-bottom: 15px;
     place-items: center;
     border: 1.5px solid #FCFCFC;
     padding-top: 10px;

@@ -242,17 +242,25 @@ const Presale = () => {
                     </button>
                   </p>
                 </div>
-                <div className='presale-info'>
-                  <h2>Presale Info</h2>
-                  <div className='infos'>
-                    <h3><span>1 Batch</span><span>|</span><span> {addComma(amountPerBatch)} ${tokenSymbol.toUpperCase()}</span></h3>
-                    {isPhase0 && (
-                      <h3><span>Per WL</span><span>|</span><span>{p0Reserved} {p0Reserved > 1 ? "Batches" : "Batch"}</span></h3>
-                    )}
-                    <h3><span>{isPhase0 ? "WL" : ""} Price</span><span>|</span><span>{currentPrice} KDA</span></h3>
-                    {account && isPhase0 && (
-                      <h3><span>Reserved</span><span>|</span><span>{availableBatches} {availableBatches > 1 ? "Batches" : "Batch"}</span></h3>
-                    )}
+                <div>
+                 <div className='presale-info'>
+                   <h2>Presale Info</h2>
+                    <div className='infos'>
+                      <h3><span>1 Batch</span><span>|</span><span> {addComma(amountPerBatch)} ${tokenSymbol.toUpperCase()}</span></h3>
+                      {isPhase0 && (
+                        <h3><span>Per WL</span><span>|</span><span>{p0Reserved} {p0Reserved > 1 ? "Batches" : "Batch"}</span></h3>
+                      )}
+                      <h3><span>{isPhase0 ? "WL" : ""} Price</span><span>|</span><span>{currentPrice} KDA</span></h3>
+                      {account && isPhase0 && (
+                        <h3><span>Reserved</span><span>|</span><span>{availableBatches} {availableBatches > 1 ? "Batches" : "Batch"}</span></h3>
+                      )}
+                    </div>
+                  </div>
+                  <div className='countdown-container'>
+                    <p>{isPreWl ? "Whitelist Starts in" : isPhase0 && !isWhitelisted ? "Public Sale Starts In" : isPhase0 && isWhitelisted ? "Presale Ends In" : isPhase1 ? "Public Sale Ends in" : "Sale Ended"}</p>
+                    <div className="countdown">
+                      <p>{countdown.days}d : {countdown.hours}h : {countdown.minutes}m : {countdown.seconds}s</p>
+                    </div>
                   </div>
                 </div>
                 {!account ? (
@@ -329,12 +337,6 @@ const Presale = () => {
                   </div>
                 )}
                 <h4>{isPreWl ? "Waiting for White Listed Presale to start" : isPhase0 ? "White Listed Presale is Live" : isPhase1 ? "Public Sale is Live" : "Sales Ended"}</h4>
-                <div className='countdown-container'>
-                  <p>{isPreWl ? "Whitelist Starts in" : isPhase0 && !isWhitelisted ? "Public Sale Starts In" : isPhase0 && isWhitelisted ? "Presale Ends In" : isPhase1 ? "Public Sale Ends in" : "Sale Ended"}</p>
-                  <div className="countdown">
-                    <p>{countdown.days}d : {countdown.hours}h : {countdown.minutes}m : {countdown.seconds}s</p>
-                  </div>
-                </div>
                 {account &&
                   <h6>token creator? 
                   <button className='btn-small'

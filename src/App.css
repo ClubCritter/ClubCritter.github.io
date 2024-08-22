@@ -10,8 +10,8 @@ https://templatemo.com/tm-560-astro-motion
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
 :root{
-    --primary-color: #f07c47;
-    --secondary-color: #99FF66;
+    --primary-color: #6c5ce7;
+    --secondary-color: #2e865f;
 }
 html,
 body,
@@ -32,7 +32,7 @@ body {
 }
 
 a {
-    color: #9F6;
+    color: var(--secondary-color);
     text-decoration: none;
     transition: all 0.3s ease;
 }
@@ -40,7 +40,7 @@ ol, ul {
     padding: 1rem 0 !important;
 }
 .footer a {
-    color: #9F6 !important;
+    color: var(--secondary-color) !important;
     text-decoration: none;
     transition: all 0.3s ease;
 }
@@ -49,7 +49,7 @@ ol, ul {
 }
 
 .content-pad a {
-    color: #9F6 !important;
+    color: var(--secondary-color) !important;
     text-decoration: none;
     transition: all 0.3s ease;
 }
@@ -137,7 +137,7 @@ h2 {
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary:active {
-    color: #5cac38 !important;
+    color: var(--secondary-color) !important;
     background-color: #fcfcfc !important;
 }
 
