@@ -11,8 +11,8 @@ const DeployerPanel = ({setDeployerPanel, tokenSymbol, countdown}) => {
       optionName: "Manage Sales",
       action: "manageSales"
     },{
-      optionName: "Access Tresury",
-      action: "accessTresury"
+      optionName: "Access Treasury",
+      action: "accessTreasury"
     }
   ]
 
@@ -24,7 +24,7 @@ const DeployerPanel = ({setDeployerPanel, tokenSymbol, countdown}) => {
       switch (showOption) {
         case 'manageSales':
             return <ManageSales tokenSymbol = {tokenSymbol}/>
-        case 'accessTresury':
+        case 'accessTreasury':
             return <AccessTresury tokenSymbol = {tokenSymbol}/>
         default:
             return null

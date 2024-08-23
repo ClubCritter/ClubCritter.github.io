@@ -63,7 +63,7 @@ const ManageSales = ({ tokenSymbol }) => {
           ${walletList.join(' ')}`
       const res = await pactCallsSales(code, supplyChain, client, session)
       console.log(res)
-      toast.success(res.result.data)
+      toast.success(res.preflightResult.result.data)
       setAvailableToWhitelist(availableToWhitelist - (walletList.length * amountPerWL))
     }
 
@@ -78,8 +78,8 @@ const ManageSales = ({ tokenSymbol }) => {
         const res = await pactCalls(code, supplyChain, pubKey);
         const sold = res.result.data.sold.int;
         const reserved = res.result.data.reserved.int;
-        setCounters({sold: sold, reserved: reserved})
         setAvailableToWhitelist(totalBatches - (sold + reserved));
+        setCounters({sold: sold, reserved: reserved})
     }
     const getReservations = async () => {
         const code = `(${NS}.${SALES_MODULE_NAME}.get-reservations)`;
@@ -96,7 +96,7 @@ const ManageSales = ({ tokenSymbol }) => {
           await getReservations()
         }
         fetchData();
-    }, []);
+    }, [counters]);
     
     const refreshList = async () => {
         await getReservations()

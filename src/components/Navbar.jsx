@@ -43,7 +43,7 @@ const Navbar = () => {
         <div className="col-xs-12" >
           <div className="cd-slider-nav">
             <nav className="navbar navbar-expand-lg" aria-current="page" id="tm-nav">
-              <a className="navbar-brand tm-bg-dark-a px-4" href='/'>Presale Template</a>
+              <a className="navbar-brand tm-bg-dark-a px-4" href='/'>Presale</a>
               <button className="navbar-toggler tm-bg-dark-a" type="button" onClick={toggleMenu} data-bs-toggle="collapse" data-bs-target="#navbar-supported-content" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon"></span>
               </button>
