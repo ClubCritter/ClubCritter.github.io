@@ -60,10 +60,9 @@ const Tokenomics = () => {
   }, [pubKey, token]);
 
   const pieChartData = [
-    { title: 'Team', value: 15, color: '#2c3e50' },
-    { title: 'Treasury', value: 10, color: '#3498db' },
-    { title: 'Presale', value: 30, color: '#2e865f' },
-    { title: 'Locked Liquidity', value: 45, color: '#6c5ce7' },
+    { title: 'Treasury', value: 10, color: '#FF69B4' },
+    { title: 'Presale', value: 60, color: '#8BC34A' },
+    { title: 'Liquidity', value: 30, color: '#6C5CE7' },
   ];
 
   const getLabelStyle = () => {

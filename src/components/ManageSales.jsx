@@ -157,7 +157,7 @@ const ManageSales = ({ tokenSymbol }) => {
                                 </div>
                                 <div className='col-6'>
                                     <label>New Public Sale Price (Per Batch)</label>
-                                    <input value={newP1Price} type='text' onChange={(e) => setNewP1Price(e.target.value)} />
+                                    <input value={newP1Price} type='text' onChange={(e) => setNewP1Price(parseFloat(e.target.value))} />
                                 </div>
                             </div>
                             <button className='btn-primary mt-2' onClick={updatePrices}>Update Prices</button>
@@ -220,7 +220,7 @@ const ManageSales = ({ tokenSymbol }) => {
                                 >Reservstion List
                                   <button 
                                     style={{position: 'absolute', 
-                                      right: '0', 
+                                      right: '0',
                                       fontSize: '12px'}}
                                     onClick={refreshList}
                                       >refresh
