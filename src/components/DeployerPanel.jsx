@@ -1,8 +1,10 @@
 import React, {useState} from 'react'
 import ManageSales from './ManageSales';
 import AccessTresury from './AccessTresury';
+import usePresaleStore from '../store/usePresaleStore';
 
-const DeployerPanel = ({setDeployerPanel, tokenSymbol}) => {
+const DeployerPanel = ({setDeployerPanel, tokenSymbol, countdown}) => {
+    const {phase0startTime, phase1startTime, salesEndTime} = usePresaleStore()
     const [showOption, setShowOption] = useState(null);
 
     const options = [{
@@ -32,9 +34,21 @@ const DeployerPanel = ({setDeployerPanel, tokenSymbol}) => {
     const handleClosePanel = () => {
         setDeployerPanel(false)
     }
+
+  const now = new Date();
+  const isPreWl = now < phase0startTime;
+  const isPhase0 = now >= phase0startTime && now < phase1startTime;
+  const isPhase1 = now >= phase1startTime && now < salesEndTime;
+
   return (
   <div className='deployer-panel'>
     <h3>Deployer Panel</h3>
+    <div className='countdown-container'>
+                    <p>{isPreWl ? "Whitelist Starts in" : isPhase0 ? "Public Sale Starts In" : isPhase1 ? "Public Sale Ends in" : "Sale Ended"}</p>
+                    <div className="countdown">
+                      <p>{countdown.days}d : {countdown.hours}h : {countdown.minutes}m : {countdown.seconds}s</p>
+                    </div>
+    </div>
       <div className='deployer-options'>
       {options.map((option, index) => (
         <div key={index} >

@@ -3,7 +3,7 @@ import usePresaleStore from '../store/usePresaleStore';
 import { addComma } from './Tokenomics';
 import DeployerPanel from './DeployerPanel';
 
-const DeployerInfoModal = ({tokenSymbol, deployerPubKey, pubKey, setShowDeployerInfoModal, isLoading}) => {
+const DeployerInfoModal = ({tokenSymbol, deployerPubKey, pubKey, setShowDeployerInfoModal, isLoading, countdown}) => {
   
   const [deployerPanel, setDeployerPanel] = useState(false)  
 
@@ -49,7 +49,8 @@ const DeployerInfoModal = ({tokenSymbol, deployerPubKey, pubKey, setShowDeployer
                   <div className='centered-div'>
                     {deployerPanel ?
                       <DeployerPanel setDeployerPanel = {setDeployerPanel}
-                        tokenSymbol={tokenSymbol} />
+                        tokenSymbol={tokenSymbol} 
+                        countdown={countdown} />
                     :
                     <>
                     <h3> You Are the Deployer of ${tokenSymbol} </h3>

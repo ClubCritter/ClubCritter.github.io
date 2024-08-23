@@ -357,7 +357,8 @@ const Presale = () => {
           deployerPubKey = {deployerPubKey}
           pubKey = {pubKey} 
           setShowDeployerInfoModal = { setShowDeployerInfoModal }
-          isLoading = {isLoading} />
+          isLoading = {isLoading} 
+          countdown = {countdown}/>
       }
     </>
   );

@@ -279,15 +279,23 @@ export const buyTokensSale = async(code, chain, salesAccount, amount, client, se
   }
 }
 
-export const transferCoin = async (token, code, chain, quickSign, pubKey, sender, receiver, amount) => {
+export const transferCoin = async (token, code, chain, pubKey, sender, receiver, amount, client, session) => {
   try {
     const pactClient = createClient(`${api}/chainweb/0.0/${network}/chain/${chain}/pact`);
     const recPubKey = receiver.slice(2, 66)
+    const providerName = useWalletStore.getState().provider;
+    const provider = providers[providerName]
+    console.log(provider)
+    
+    if (providerName === null) {
+      throw new Error("Provider not found");
+    }
     const tx = Pact.builder
      .execution(code)
      .addData("ac-keyset", { "keys": [ recPubKey ], "pred": "keys-all" })
      .addSigner(pubKey, (signFor) => [
-      signFor(`${token}.TRANSFER`, sender, receiver, Number(amount)),
+        signFor(`${token}.TRANSFER`, sender, receiver, Number(amount)),
+        signFor(`${token}-treasury.TREASURY`),
         signFor('coin.GAS'),
       ])
      .setMeta({
@@ -299,24 +307,46 @@ export const transferCoin = async (token, code, chain, quickSign, pubKey, sender
      .addKeyset('ks', 'keys-all', pubKey)
      .setNetworkId(network)
      .createTransaction();
+
     let signedTx;
-    signedTx = await quickSign(tx);
-    if (!signedTx ||!signedTx.responses ||!signedTx.responses[0]) {
-      console.error('Error signing transaction:', signedTx);
-      return;
-    }
-    console.log(signedTx.responses[0]);
-    let commandSigData = signedTx.responses[0].commandSigData;
-    const cmd = commandSigData.cmd;
-    const sigs = commandSigData.sigs;
-    const outcomeHash = signedTx.responses[0].outcome.hash;
-    const preflightResult = await pactClient.preflight({cmd, sigs, hash: outcomeHash});
+     let cmd, sigs, outcomeHash;
+     console.log(provider.config)
+     try {
+       signedTx = await provider.quickSign(tx, client, session);
+       if(signedTx.status === 'fail'){
+        console.log(signedTx)
+        toast.error(`Error :${signedTx.message}`, { position: 'top-center' })
+       }
+       if (provider.name === "wc") {
+         // If the provider is 'WC', use the cmd, sigs, and hash directly from signedTx
+         cmd = signedTx.cmd;
+         sigs = signedTx.sigs;
+         outcomeHash = signedTx.hash;
+       } else {
+         // For other providers, extract from commandSigData
+         const commandSigData = signedTx.responses[0].commandSigData;
+         cmd = commandSigData.cmd;
+         sigs = commandSigData.sigs;
+         outcomeHash = signedTx.responses[0].outcome.hash;
+               }
+     } catch (error) {
+       console.error(error);
+     }
+
+    const bodyPayload = {
+      cmd,
+      sigs,
+      hash: outcomeHash,
+    };
+
+    const preflightResult = await pactClient.dirtyRead(bodyPayload);
     console.log(preflightResult)
     if (preflightResult.result.status === 'failure') {
       console.error(preflightResult.result.error.message);
+      toast.error(preflightResult.result.error.message)
       return preflightResult;
     } else {
-      const transactionDescriptor = await pactClient.submit({cmd, sigs, hash: outcomeHash});
+      const transactionDescriptor = await pactClient.submit(bodyPayload);
       console.log('TX Key: ', transactionDescriptor.requestKey);
       return { pactClient, transactionDescriptor, preflightResult };
     }

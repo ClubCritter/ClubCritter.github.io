@@ -21,14 +21,7 @@ const SendTokens = ({wallet , getBalance, sendCoin}) => {
          setAmt(0);
          setReqKey(key); 
          toast.success(`Transfer successful! Request Key: ${key}`, {
-            position: 'top-center',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          })
+            position: 'top-center'})
       } catch (err) {
          console.log(err);
       }
