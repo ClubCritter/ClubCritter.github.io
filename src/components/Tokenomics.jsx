@@ -6,8 +6,9 @@ import img3 from '../assets/img/gallery-img-03.png';
 import img4 from '../assets/img/gallery-img-04.png';
 import { pactCalls } from "../pactcalls/kadena";
 import useWalletStore from "../wallet/walletStore";
+import useTreasuryStore from '../store/useTreasuryStore';
 
-const CHAIN = 1;
+const CHAIN = "1";
 
 export const NS = import.meta.env.VITE_APP_NS
 export const MODULE_NAME = import.meta.env.VITE_APP_MODULE_NAME
@@ -18,6 +19,37 @@ export const addComma = (num) => {
 
 const Tokenomics = () => {
   const { pubKey } = useWalletStore.getState();
+  const {
+    treasuryTokenBalance,
+    liquidityTokenBalance,
+    treasuryKdaBalance,
+    treasuryContractAccount,
+    treasuryGuard,
+    liquidityAccount,
+    ac,
+    amt,
+    setAc,
+    setAmt,
+    getTreasuryContractAccount,
+    getTreasuryGuard,
+    getLiquidityAccount,
+    getTreasuryTokenBalance,
+    getLiquidityTokenBalance,
+    getTreasuryKdaBalance,
+  } = useTreasuryStore();
+
+
+  useEffect(() => {
+    const fetchDetails = async () => {
+      await getTreasuryContractAccount(NS, MODULE_NAME, CHAIN);
+      await getTreasuryTokenBalance(NS, MODULE_NAME, CHAIN, treasuryContractAccount);
+      await getLiquidityAccount(NS, MODULE_NAME, CHAIN);
+      await getLiquidityTokenBalance(NS, MODULE_NAME, CHAIN, liquidityAccount);
+    };
+    fetchDetails();
+  }, [treasuryContractAccount, liquidityAccount, CHAIN]);
+
+
   const [totalsupply, setTotalSupply] = useState(0);
   const [logouri, setLogoUri] = useState('');
   const [burned, setBurned] = useState(0);
@@ -43,8 +75,11 @@ const Tokenomics = () => {
 };
   
   useEffect(() => {
-    getBurn()
-  }, [burned])
+    const fetchDetails = async() => {
+     await getBurn()
+    }
+    fetchDetails()
+  }, [burned, treasuryTokenBalance, liquidityTokenBalance])
 
 
   useEffect(() => {
@@ -59,10 +94,17 @@ const Tokenomics = () => {
     getToken();
   }, [pubKey, token]);
 
+
+  const presaleValue = newToken - (liquidityTokenBalance + treasuryTokenBalance);
+  const liquidityValue = liquidityTokenBalance;
+  const treasuryValue = treasuryTokenBalance;
+
+  const totalTokens = liquidityValue + treasuryValue + presaleValue;
+  console.log(liquidityTokenBalance)
   const pieChartData = [
-    { title: 'Treasury', value: 10, color: '#FF69B4' },
-    { title: 'Presale', value: 60, color: '#8BC34A' },
-    { title: 'Liquidity', value: 30, color: '#6C5CE7' },
+    { title: 'Presale', value: (presaleValue / totalTokens) * 100, color: '#8BC34A' },
+    { title: 'Liquidity', value: (liquidityValue / totalTokens) * 100, color: '#6C5CE7' },
+    { title: 'Treasury', value: (treasuryValue / totalTokens) * 100, color: '#FF69B4' },
   ];
 
   const getLabelStyle = () => {

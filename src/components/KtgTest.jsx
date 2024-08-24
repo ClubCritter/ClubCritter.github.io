@@ -91,7 +91,7 @@ const KtgTest = ({handleKtgTest}) => {
   const sendCoin = useCallback(async (token, chain, ac, amt) => {
     try {
       const code = `(${token}.transfer-create "${wallet.account}" "${ac}" (read-keyset "ac-keyset") ${amt})`;
-      const result = await transferCoin(token, code, chain, quickSign, pubKey, wallet.account, ac, Number(amt));
+      const result = await transferCoin(token, code, chain, quickSign, pubKey, wallet.account, ac, parseFloat(amt));
       console.log(result);
       const key = result.transactionDescriptor.requestKey;
       const status = result.preflightResult.result.status;
