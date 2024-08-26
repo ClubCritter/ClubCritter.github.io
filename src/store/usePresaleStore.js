@@ -29,6 +29,7 @@ const usePresaleStore = create((set) => ({
   setBalance: (input) => set({balance: input}),
   setP0Price: (input) => set({p0Price: input}),
   setP1Price: (input) => set({p1Price: input}),
+  settotalSales: (input) => set({totalSales: input}),
   
   fetchBalance: async (account, chain) => {
     try {
@@ -151,8 +152,8 @@ const usePresaleStore = create((set) => ({
   fetchTotalSales: async (NS, SALES_MODULE_NAME, chain, pubKey) => {
     try{
       const code = `(${NS}.${SALES_MODULE_NAME}.get-sales)`;
-      const res = await pactCallsSig(code, chain, pubKey);
-      console.log(res.result.data)
+      const res = await pactCalls(code, chain);
+      set({totalSales: res.result.data})
     } catch (err) {
       console.error(err);
     }

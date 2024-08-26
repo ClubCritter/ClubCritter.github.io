@@ -6,11 +6,25 @@ import { pactCalls, pactCallsSales, pactCallsSig } from '../pactcalls/kadena';
 import { toast } from 'react-toastify';
 import { useWalletConnectClient } from '../wallet/providers/ClientContextProvider';
 import paste from '../assets/img/paste.svg';
+import SalesProgress from './salesProgress/SalesProgress';
 
 const ManageSales = ({ tokenSymbol }) => {
     const { pubKey } = useWalletStore();
     const { client, session } = useWalletConnectClient();
-    const { supplyChain, fetchTotalSales, salesEndTime, phase0startTime, phase1startTime, p0Price, setP0Price, setP1Price, p1Price, fetchP0Price, fetchP1Price, amountPerWL } = usePresaleStore();
+    const { supplyChain, 
+            totalSales, 
+            salesEndTime, 
+            phase0startTime, 
+            phase1startTime, 
+            p0Price, 
+            setP0Price, 
+            setP1Price, 
+            p1Price, 
+            fetchP0Price, 
+            fetchP1Price, 
+            amountPerWL,
+            fetchTotalSales
+         } = usePresaleStore();
     const [showPriceChange, setShowPriceChage] = useState(false);
     const [newP0Price, setNewP0Price] = useState(p0Price);
     const [newP1Price, setNewP1Price] = useState(p1Price);
@@ -79,7 +93,7 @@ const ManageSales = ({ tokenSymbol }) => {
         const sold = res.result.data.sold.int;
         const reserved = res.result.data.reserved.int;
         setAvailableToWhitelist(totalBatches - (sold + reserved));
-        setCounters({sold: sold, reserved: reserved})
+        setCounters({sold: sold, reserved: reserved})  
     }
     const getReservations = async () => {
         const code = `(${NS}.${SALES_MODULE_NAME}.get-reservations)`;
@@ -91,6 +105,7 @@ const ManageSales = ({ tokenSymbol }) => {
         const fetchData = async () => {
           await fetchP0Price(NS, SALES_MODULE_NAME, supplyChain, pubKey);
           await fetchP1Price(NS, SALES_MODULE_NAME, supplyChain, pubKey);
+          await fetchTotalSales(NS, SALES_MODULE_NAME, supplyChain, pubKey)
           await getTotalBatches();
           await getCounters();
           await getReservations()
@@ -242,7 +257,13 @@ const ManageSales = ({ tokenSymbol }) => {
                 </div>
             )}
 
-            {isPhase1 && <h3>Current Phase : Phase 1</h3>}
+            {isPhase1 && 
+              <>
+                 <h3>Current Phase : Phase 1</h3>
+                 <SalesProgress totalSales={totalSales}
+                   totalBatches={totalBatches}/>
+              </>
+              }
             {now > salesEndTime && <h3>Current Phase : Sales End</h3>}
         </div>
     );

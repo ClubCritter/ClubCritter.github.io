@@ -48,6 +48,7 @@ const Presale = () => {
     tokenSymbol,
     salesAccount,
     availableBatches,
+    totalSales,
     supplyChain,
     fetchBalance,
     fetchPhase0StartTime,
@@ -64,7 +65,8 @@ const Presale = () => {
     setKdaInput,
     setBatchCount,
     setAvailableBatches,
-    setBalance
+    setBalance,
+    settotalSales
   } = usePresaleStore();
 
   const explorerLink = `https://explorer.chainweb.com/testnet/tx/${reqKey}`;
@@ -167,6 +169,7 @@ const Presale = () => {
         setShowBuyModal(false);
         setAvailableBatches(availableBatches - batchCount);
         setBalance(balance - kdaInput);
+        settotalSales(totalSales - batchCount);
         toast.success(`Success: ${result.data}`, { position: 'top-center' });
         toast.success(`Request Key: ${reqKey}`, { position: 'bottom-right' });
       } else {
