@@ -152,7 +152,13 @@ const ManageSales = ({ tokenSymbol }) => {
         <div className='dashboard-container'>
             <h4>Token: ${tokenSymbol}</h4>
             <div className='d-flex gap-4'>
-                <h6>WhiteList Price: <span style={{color:'var(--secondary-color)'}}>{p0Price} KDA</span></h6>
+                {isPhase1 ? 
+                  <s>
+                    <h6>WhiteList Price: <span style={{color:'var(--secondary-color)'}}>{p0Price} KDA</span></h6>
+                  </s>  :
+                   <h6>WhiteList Price: <span style={{color:'var(--secondary-color)'}}>{p0Price} KDA</span></h6>
+                }
+                
                 <h6>Public Sale Price: <span style={{color:'var(--primary-color)'}}>{p1Price} KDA</span></h6>
             </div>
 
