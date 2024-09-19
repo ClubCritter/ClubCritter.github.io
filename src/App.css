@@ -9,11 +9,15 @@ https://templatemo.com/tm-560-astro-motion
 @import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
-
+:root{
+    --primary-color: #f07c47;
+    --secondary-color: #99FF66;
+}
 html,
 body,
 .page-container {
     height: 100%;
+    position: relative;
 }
 
 body {
@@ -68,7 +72,9 @@ p {
     line-height: 1.7;
 
 }
-
+input {
+    padding: 10px 30px;
+}
 .account-name p {
     word-break: break-all;
 }
@@ -84,7 +90,7 @@ h2 {
 }
 
 .highlight {
-    color: #99FF66;
+    color: var(--secondary-color);
 }
 
 .page-container {
@@ -96,12 +102,24 @@ h2 {
 .container-fluid {
     max-width: 1860px;
 }
-
+.navbar-container{
+    position: fixed;
+    height: 100px;
+    z-index: 1000;
+}
+.app-container{
+    margin-top: 100px;
+}
+.scrl img{
+  height: 2rem;
+  width: 2rem;
+}
 .footer {
     position: relative;
     bottom: 0;
     left: 0;
     align-items: baseline;
+    padding-inline: 2rem !important;
 }
 
 .btn {
@@ -117,7 +135,8 @@ h2 {
 }
 
 .btn-primary:hover,
-.btn-primary:focus {
+.btn-primary:focus,
+.btn-primary:active {
     color: #5cac38 !important;
     background-color: #fcfcfc !important;
 }
@@ -152,9 +171,7 @@ h2 {
     color: #fcfcfc !important;
 }
 
-.navbar {
-    margin-top: 15px;
-}
+
 
 .navbar .navbar-nav .nav-item {
     margin-left: 15px;
@@ -201,13 +218,13 @@ h2 {
 
 .navbar .navbar-nav .nav-item.selected .nav-link,
 .navbar .navbar-nav .nav-item .nav-link:hover {
-    color: #99FF66;
-    border-bottom: 1px solid #99FF66;
+    color: var(--secondary-color);
+    border-bottom: 1px solid var(--secondary-color);
 }
 
 .cd-slider-nav li.selected a+.circle,
 .navbar .navbar-nav .nav-item .nav-link:hover+.circle {
-    background-color: #99FF66;
+    background-color: var(--secondary-color);
 }
 
 .navbar-toggler-icon {
@@ -229,7 +246,7 @@ h2 {
 
 .tm-link-white:hover,
 .tm-link-white:focus {
-    color: #99FF66;
+    color: var(--secondary-color);
 }
 
 .cd-hero-slider {
@@ -255,7 +272,10 @@ h2 {
 .page-width-3 {
     max-width: 1398px !important;
 }
-
+.intro-wrap {
+    padding-inline: 10rem;
+    margin-top: 3rem;
+}
 .page-left {
     margin-left: 100px;
 }
@@ -270,37 +290,45 @@ h2 {
 }
 
 .tm-bg-dark {
-    background-color: rgba(12, 12, 12, 0.5);
+    background-color: rgba(12, 12, 12, 0.75);
     border-radius: 30px 0 30px 0;
-    box-shadow: inset 0 0 30px #c6fcabaf;
+    box-shadow: inset 0 0 30px transparent;
 }
 
 .tm-bg-dark-l {
-    background-color: rgba(12, 12, 12, 0.5);
+    background-color: rgba(12, 12, 12, 0.7);
     border-radius: 30px 0 0 0;
     box-shadow: inset 10px 0 30px #c6fcabaf;
 }
 
 .tm-bg-dark-r {
-    background-color: rgba(12, 12, 12, 0.5);
+    background-color: rgba(12, 12, 12, 0.7);
     border-radius: 0 0 30px 0;
     box-shadow: inset -10px 0 30px #c6fcabaf;
 }
 
 .tm-bg-dark-a {
-    background-color: rgba(12, 12, 12, 0.5) !important;
+    background-color: rgba(12, 12, 12, 0.7) !important;
     border-radius: 30px;
 }
-
+.tm-bg-darker-a {
+    background-color: rgba(12, 12, 12, 0.95) !important;
+    border-radius: 30px;
+}
 .tm-bg-dark-n {
-    background-color: rgba(12, 12, 12, 0.8) !important;
+    background-color: rgba(12, 12, 12, 0.7) !important;
+    border-radius: 2px;
+}
+
+.tm-bg-light-n {
+    background-color: rgba(212, 212, 212, 0.7) !important;
     border-radius: 2px;
 }
 
 .intro-left {
     margin-right: 20px;
     padding: 30px 40px;
-    max-width: 505px;
+    max-width: 60%;
 }
 
 .presale-container {
@@ -311,15 +339,16 @@ h2 {
 }
 
 .wallet-modal-container {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
-    height: 100%;
+    height: 100vh;
     width: 100%;
     display: grid;
     place-items: center;
-    z-index: 10000;
-}
+    z-index: 5000;
+    overflow-y: auto;
+  }
 
 .wallet-modal {
     background-color: #fcfcfc;
@@ -412,10 +441,11 @@ h2 {
 /* Gallery page */
 .gallery-container {
     max-width: 1300px;
+    width: 100%
 }
 
 .tokenomics-container {
-    height: 70vh;
+    height: auto;
     display: grid;
     place-items: center;
 }
@@ -508,7 +538,6 @@ h2 {
 }
 
 .tokenomics-grid-container {
-    max-width: 1180px;
     min-height: 450px;
     display: grid;
     place-items: center;
@@ -648,6 +677,8 @@ figure.effect-julia:hover p {
     place-items: center;
     padding: 0.35rem;
     border: 2px solid rgba(212, 212, 212, 1);
+    background: rgba(12, 12, 12, 0.5);
+    text-align: center;
 }
 
 .countdown-container p {
@@ -677,7 +708,7 @@ figure.effect-julia:hover p {
 }
 
 .form-control:focus {
-    border-bottom: 1px solid #99FF66 !important;
+    border-bottom: 1px solid var(--secondary-color) !important;
     outline: 0 !important;
     -webkit-box-shadow: none !important;
     box-shadow: none !important;
@@ -754,11 +785,31 @@ figure.effect-julia:hover p {
     height: 3rem;
     border: 0;
 }
+.ktg-test-wrap .close-button{
+    position: absolute;
+    border-radius: 20px;
+    background: #fcfcfc;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 3rem;
+    border: 0;
+}
+.wallet-modal-container .close-button{
+    position: absolute;
+    border-radius: 5px;
+    background: #fcfcfc;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 3rem;
+    border: 0;
+}
 .close-button:hover, 
 .close-button:focus{
-    color: #f07c47;
+    color: var(--primary-color);
     background-color: #fcfcfc;
-    border: 1px solid #f07c47;
+    border: 1px solid var(--primary-color);
 }
 .check-balance{
     display: grid;
@@ -779,6 +830,7 @@ figure.effect-julia:hover p {
 .form-input{
     display: grid;
     place-items: top;
+    position: relative;
 }
 .send-tokens{
     display: grid;
@@ -796,22 +848,22 @@ figure.effect-julia:hover p {
     min-height: 5rem;
     height: auto;
 }
-.ktg-test-wrap select,
-.ktg-test-wrap input,
-.ktg-test-wrap textarea {
+select,
+input,
+textarea {
     background: transparent;
     height: 3rem;
     width: 100%;
-    border: 1px solid #f07c47;
+    border: 1px solid var(--primary-color);
     color: #fcfcfc;
 }
 .ktg-test-wrap select:focus{
     outline: none;
     background: rgba(12, 12, 12, 0.8);
 }
-.ktg-test-wrap .btn-secondary {
-    background: #f07c47;
-    color: #fcfcfc;
+.btn-secondary {
+    background: var(--primary-color) !important;
+    color: #fcfcfc !important;
     border-radius: 5px 0 10px 10px !important;
     padding-block: 0.5rem !important;
 }
@@ -892,6 +944,46 @@ figure.effect-julia:hover p {
 .link-a{
     text-decoration: none;
 }
+
+.buy-form{
+    display: grid;
+    place-items: center;
+    gap: 1rem;
+}
+
+.buy-modal{
+    display: grid;
+    gap: 1rem;
+    padding: 3rem;
+}
+.contract-add{
+    border: 2px solid rgba(212, 212, 212, 0.8);
+    padding-inline: 1rem;
+    padding-block: auto;
+}
+.contract-add button{
+    padding: 0, 0, 0, 1rem;
+}
+iframe img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+}
+.token-details {
+    display: grid;
+    place-items: center;
+}
+.token-details img{
+    width: 150px;
+    height: 150px;
+    border-radius: 2px 15px 2px 15px;
+    border: 2px solid #fcfcfc;
+    margin-block: 2rem;
+}
+.info-grid{
+    display: grid;
+    grid-template-columns: 5fr 1fr 5fr;
+}
 @media (min-width: 992px) {
     .navbar-expand-lg .navbar-collapse {
         justify-content: flex-end;
@@ -910,6 +1002,10 @@ figure.effect-julia:hover p {
 @media (max-width: 1200px) {
     .navbar .navbar-nav .nav-item .nav-link {
         padding: 15px 45px;
+    }
+    .intro-wrap {
+        padding-inline: 2rem;
+        margin-top: 2rem;
     }
 }
 
@@ -1007,15 +1103,26 @@ figure.effect-julia:hover p {
         border-radius: 0px 0px 30px 30px !important;
         padding-block: 0.25rem !important;
     }
+    .intro-wrap {
+        padding-inline: 0;
+    }
+    .deployer-options{
+        grid-template-columns: 1fr;
+    }
 }
-
+.centered-div{
+    display: grid;
+    place-items: center;
+}
 @media (max-width: 600px) {
 
     .intro-left,
     .intro-right {
         width: 100%;
     }
-
+    .intro-wrap{
+        margin-top: 0;
+    }
     .intro-left {
         margin-right: 0;
         margin-bottom: 20px;
@@ -1045,6 +1152,10 @@ figure.effect-julia:hover p {
 
     .tokenomics-grid-container {
         grid-template-columns: repeat(2, 1fr);
+    }
+    .footer{
+        margin-bottom: 2rem;
+        padding-inline: 0.3rem !important;
     }
 }
 

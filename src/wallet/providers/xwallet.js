@@ -1,10 +1,20 @@
-import config from '../config'
+import config from '../config';
 
+export const formatCapability = (cap) => {
+  return {
+    role: "", 
+    description: "", 
+    cap: {
+      name: cap.name,
+      args: cap.args || [] 
+    },
+  };
+};
 
-export const SPIREKEY = 'SPIREKEY';
+export const X_WALLET = 'X_WALLET';
 const networkId = config.networkId;
-const spirekey = {
-  name: 'Spire Key',
+const xwallet = {
+  name: 'X Wallet',
   connect: async function() {
     let accountResult = await window.kadena.request({
       method: "kda_connect",
@@ -85,9 +95,43 @@ quickSign: async function(signingCommand) {
     console.error("Error in quickSign function:", error);
   }
 },
+quickSignAll: async function(signingCommands) {
+  let networkId = config.networkId;
 
+  const commandSigDatas = signingCommands.map(command => {
+    const commandObj = JSON.parse(command.cmd);
+    const signers = commandObj.payload.exec.data.ks.keys.map(pubKey => {
+      return {
+        pubKey: pubKey,
+        sig: null, 
+        clist: commandObj.signers[0].clist,
+      };
+    });
+
+    return {
+      cmd: JSON.stringify(commandObj),
+      sigs: signers,
+    };
+  });
+
+  const req = {
+    method: "kda_requestQuickSign",
+    networkId: networkId,
+    data: {
+      networkId: networkId,
+      commandSigDatas: commandSigDatas
+    }
+  };
+
+  try {
+    const signedCmds = await window.kadena.request(req);
+    return signedCmds;
+  } catch (error) {
+    console.error("Error in quickSignAll function:", error);
+    throw error;
+  }
+},
 quickSignCont: async function(signingCommand) {
-
   let networkId = config.networkId;
   const commandObj = JSON.parse(signingCommand.cmd);
   const signers = commandObj.payload.cont.data.ks.keys.map(pubKey => {
@@ -118,4 +162,4 @@ quickSignCont: async function(signingCommand) {
 }
 
 }
-export default spirekey;
+export default xwallet;

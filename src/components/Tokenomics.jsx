@@ -1,64 +1,140 @@
-import React from 'react'
-import img1 from '../assets/img/gallery-img-01.png'
-import img2 from '../assets/img/gallery-img-02.png'
-import img3 from '../assets/img/gallery-img-03.png'
-import img4 from '../assets/img/gallery-img-04.png'
+import React, { useState, useEffect } from 'react';
+import { PieChart } from 'react-minimal-pie-chart';
+import img1 from '../assets/img/gallery-img-01.png';
+import img2 from '../assets/img/gallery-img-02.png';
+import img3 from '../assets/img/gallery-img-03.png';
+import img4 from '../assets/img/gallery-img-04.png';
+import { pactCalls } from "../pactcalls/kadena";
+import useWalletStore from "../wallet/walletStore";
+
+const CHAIN = 1;
+
+export const NS = import.meta.env.VITE_APP_NS
+export const MODULE_NAME = import.meta.env.VITE_APP_MODULE_NAME
+
+export const addComma = (num) => {
+  return num?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
 
 const Tokenomics = () => {
-    const tokens = 100000000000;
-    const burned = 0;
-    const newToken = tokens - burned;
-
-    const addComma = (num) => {
-        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  const { pubKey } = useWalletStore.getState();
+  const [totalsupply, setTotalSupply] = useState(0);
+  const [logouri, setLogoUri] = useState('');
+  const [burned, setBurned] = useState(0);
+  const newToken = totalsupply - burned;
+  const [token, setToken] = useState({});
+  const [selectedSegmentIndex, setSelectedSegmentIndex] = useState(null);
+  const [hoveredSegmentIndex, setHoveredSegmentIndex] = useState(null);
+  
+  const getBurn = async (token) => {
+    try {
+        const code = `(n_e309f0fa7cf3a13f93a8da5325cdad32790d2070.burn.get-balance ${NS}.${MODULE_NAME})`;
+        const chain = CHAIN;
+        const res = await pactCalls(code, chain);
+        if(res.result.status === 'failure'){
+          console.log(res.result.error);
+          return null
+        }
+        setBurned(res.result.data)
+    } catch (error) {
+        console.log(`${token.name} account does not exist`);
+        return null;
     }
-    
-    return (
-    <div data-page-no="2" className='tokenomics-container'>
-            <div className="mx-auto position-relative gallery-container">
-              <div className='grid place-items-center tm-bg-dark tm-border-top tm-border-bottom'>
-                 <h2 className='text-center mb-4'>Total supply: {addComma(newToken)} Tokens</h2>
-                 <h3 className='text-center mb-2'>Initial total Supply: {addComma(tokens)}</h3>
-                 <h3 className='text-center'>Burned so far: {addComma(burned)}</h3>
-                 <div className='line'></div>
-                 <div className="mx-auto tokenomics-grid-container">
-                <figure className="effect-julia item">
-                    <img src={img1} alt="Image" />
-                    <figcaption>
-                        <div>
-                            <p>15% Team</p>
-                        </div>
-                    </figcaption>
-                </figure>
-                <figure className="effect-julia item">
-                    <img src={img2} alt="Image" />
-                    <figcaption>
-                        <div>
-                            <p>10% Treasury</p>
-                        </div>
-                    </figcaption>
-                </figure>
-                <figure className="effect-julia item">
-                    <img src={img3} alt="Image" />
-                    <figcaption>
-                        <div>
-                            <p>30% Presale and burn</p>
-                        </div>
-                    </figcaption>
-                </figure>
-                <figure className="effect-julia item">
-                    <img src={img4} alt="Image" />
-                    <figcaption>
-                        <div>
-                            <p>45% Locked Liquidity</p>
-                        </div>
-                    </figcaption>
-                </figure>
-              </div>
-              </div>
-            </div>
-    </div>
-  )
-}
+};
+  
+  useEffect(() => {
+    getBurn()
+  }, [burned])
 
-export default Tokenomics
+
+  useEffect(() => {
+    const getToken = async () => {
+      const code = `(use ${NS}.${MODULE_NAME}) DETAILS`;
+      const chain = CHAIN;
+      const res = await pactCalls(code, chain, pubKey);
+      setToken(res.result.data);
+      setTotalSupply(res.result.data.supply?.int);
+      setLogoUri(res.result.data.imageUrl);
+    };
+    getToken();
+  }, [pubKey, token]);
+
+  const pieChartData = [
+    { title: 'Team', value: 15, color: '#2c3e50' },
+    { title: 'Treasury', value: 10, color: '#3498db' },
+    { title: 'Presale', value: 30, color: '#2e865f' },
+    { title: 'Locked Liquidity', value: 45, color: '#6c5ce7' },
+  ];
+
+  const getLabelStyle = () => {
+    if (window.innerWidth < 600) {
+      return { fontSize: '5px', fill: '#fcfcfc' };
+    }
+    return { fontSize: '7px', fill: '#fff' };
+  };
+
+  const pieChartOptions = {
+    radius: 30,
+    lineWidth: 50,
+    segmentsStyle: {
+      transition: 'stroke .3s',
+      cursor: 'pointer',
+    },
+    segmentsShift: (index) => {
+      if (selectedSegmentIndex === index) return 9;
+      if (hoveredSegmentIndex === index) return 2;
+      return 0.5;
+    },
+    animate: true,
+    label: ({ dataEntry }) => `${dataEntry.title} (${Math.round(dataEntry.percentage)}%)`,
+    labelPosition: window.innerWidth < 600 ? 100 : 110,
+    labelStyle: getLabelStyle(),
+  };
+
+  return (
+    <div data-page-no="2" className="tokenomics-container">
+      <div className="mx-auto position-relative gallery-container">
+        <div className="token-details tm-bg-dark tm-border-top tm-border-bottom p-4">
+          {logouri && (
+            <img
+              src={logouri}
+              alt="Token Logo"
+              style={{
+                objectFit: 'cover' // or 'contain' if you prefer to maintain aspect ratio
+              }}
+            />
+          )}
+          <h2 className="text-center mb-4" style={{ color: '#ffffff' }}>
+            Total supply: {addComma(newToken)} ${token?.symbol}
+          </h2>
+          <h3 className="text-center mb-2" style={{ color: '#cccccc' }}>
+            Initial total Supply: {addComma(totalsupply)}
+          </h3>
+          <h3 className="text-center" style={{ color: '#cccccc' }}>
+            Burned so far: {addComma(burned)}
+          </h3>
+          <div className="line"></div>
+        </div>
+        <div className=" my-2 mx-auto tokenomics-grid-container tm-border-top tm-border-bottom tm-bg-dark" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <PieChart
+              data={pieChartData}
+              {...pieChartOptions}
+              onClick={(event, index) => {
+                if (index === selectedSegmentIndex) {
+                  setSelectedSegmentIndex(null);
+                } else {
+                  setSelectedSegmentIndex(index);
+                }
+              }}
+              onMouseOver={(event, index) => setHoveredSegmentIndex(index)}
+              onMouseOut={() => setHoveredSegmentIndex(null)}
+              style={{ height: '350px' }}
+              aria-label="Tokenomics Pie Chart"
+            />
+          </div>
+      </div>
+    </div>
+  );
+};
+
+export default Tokenomics;

@@ -1,10 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useCloseMenu, useHighlightMenu } from '../assets/js/template';
+import useUiStore from '../store/uiStore';
 
 const Navbar = () => {
   const { menuOpen, toggleMenu, closeMenu } = useCloseMenu();
   const { selectedNavItem, highlightMenu } = useHighlightMenu();
+  const { navbarOpacity, setNavbarOpacity }= useUiStore()
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      const opacity = Math.max(1 - scrollPosition / 50, 0);
+      setNavbarOpacity(opacity);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   useEffect(() => {
     const handleNavLinkClick = (event) => {
@@ -22,9 +38,9 @@ const Navbar = () => {
   }, []);
 
   return (
-    <div className="container-fluid">
+      <div className="container-fluid navbar-container" style={{opacity: navbarOpacity}}>
       <div className="row">
-        <div className="col-xs-12">
+        <div className="col-xs-12" >
           <div className="cd-slider-nav">
             <nav className="navbar navbar-expand-lg" aria-current="page" id="tm-nav">
               <a className="navbar-brand tm-bg-dark-a px-4" href='/'>Club Critter</a>
@@ -56,6 +72,7 @@ const Navbar = () => {
         </div>          
       </div>        
     </div>
+    
   );
 };
 
