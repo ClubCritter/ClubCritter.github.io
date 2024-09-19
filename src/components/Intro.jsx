@@ -5,13 +5,13 @@ import homeImg from '../assets/img/home-img-1.png'
 const Intro = () => {
   return (
       <div className="px-3" >
-         <div className="intro-wrap">
+         <div className="page-width-3 page-left">
               <div className="d-flex position-relative tm-border-top tm-border-bottom intro-container">
                  <div className="intro-left tm-bg-dark">
                    <h2 className="mb-4">Welcome to Club Critter</h2>
-                   <p className="mb-4">The first fully KYC + Audited memecoin built with KadenAi initiatives. </p>
-                   <h2>Join our Discord! </h2>
-                   <p>We're not your average meme army. We're a friendly club that coexists peacefully with the entire Kadena ecosystem. We might not have a utility token, but we're passionate about helping others grow. In fact, Papa Otter himself has vouched for Club Critter members' ability to assist developers in expanding the Kadena ecosystem (with $CRITTER rewards as a bonus, of course!). </p>
+                   <p className="mb-4">The first fully KYC + Audited memecoin made on TokenGo with Kadpad Technology. </p>
+                   <h2>Get in on the fun! </h2>
+                   <p>We’re not your average memecoin. We’re the first memecoin launched on TokenGo with Kadpad Technology, making us a unique part of the Kadena ecosystem. We’re a friendly club that coexists peacefully with the entire Kadena community. While we might not have a utility token, our passion for helping others grow remains strong. In fact, Papa Otter himself has vouched for Club Critter members’ ability to assist developers in expanding the Kadena ecosystem. Join us and be part of something amazing. Our leader, Andy Otter, will be hosting numerous giveaways and actively supporting various initiatives.</p>
                  </div>
                 <div className="intro-right">
 		            <div style={{textAlign: 'center'}}>
