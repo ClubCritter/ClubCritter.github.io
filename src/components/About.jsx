@@ -15,11 +15,11 @@ const About = () => {
                     <ul>
                       <li>Website Creation</li>
                       <li>Token Launch</li>
-                      <li>Discord Launch</li>
+                      <li>Discord Growth</li>
                       <li>Community Building</li>
                     </ul>
-                  <p>Join us on <a href='https://discord.gg/U5EMjSvb4s' target='_blank'>Discord</a> where Head Critter and Mama Critter will be hosting $CRITTER giveaways! We value your input, so let's work together to expand both the community and the Kadena ecosystem. Remember, the stronger we become, the more benefits everyone enjoys!</p>
-                  <p>Leading the charge is Papa Critter, who is fully KYC'd and chats directly with a couple of guys from Kadena and independant developers. He's passionate about keeping things fun, exciting, and constantly growing, and he's always here to listen to your ideas! :)</p>
+                  <p>Join us on <a href='https://discord.gg/U5EMjSvb4s' target='_blank'>Discord</a> where the Kadpads community team will be hosting $CRITTER giveaways! We value your input, so let's work together to expand both the community and the Kadena ecosystem. Remember, the stronger we become, the more benefits everyone enjoys!</p>
+                  <p>Leading the charge is Papa Rocketeer, who is fully KYC'd and chats directly with a couple of guys from Kadena and independant developers. He's passionate about keeping things fun, exciting, and constantly growing, and he's always here to listen to your ideas! :)</p>
               </div>              
             </div>
           </div>
