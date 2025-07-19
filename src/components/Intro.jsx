@@ -11,7 +11,7 @@ const Intro = () => {
                    <h2 className="mb-4">Welcome to Club Critter</h2>
                    <p className="mb-4">The first fully KYC + Audited memecoin made on TokenGo with Kadpad Technology. </p>
                    <h2>Get in on the fun! </h2>
-                   <p>We’re not your average memecoin. We’re the first memecoin launched on TokenGo with Kadpad Technology, making us a unique part of the Kadena ecosystem. We’re a friendly club that coexists peacefully with the entire Kadena community. While we might not have a utility token, our passion for helping others grow remains strong. In fact, Papa Otter himself has vouched for Club Critter members’ ability to assist developers in expanding the Kadena ecosystem. Join us and be part of something amazing. Our leader, Andy Otter, will be hosting numerous giveaways and actively supporting various initiatives.</p>
+                   <p>We’re not your average memecoin. We’re the first memecoin launched on TokenGo with Kadpad Technology, making us a unique part of the Kadena ecosystem. We’re a friendly club that coexists peacefully with the entire Kadena community. While we might not have a utility token, our passion for helping others grow remains strong. Join us and be part of something amazing. Our leader, Andy Otter, will be hosting numerous giveaways and actively supporting various initiatives.</p>
                  </div>
                 <div className="intro-right">
 		            <div style={{textAlign: 'center'}}>
