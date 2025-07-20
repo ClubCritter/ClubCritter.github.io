@@ -17,7 +17,7 @@ function Footer() {
           <a href='https://t.me/clubcritterkda' target='_blank'>
             <img src={telegramImg} className='social-image'/>
           </a>
-          <a href='https://x.com/KadenaCritter' target='_blank'>
+          <a href='https://x.com/CritterToken' target='_blank'>
             <img src={twitterImg} className='social-image'/>
           </a>
         </div>
