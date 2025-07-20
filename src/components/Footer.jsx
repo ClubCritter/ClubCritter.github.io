@@ -14,7 +14,7 @@ function Footer() {
           <a href='https://discord.gg/U5EMjSvb4s' target='_blank'>
             <img src={discordImg} className='social-image'/>
           </a>
-          <a href='https://t.me/CosmicCritter' target='_blank'>
+          <a href='https://t.me/clubcritterkda' target='_blank'>
             <img src={telegramImg} className='social-image'/>
           </a>
           <a href='https://x.com/KadenaCritter' target='_blank'>
